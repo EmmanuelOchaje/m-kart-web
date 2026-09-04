@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — one system, two modes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SEMANTIC TOKENS — identical structure, two palettes
+   ============================================================ */
+.t-dark{
+  --bg:#0E0F0D; --surface:#1A1C19; --raised:#242621;
+  --border:#2E312C; --border-strong:#3A3C38;
+  --text:#FFFFFF; --text-2:#8E9189; --text-3:#6E7169;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#C6F432;
+  --danger:#FF6B4A; --danger-bg:rgba(255,107,74,.14); --danger-text:#FF8E74;
+  --body-weight:300;
+  --shadow:none;
+}
+.t-light{
+  --bg:#FFFFFF; --surface:#F6F7F3; --raised:#EDEFE8;
+  --border:#E4E7DE; --border-strong:#D3D7CB;
+  --text:#0E0F0D; --text-2:#6B6F66; --text-3:#9A9E93;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#4E6B00;
+  --danger:#C0391C; --danger-bg:#FFEDE8; --danger-text:#C0391C;
+  --body-weight:400;
+  --shadow:0 4px 12px rgba(10,11,9,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D8D8D3;font-family:'DM Sans',system-ui,sans-serif;color:#0E0F0D;padding:42px 20px 66px}
+.head{max-width:1360px;margin:0 auto 26px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:76ch}
+
+/* swatches */
+.swatches{max-width:1360px;margin:0 auto 34px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sw{border-radius:14px;padding:18px;background:#fff}
+.sw h3{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;margin-bottom:12px}
+.chipset{display:flex;flex-wrap:wrap;gap:8px}
+.cs{border:1px solid #E0E0DB;border-radius:9px;overflow:hidden;width:96px}
+.cs .box{height:38px}
+.cs .lb{font-size:.58rem;padding:5px 6px;line-height:1.35}
+.cs .lb b{display:block;font-weight:600}
+.cs .lb span{color:#8A8D85;font-family:ui-monospace,monospace;font-size:.55rem}
+
+.note{max-width:1360px;margin:0 auto 30px;background:#fff;border-left:3px solid #C6F432;
+  border-radius:0 10px 10px 0;padding:14px 16px;font-size:.86rem;color:#3F433C;line-height:1.6}
+.note b{font-weight:600;color:#0E0F0D}
+
+/* rails */
+.group{max-width:1360px;margin:0 auto 30px}
+.group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #C2C2BD}
+.rail{display:flex;gap:22px;flex-wrap:wrap}
+.item{width:250px}
+.item .t{font-size:.86rem;font-weight:500;margin-bottom:4px;letter-spacing:-.02em}
+.item .m{font-size:.66rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px}
+.item .m.d{color:#4A4D46}
+.item .m.l{color:#8A8D85}
+
+.phone{width:250px;height:542px;border-radius:32px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 16px 36px rgba(10,11,9,.2);position:relative}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);color:var(--text);overflow:hidden}
+.hbar{width:74px;height:3.5px;border-radius:99px;background:var(--border-strong);margin:0 auto 7px;flex:none}
+
+.top{flex:none;padding:9px 14px 0}
+.st{display:flex;justify-content:space-between;font-size:.56rem;font-weight:600}
+.bar{display:flex;align-items:center;gap:10px;padding:9px 0 11px}
+.rnd{width:26px;height:26px;border-radius:50%;background:var(--raised);display:grid;place-items:center;
+  font-size:.72rem;flex:none;color:var(--text)}
+.ttl{font-size:.83rem;font-weight:600;letter-spacing:-.025em}
+.body{flex:1;padding:0 14px;overflow:hidden;display:flex;flex-direction:column}
+
+.h{font-size:1.3rem;font-weight:600;line-height:1.14;letter-spacing:-.04em}
+.p{font-size:.73rem;color:var(--text-2);line-height:1.6;font-weight:var(--body-weight);margin-top:8px}
+.sec{font-size:.61rem;font-weight:600;color:var(--text-2);letter-spacing:.05em;text-transform:uppercase;margin:13px 0 7px}
+
+.field{background:var(--surface);border-radius:15px;padding:12px 13px;display:flex;align-items:center;gap:9px;font-size:.8rem}
+.field .cc{font-weight:600}
+.field .dv{width:1px;height:13px;background:var(--border-strong)}
+.field .ph{color:var(--text-3);font-weight:var(--body-weight)}
+
+.btn{border-radius:99px;padding:12px;text-align:center;font-weight:600;font-size:.8rem;
+  background:var(--accent);color:var(--on-accent)}
+.btn.sec{background:var(--raised);color:var(--text);font-weight:500}
+.btn.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:500}
+.btn.gh{background:transparent;color:var(--text-2);font-weight:400}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:11px 12px;box-shadow:var(--shadow)}
+.rowc{display:flex;align-items:flex-start;gap:10px}
+.ic{width:30px;height:30px;border-radius:10px;background:var(--raised);display:grid;place-items:center;
+  font-size:.74rem;flex:none;color:var(--text)}
+.ic.acid{background:var(--accent);color:var(--on-accent)}
+.nm{font-size:.74rem;font-weight:500;line-height:1.35}
+.ds{font-size:.62rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.5;margin-top:2px}
+.lk{color:var(--accent-text);font-weight:500}
+.chev{margin-left:auto;color:var(--text-3);font-size:.78rem}
+
+.otp{display:flex;gap:6px}
+.otp span{flex:1;aspect-ratio:1/1.14;border-radius:13px;display:grid;place-items:center;
+  font-size:.98rem;font-weight:600;background:var(--surface);color:var(--text)}
+.otp span.on{background:var(--accent);color:var(--on-accent)}
+.otp span.cur{border:1.5px solid var(--accent-text)}
+
+.ln{display:flex;justify-content:space-between;font-size:.69rem;color:var(--text-2);padding:3px 0;font-weight:var(--body-weight)}
+.ln.big{color:var(--text);font-size:.92rem;font-weight:600;border-top:1px solid var(--border);margin-top:6px;padding:9px 0 0}
+
+.row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.sw2{margin-left:auto;width:35px;height:20px;border-radius:99px;background:var(--border-strong);position:relative;flex:none}
+.sw2 i{position:absolute;top:2.5px;left:2.5px;width:15px;height:15px;border-radius:50%;background:#fff}
+.sw2.on{background:var(--accent)}
+.sw2.on i{left:auto;right:2.5px;background:var(--on-accent)}
+
+.bigic{width:60px;height:60px;border-radius:20px;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:1.5rem;flex:none}
+.bigic.warn{background:var(--danger-bg);color:var(--danger-text)}
+
+.tabs{display:flex;gap:15px;padding:10px 14px 0;border-bottom:1px solid var(--border);flex:none}
+.tabs a{font-size:.7rem;font-weight:var(--body-weight);color:var(--text-2);text-decoration:none;padding-bottom:7px}
+.tabs a.on{color:var(--text);font-weight:600;border-bottom:2px solid var(--accent)}
+.mrow{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.mrow .th{width:52px;height:52px;border-radius:12px;background:var(--raised);flex:none;
+  display:grid;place-items:center;font-size:1rem}
+.mrow .pr{font-size:.73rem;font-weight:600;margin-top:4px}
+.add{width:21px;height:21px;border-radius:50%;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.7rem;margin-left:auto;flex:none}
+
+@media (max-width:1000px){.swatches{grid-template-columns:1fr}}
+@media (max-width:640px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — one system, two modes</h1>
+  <p>Same components, same markup, same class names. Only the token values underneath change. Each pair below is byte-identical HTML with a different theme class on the wrapper.</p>
+</div>
+
+<div class="swatches">
+  <div class="sw">
+    <h3>Dark palette</h3>
+    <div class="chipset">
+      <div class="cs"><div class="box" style="background:#0E0F0D"></div><div class="lb"><b>bg</b><span>#0E0F0D</span></div></div>
+      <div class="cs"><div class="box" style="background:#1A1C19"></div><div class="lb"><b>surface</b><span>#1A1C19</span></div></div>
+      <div class="cs"><div class="box" style="background:#242621"></div><div class="lb"><b>raised</b><span>#242621</span></div></div>
+      <div class="cs"><div class="box" style="background:#FFFFFF"></div><div class="lb"><b>text</b><span>#FFFFFF</span></div></div>
+      <div class="cs"><div class="box" style="background:#8E9189"></div><div class="lb"><b>text-2</b><span>#8E9189</span></div></div>
+      <div class="cs"><div class="box" style="background:#C6F432"></div><div class="lb"><b>accent</b><span>#C6F432</span></div></div>
+      <div class="cs"><div class="box" style="background:#C6F432"></div><div class="lb"><b>accent-text</b><span>#C6F432</span></div></div>
+      <div class="cs"><div class="box" style="background:#FF6B4A"></div><div class="lb"><b>danger</b><span>#FF6B4A</span></div></div>
+    </div>
+  </div>
+  <div class="sw">
+    <h3>Light palette</h3>
+    <div class="chipset">
+      <div class="cs"><div class="box" style="background:#FFFFFF;border-bottom:1px solid #EEE"></div><div class="lb"><b>bg</b><span>#FFFFFF</span></div></div>
+      <div class="cs"><div class="box" style="background:#F6F7F3"></div><div class="lb"><b>surface</b><span>#F6F7F3</span></div></div>
+      <div class="cs"><div class="box" style="background:#EDEFE8"></div><div class="lb"><b>raised</b><span>#EDEFE8</span></div></div>
+      <div class="cs"><div class="box" style="background:#0E0F0D"></div><div class="lb"><b>text</b><span>#0E0F0D</span></div></div>
+      <div class="cs"><div class="box" style="background:#6B6F66"></div><div class="lb"><b>text-2</b><span>#6B6F66</span></div></div>
+      <div class="cs"><div class="box" style="background:#C6F432"></div><div class="lb"><b>accent</b><span>#C6F432</span></div></div>
+      <div class="cs"><div class="box" style="background:#4E6B00"></div><div class="lb"><b>accent-text</b><span>#4E6B00</span></div></div>
+      <div class="cs"><div class="box" style="background:#C0391C"></div><div class="lb"><b>danger</b><span>#C0391C</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <b>The one thing that differs by mode is accent-as-text.</b> The lime fill is byte-identical in both — same button, same chip, same badge. But <code>#C6F432</code> as <em>text</em> on white measures 1.4:1, which is unreadable outdoors. So on light backgrounds the same hue drops to <code>#4E6B00</code>, which measures 7.1:1. One colour, two lightnesses, because contrast requires it.
+</div>
+
+<div class="group">
+  <h2>Sign in</h2>
+  <div class="rail">
+    <div class="item">
+      <div class="t">Sign in</div><div class="m d">Dark · shipping</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="font-size:1.1rem;font-weight:300;letter-spacing:-.02em;padding-top:5px">M<b style="font-weight:600">-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Makurdi eats.<br><span style="color:var(--accent-text)">We deliver.</span></div>
+            <p class="p">Enter your number to get started. We'll text you a code.</p>
+          </div>
+          <div style="margin-top:18px">
+            <div class="field"><span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="ph">801 234 5678</span></div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p style="font-size:.6rem;color:var(--text-3);text-align:center;margin:12px 0 auto;padding-bottom:11px;line-height:1.5;font-weight:var(--body-weight)">By continuing you agree to M-Kart's Terms and Privacy Policy.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Sign in</div><div class="m l">Light · same markup</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="font-size:1.1rem;font-weight:300;letter-spacing:-.02em;padding-top:5px">M<b style="font-weight:600">-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Makurdi eats.<br><span style="color:var(--accent-text)">We deliver.</span></div>
+            <p class="p">Enter your number to get started. We'll text you a code.</p>
+          </div>
+          <div style="margin-top:18px">
+            <div class="field"><span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="ph">801 234 5678</span></div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p style="font-size:.6rem;color:var(--text-3);text-align:center;margin:12px 0 auto;padding-bottom:11px;line-height:1.5;font-weight:var(--body-weight)">By continuing you agree to M-Kart's Terms and Privacy Policy.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Verify code</div><div class="m d">Dark · shipping</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:auto">
+            <div class="h">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="lk">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:18px">
+            <span class="on">4</span><span class="on">9</span><span class="on">2</span><span class="cur"></span><span></span><span></span>
+          </div>
+          <p style="font-size:.65rem;color:var(--text-2);text-align:center;margin-top:12px;font-weight:var(--body-weight)">Didn't get it? <b style="color:var(--accent-text);font-weight:500">Resend in 0:24</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Verify code</div><div class="m l">Light · same markup</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:auto">
+            <div class="h">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="lk">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:18px">
+            <span class="on">4</span><span class="on">9</span><span class="on">2</span><span class="cur"></span><span></span><span></span>
+          </div>
+          <p style="font-size:.65rem;color:var(--text-2);text-align:center;margin-top:12px;font-weight:var(--body-weight)">Didn't get it? <b style="color:var(--accent-text);font-weight:500">Resend in 0:24</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="group">
+  <h2>Restaurant menu</h2>
+  <div class="rail">
+    <div class="item">
+      <div class="t">Menu</div><div class="m l">Light · shipping</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Terkimbi's Kitchen</div></div>
+        </div>
+        <div class="tabs"><a href="#">Swallow</a><a class="on" href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a></div>
+        <div class="body">
+          <div class="sec">Soups</div>
+          <div class="mrow">
+            <div class="th">🍲</div>
+            <div style="flex:1"><div class="nm">Egusi soup</div><div class="ds">Melon seed, bitterleaf, assorted beef.</div><div class="pr">₦1,800</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow">
+            <div class="th">🐟</div>
+            <div style="flex:1"><div class="nm">Catfish pepper soup</div><div class="ds">Fresh Benue river catfish, scent leaf.</div><div class="pr">₦3,500</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow" style="border-bottom:none">
+            <div class="th">🍖</div>
+            <div style="flex:1"><div class="nm">Goat meat pepper soup</div><div class="ds">Slow cooked with local spices.</div><div class="pr">₦3,000</div></div>
+            <div class="add">+</div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">View cart · ₦4,600</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Menu</div><div class="m d">Dark · same markup</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Terkimbi's Kitchen</div></div>
+        </div>
+        <div class="tabs"><a href="#">Swallow</a><a class="on" href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a></div>
+        <div class="body">
+          <div class="sec">Soups</div>
+          <div class="mrow">
+            <div class="th">🍲</div>
+            <div style="flex:1"><div class="nm">Egusi soup</div><div class="ds">Melon seed, bitterleaf, assorted beef.</div><div class="pr">₦1,800</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow">
+            <div class="th">🐟</div>
+            <div style="flex:1"><div class="nm">Catfish pepper soup</div><div class="ds">Fresh Benue river catfish, scent leaf.</div><div class="pr">₦3,500</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow" style="border-bottom:none">
+            <div class="th">🍖</div>
+            <div style="flex:1"><div class="nm">Goat meat pepper soup</div><div class="ds">Slow cooked with local spices.</div><div class="pr">₦3,000</div></div>
+            <div class="add">+</div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">View cart · ₦4,600</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Checkout</div><div class="m l">Light · shipping</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Checkout</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Deliver to</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic acid">⌖</div>
+              <div><div class="nm">Behind BSU main gate</div><div class="ds">High Level · 2.1 km away</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div class="sec">Pay with</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic">💳</div>
+              <div><div class="nm">Card ending 4417</div><div class="ds">Verve · 09/28</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div style="margin-top:auto">
+            <div class="ln"><span>Subtotal · 3 items</span><span>₦7,100</span></div>
+            <div class="ln"><span>Delivery</span><span>₦500</span></div>
+            <div class="ln"><span>Promo MAKURDI10</span><span>−₦710</span></div>
+            <div class="ln big"><span>Total</span><span>₦6,890</span></div>
+            <div class="btn" style="margin:11px 0 11px">Pay ₦6,890</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Checkout</div><div class="m d">Dark · same markup</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Checkout</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Deliver to</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic acid">⌖</div>
+              <div><div class="nm">Behind BSU main gate</div><div class="ds">High Level · 2.1 km away</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div class="sec">Pay with</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic">💳</div>
+              <div><div class="nm">Card ending 4417</div><div class="ds">Verve · 09/28</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div style="margin-top:auto">
+            <div class="ln"><span>Subtotal · 3 items</span><span>₦7,100</span></div>
+            <div class="ln"><span>Delivery</span><span>₦500</span></div>
+            <div class="ln"><span>Promo MAKURDI10</span><span>−₦710</span></div>
+            <div class="ln big"><span>Total</span><span>₦6,890</span></div>
+            <div class="btn" style="margin:11px 0 11px">Pay ₦6,890</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="group">
+  <h2>Account &amp; failure</h2>
+  <div class="rail">
+    <div class="item">
+      <div class="t">Notifications</div><div class="m l">Light · shipping</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Notifications</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your orders</div>
+          <div class="row"><div><div class="nm">Order updates</div><div class="ds">Cooking, picked up, arriving</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Rider is at your gate</div><div class="ds">Also rings your phone</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="sec">From M-Kart</div>
+          <div class="row"><div><div class="nm">New kitchens near you</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Offers and promo codes</div></div><div class="sw2"><i></i></div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Notifications</div><div class="m d">Dark · same markup</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Notifications</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your orders</div>
+          <div class="row"><div><div class="nm">Order updates</div><div class="ds">Cooking, picked up, arriving</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Rider is at your gate</div><div class="ds">Also rings your phone</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="sec">From M-Kart</div>
+          <div class="row"><div><div class="nm">New kitchens near you</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Offers and promo codes</div></div><div class="sw2"><i></i></div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Order rejected</div><div class="m d">Dark · shipping</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="margin-top:24px">
+            <div class="bigic warn" style="margin-bottom:15px">!</div>
+            <div class="h">Terkimbi's can't cook this right now</div>
+            <p class="p">They've run out of egusi for today. We're refunding you in full.</p>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="ds">Refunding to card ending 4417</div>
+            <div class="nm" style="margin-top:2px">₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn">Find something else</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Order rejected</div><div class="m l">Light · same markup</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="margin-top:24px">
+            <div class="bigic warn" style="margin-bottom:15px">!</div>
+            <div class="h">Terkimbi's can't cook this right now</div>
+            <p class="p">They've run out of egusi for today. We're refunding you in full.</p>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="ds">Refunding to card ending 4417</div>
+            <div class="nm" style="margin-top:2px">₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn">Find something else</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — restaurant on phone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+.t-light{
+  --bg:#FFFFFF; --surface:#F6F7F3; --raised:#EDEFE8;
+  --border:#E4E7DE; --border-strong:#D3D7CB;
+  --text:#0E0F0D; --text-2:#6B6F66; --text-3:#9A9E93;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#4E6B00;
+  --danger:#C0391C; --danger-bg:#FFEDE8;
+  --warn:#B26A00; --warn-bg:#FFF3DC;
+  --body-weight:400;
+}
+.t-dark{
+  --bg:#0E0F0D; --surface:#1A1C19; --raised:#242621;
+  --border:#2E312C; --border-strong:#3A3C38;
+  --text:#FFFFFF; --text-2:#8E9189; --text-3:#6E7169;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#C6F432;
+  --danger:#FF6B4A; --danger-bg:rgba(255,107,74,.14);
+  --warn:#E0A64A; --warn-bg:rgba(224,166,74,.14);
+  --body-weight:300;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D8D8D3;font-family:'DM Sans',system-ui,sans-serif;color:#0E0F0D;padding:42px 20px 66px}
+.head{max-width:1500px;margin:0 auto 28px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:80ch;line-height:1.6}
+.group{max-width:1500px;margin:0 auto 32px}
+.group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid #C2C2BD}
+.group>.gp{font-size:.86rem;color:#5F6259;margin:-2px 0 14px;max-width:76ch;line-height:1.6}
+.rail{display:flex;gap:24px;flex-wrap:wrap}
+.item{width:262px}
+.item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.item .t{font-size:.9rem;font-weight:500;margin-bottom:4px;letter-spacing:-.02em}
+.item .w{font-size:.72rem;color:#6B6F66;line-height:1.5;margin-bottom:11px;min-height:46px}
+
+.phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);color:var(--text);overflow:hidden}
+.hbar{width:78px;height:3.5px;border-radius:99px;background:var(--border-strong);margin:0 auto 6px;flex:none}
+
+.top{flex:none;padding:9px 15px 0}
+.st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600}
+.bar{display:flex;align-items:center;gap:10px;padding:9px 0 9px}
+.rnd{width:27px;height:27px;border-radius:50%;background:var(--surface);display:grid;place-items:center;
+  font-size:.75rem;flex:none;color:var(--text)}
+.ttl{font-size:.86rem;font-weight:600;letter-spacing:-.025em}
+.ttl .sub{font-size:.6rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:1px}
+.body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+
+.openpill{margin-left:auto;display:flex;align-items:center;gap:7px;background:var(--surface);
+  border-radius:99px;padding:4px 5px 4px 11px;font-size:.65rem;font-weight:600;flex:none}
+.sw{width:32px;height:18px;border-radius:99px;background:var(--accent);position:relative;flex:none}
+.sw i{position:absolute;top:2.5px;right:2.5px;width:13px;height:13px;border-radius:50%;background:#0E0F0D}
+.sw.off{background:var(--border-strong)}
+.sw.off i{right:auto;left:2.5px;background:#fff}
+
+/* tabs */
+.tabs{display:flex;gap:14px;border-bottom:1px solid var(--border);flex:none;margin-bottom:2px}
+.tabs a{font-size:.71rem;font-weight:var(--body-weight);color:var(--text-2);text-decoration:none;padding-bottom:7px}
+.tabs a.on{color:var(--text);font-weight:600;border-bottom:2px solid var(--accent)}
+.tabs .ct{background:var(--danger);color:#fff;border-radius:99px;padding:0 5px;font-size:.55rem;font-weight:700;margin-left:4px}
+
+/* order card */
+.oc{background:var(--surface);border-radius:13px;padding:10px 11px;margin-top:9px;flex:none}
+.oc.hot{background:var(--accent);color:var(--on-accent)}
+.oc .id{display:flex;align-items:baseline;gap:7px}
+.oc .id b{font-size:.82rem;font-weight:700;letter-spacing:-.02em}
+.oc .id span{font-size:.62rem;color:var(--text-2)}
+.oc.hot .id span{color:#3F4A18}
+.oc .li{font-size:.65rem;color:var(--text-2);line-height:1.55;margin-top:5px}
+.oc.hot .li{color:#2C3612}
+.oc .ft{display:flex;align-items:center;gap:8px;margin-top:9px}
+.oc .amt{font-size:.75rem;font-weight:700}
+.oc .tm{margin-left:auto;font-size:.65rem;font-weight:600;color:var(--text-2)}
+.oc .tm.late{color:var(--danger)}
+.oc.hot .tm{color:#2C3612}
+.act{border-radius:99px;padding:6px 14px;font-size:.66rem;font-weight:700;background:var(--text);color:var(--bg)}
+.act.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:600}
+
+.btn{border-radius:99px;padding:12px;text-align:center;font-weight:700;font-size:.8rem;
+  background:var(--accent);color:var(--on-accent)}
+.btn.dark{background:var(--text);color:var(--bg)}
+.btn.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:600}
+.btn.dang{background:transparent;border:1.5px solid var(--danger);color:var(--danger);font-weight:600}
+.btn.gh{background:transparent;color:var(--text-2);font-weight:400}
+
+/* incoming full screen */
+.inc-hd{background:var(--accent);color:var(--on-accent);padding:16px 15px 14px;flex:none}
+.inc-hd .k{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.inc-hd .v{font-size:1.75rem;font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-top:3px}
+.inc-hd .w2{font-size:.68rem;font-weight:600;margin-top:4px}
+.ring{display:flex;align-items:center;gap:7px;background:var(--text);color:var(--bg);border-radius:99px;
+  padding:5px 12px;font-size:.63rem;font-weight:700;position:absolute;top:36px;left:50%;
+  transform:translateX(-50%);z-index:9}
+.row{display:flex;justify-content:space-between;font-size:.72rem;padding:4px 0}
+.row b{font-weight:600}
+.row .opt{font-size:.63rem;color:var(--text-2);padding-left:11px}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:8px 10px;
+  font-size:.66rem;font-weight:600;margin-top:9px;line-height:1.45}
+.tot{display:flex;justify-content:space-between;font-size:.9rem;font-weight:700;
+  border-top:1px solid var(--border);margin-top:9px;padding-top:9px}
+.tot .sm{font-size:.62rem;color:var(--text-2);font-weight:400}
+.prep{display:flex;gap:6px;margin-top:11px}
+.prep .p{flex:1;text-align:center;border:1.5px solid var(--border);border-radius:11px;padding:9px 0;
+  font-size:.72rem;font-weight:700}
+.prep .p.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* menu rows */
+.mrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex:none}
+.mrow .th{width:34px;height:34px;border-radius:10px;background:var(--surface);display:grid;place-items:center;font-size:.85rem;flex:none}
+.mrow .nm{font-size:.73rem;font-weight:500}
+.mrow .ds{font-size:.6rem;color:var(--text-2);margin-top:1px}
+.mrow .pr{font-size:.71rem;font-weight:600;margin-left:auto;margin-right:6px}
+.mrow.off .th,.mrow.off .nm,.mrow.off .ds,.mrow.off .pr{opacity:.42}
+.sec{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);margin:11px 0 3px;flex:none}
+.tip{background:var(--surface);border-radius:11px;padding:9px 11px;font-size:.64rem;color:var(--text-2);
+  line-height:1.55;margin-top:10px;flex:none}
+.tip b{color:var(--text);font-weight:600}
+
+/* kpis */
+.kpi{background:var(--surface);border-radius:13px;padding:12px 13px;flex:none}
+.kpi .k{font-size:.62rem;color:var(--text-2)}
+.kpi .v{font-size:1.45rem;font-weight:700;letter-spacing:-.04em;margin-top:2px}
+.kpi .d{font-size:.62rem;color:var(--accent-text);font-weight:600;margin-top:2px}
+.k2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;flex:none}
+.k2 .kpi .v{font-size:.95rem}
+.trow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.69rem;flex:none}
+.trow .dt{color:var(--text-2);font-size:.63rem;width:60px;flex:none}
+.trow .amt{margin-left:auto;font-weight:600}
+.pill{border-radius:6px;padding:2px 7px;font-size:.56rem;font-weight:700;background:var(--raised)}
+.pill.ok{background:var(--accent);color:var(--on-accent)}
+
+/* role chooser */
+.role{background:var(--surface);border-radius:15px;padding:13px;display:flex;align-items:center;gap:11px;margin-top:9px;flex:none}
+.role .ic{width:38px;height:38px;border-radius:12px;background:var(--raised);display:grid;place-items:center;font-size:1rem;flex:none}
+.role .ic.on{background:var(--accent);color:var(--on-accent)}
+.role .nm{font-size:.8rem;font-weight:600;letter-spacing:-.02em}
+.role .ds{font-size:.63rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:2px;line-height:1.45}
+.role .chev{margin-left:auto;color:var(--text-3);font-size:.85rem}
+
+.mid{flex:1;display:flex;flex-direction:column;justify-content:center}
+.mic{width:56px;height:56px;border-radius:18px;background:var(--surface);display:grid;place-items:center;
+  font-size:1.3rem;margin-bottom:13px}
+.mh{font-size:1.15rem;font-weight:600;letter-spacing:-.035em;line-height:1.18}
+.mp{font-size:.73rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.6;margin-top:9px}
+
+/* bottom tabs */
+.btabs{display:flex;justify-content:space-around;align-items:center;border-top:1px solid var(--border);
+  padding:8px 6px 3px;flex:none;background:var(--bg)}
+.btabs i{font-style:normal;font-size:.6rem;color:var(--text-3);font-weight:400}
+.btabs i.on{color:var(--text);font-weight:700}
+
+@media (max-width:640px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — restaurant, on a phone</h1>
+  <p>Rebuilt at 390px. No tablets to buy, no counter hardware — the owner uses the Android phone already in their pocket. Same app as customers, with the role decided at login.</p>
+</div>
+
+<div class="group">
+  <h2>One app, two doors</h2>
+  <p class="gp">Same download, same phone number, same OTP. After verifying, the server says what this account can do. Most people have one role and go straight through — they never see the chooser.</p>
+  <div class="rail">
+
+    <!-- 1 ROLE CHOOSER -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Continue as</div>
+      <div class="w">Only shown when an account has more than one role. A restaurant owner who also orders lunch sees this; everyone else skips it entirely.</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="font-size:1.1rem;font-weight:300;letter-spacing:-.02em;padding-top:6px">m<b style="font-weight:600">-kart</b></div>
+          <div style="margin-top:auto">
+            <div class="mh" style="font-size:1.4rem">Welcome back,<br>Terkimbi.</div>
+            <p class="mp">You're set up for two things on this number.</p>
+          </div>
+          <div style="margin:18px 0 auto">
+            <div class="role">
+              <div class="ic on">🍲</div>
+              <div><div class="nm">Terkimbi's Kitchen</div><div class="ds">3 orders waiting</div></div>
+              <div class="chev">›</div>
+            </div>
+            <div class="role">
+              <div class="ic">🛒</div>
+              <div><div class="nm">Order food</div><div class="ds">6 kitchens open near you</div></div>
+              <div class="chev">›</div>
+            </div>
+          </div>
+          <p style="font-size:.62rem;color:var(--text-3);text-align:center;padding-bottom:11px;line-height:1.5;font-weight:300">You can switch any time from your account.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 2 INCOMING -->
+    <div class="item">
+      <div class="n">02</div><div class="t">New order</div>
+      <div class="w">Full screen, rings, wakes the phone. Prep time picked here becomes the customer's ETA. Commission is shown before they accept, not after.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="inc-hd">
+          <div class="st" style="color:var(--on-accent);margin-bottom:9px"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="k">Order 1042 · High Level</div>
+          <div class="v">₦7,600</div>
+          <div class="w2">🔔 Ringing — respond within 3:00</div>
+        </div>
+        <div class="body" style="padding-top:11px">
+          <div class="row"><span>1× Pounded yam &amp; egusi</span><b>₦3,300</b></div>
+          <div class="row"><span class="opt">+ extra assorted meat</span></div>
+          <div class="row"><span>1× Catfish pepper soup</span><b>₦3,500</b></div>
+          <div class="row"><span>2× Chilled zobo</span><b>₦800</b></div>
+          <div class="note">⚠ No pepper on the egusi</div>
+          <div class="tot"><span>You receive<div class="sm">after 15% commission</div></span><span>₦6,460</span></div>
+          <div class="prep">
+            <div class="p">15</div><div class="p on">25</div><div class="p">40</div>
+            <div class="p" style="flex:1.3">min</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:10px">
+            <div class="btn">Accept · ready in 25 min</div>
+            <div class="btn dang">Can't cook it</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 3 REJECT REASON -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Why not?</div>
+      <div class="w">One tap, but it tells you which kitchens are struggling and why. Without this you only know that rejections happened.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Order 1042</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:10px">
+            <div class="mh">What's the<br>problem?</div>
+            <p class="mp">The customer gets refunded in full either way. This just helps us know.</p>
+          </div>
+          <div style="margin-top:16px;display:grid;gap:8px">
+            <div class="btn out" style="text-align:left;padding:12px 14px">A dish has finished</div>
+            <div class="btn out" style="text-align:left;padding:12px 14px">Too busy right now</div>
+            <div class="btn out" style="text-align:left;padding:12px 14px">Closing early today</div>
+            <div class="btn out" style="text-align:left;padding:12px 14px">Something else</div>
+          </div>
+          <div class="tip">If a dish has finished, we'll take it off your menu straight away so nobody else orders it.</div>
+          <div style="margin-top:auto;padding-bottom:10px"><div class="btn gh">Go back, I'll cook it</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group">
+  <h2>Running the kitchen</h2>
+  <div class="rail">
+
+    <!-- 4 BOARD -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Orders</div>
+      <div class="w">Three columns became three tabs. Late orders go red. The open/closed switch stays in the header where it's always one tap away.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar">
+            <div class="ttl">Orders<div class="sub">12 done today · ₦48,200</div></div>
+            <div class="openpill">Open <div class="sw"><i></i></div></div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="tabs">
+            <a class="on" href="#">Cooking <span class="ct">2</span></a>
+            <a href="#">Ready <span style="color:var(--text-3)">1</span></a>
+            <a href="#">Done</a>
+          </div>
+          <div class="oc hot">
+            <div class="id"><b>1044</b><span>just now · North Bank</span></div>
+            <div class="li">1× jollof &amp; chicken, 1× zobo</div>
+            <div class="ft"><div class="amt">₦2,600</div><div class="tm">Tap to accept →</div></div>
+          </div>
+          <div class="oc">
+            <div class="id"><b>1042</b><span>High Level</span></div>
+            <div class="li">Pounded yam &amp; egusi, catfish pepper soup, 2× zobo</div>
+            <div class="ft"><div class="act">Mark ready</div><div class="tm">18 min left</div></div>
+          </div>
+          <div class="oc">
+            <div class="id"><b>1041</b><span>Wurukum</span></div>
+            <div class="li">2× akpu &amp; oha soup</div>
+            <div class="ft"><div class="act">Mark ready</div><div class="tm late">4 min over</div></div>
+          </div>
+        </div>
+        <div class="btabs"><i class="on">Orders</i><i>Menu</i><i>Hours</i><i>Money</i></div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 5 MENU -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Menu &amp; sold out</div>
+      <div class="w">The single most important screen here. One tap takes a dish off sale instantly, and everything switches back on by itself tomorrow morning.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar">
+            <div class="ttl">Menu<div class="sub">14 dishes · 2 finished today</div></div>
+            <div class="openpill" style="background:transparent;padding:0"><div class="act">＋ Add</div></div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="sec">Swallow</div>
+          <div class="mrow">
+            <div class="th">🍲</div>
+            <div><div class="nm">Pounded yam &amp; egusi</div><div class="ds">₦2,800</div></div>
+            <div class="sw"><i></i></div>
+          </div>
+          <div class="mrow off">
+            <div class="th">🥘</div>
+            <div><div class="nm">Akpu &amp; oha soup</div><div class="ds">Finished for today</div></div>
+            <div class="sw off"><i></i></div>
+          </div>
+          <div class="mrow off">
+            <div class="th">🍛</div>
+            <div><div class="nm">Semo &amp; okro</div><div class="ds">Finished for today</div></div>
+            <div class="sw off"><i></i></div>
+          </div>
+          <div class="sec">Soups</div>
+          <div class="mrow">
+            <div class="th">🐟</div>
+            <div><div class="nm">Catfish pepper soup</div><div class="ds">₦3,500</div></div>
+            <div class="sw"><i></i></div>
+          </div>
+          <div class="mrow" style="border-bottom:none">
+            <div class="th">🍖</div>
+            <div><div class="nm">Goat meat pepper soup</div><div class="ds">₦3,000</div></div>
+            <div class="sw"><i></i></div>
+          </div>
+          <div class="tip">Everything comes back on automatically at <b>10:00am tomorrow</b>, so you never start the day sold out by mistake.</div>
+        </div>
+        <div class="btabs"><i>Orders</i><i class="on">Menu</i><i>Hours</i><i>Money</i></div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 6 PAUSE -->
+    <div class="item">
+      <div class="n">06</div><div class="t">Too busy</div>
+      <div class="w">Pausing is not closing. A swamped kitchen needs half an hour of air, and it un-pauses itself so nobody forgets.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar">
+            <div class="ttl">Hours<div class="sub">Open · closes 8:00pm</div></div>
+            <div class="openpill">Open <div class="sw"><i></i></div></div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="sec">Too busy right now?</div>
+          <div style="display:grid;gap:7px">
+            <div class="btn out">Pause 15 minutes</div>
+            <div class="btn out">Pause 30 minutes</div>
+            <div class="btn out">Pause 1 hour</div>
+          </div>
+          <div class="tip">You disappear from customers but keep the orders you've already accepted. You come back on automatically.</div>
+          <div class="sec">This week</div>
+          <div class="trow"><span class="dt">Mon–Fri</span><span>10:00am – 8:00pm</span><span class="amt">✎</span></div>
+          <div class="trow"><span class="dt">Saturday</span><span>10:00am – 9:00pm</span><span class="amt">✎</span></div>
+          <div class="trow" style="border-bottom:none"><span class="dt">Sunday</span><span style="color:var(--text-2)">Closed</span><span class="amt">✎</span></div>
+        </div>
+        <div class="btabs"><i>Orders</i><i>Menu</i><i class="on">Hours</i><i>Money</i></div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group">
+  <h2>Money and quiet hours</h2>
+  <div class="rail">
+
+    <!-- 7 PAYOUTS -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Money</div>
+      <div class="w">Trust lives here. Gross, commission and what actually lands, with the payout date stated. No arithmetic, no Friday surprises.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="ttl">Money<div class="sub">Paid Fridays to GTB ••4417</div></div></div>
+        </div>
+        <div class="body">
+          <div class="kpi">
+            <div class="k">You receive this Friday</div>
+            <div class="v">₦182,410</div>
+            <div class="d">in 2 days · 62 orders</div>
+          </div>
+          <div class="k2">
+            <div class="kpi"><div class="k">Sales this week</div><div class="v">₦214,600</div></div>
+            <div class="kpi"><div class="k">Commission 15%</div><div class="v">−₦32,190</div></div>
+          </div>
+          <div class="sec">Recent payouts</div>
+          <div class="trow"><span class="dt">29 Aug</span><span class="pill ok">Paid</span><span class="amt">₦171,300</span></div>
+          <div class="trow"><span class="dt">22 Aug</span><span class="pill ok">Paid</span><span class="amt">₦149,800</span></div>
+          <div class="trow" style="border-bottom:none"><span class="dt">15 Aug</span><span class="pill ok">Paid</span><span class="amt">₦128,600</span></div>
+          <div class="tip">Refunds for orders you couldn't cook come off the same week. Tap a payout to see it order by order.</div>
+        </div>
+        <div class="btabs"><i>Orders</i><i>Menu</i><i>Hours</i><i class="on">Money</i></div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 8 CLOSED -->
+    <div class="item">
+      <div class="n">08</div><div class="t">Closed for today</div>
+      <div class="w">What the screen shows most of the time. Ends the day with the number that matters and confirms tomorrow is handled.</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>20:14</span><span>▮▮▮ ▰</span></div>
+          <div class="bar">
+            <div class="ttl">Orders<div class="sub">All handed over</div></div>
+            <div class="openpill" style="background:var(--surface);color:var(--text-2)">Closed <div class="sw off"><i></i></div></div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="mid">
+            <div class="mic">🌙</div>
+            <div class="mh">16 orders today.<br>₦52,900.</div>
+            <p class="mp">You open again at 10:00am. The two dishes you marked finished come back on by themselves.</p>
+            <div style="display:grid;gap:7px;margin-top:16px">
+              <div class="btn">See today's orders</div>
+              <div class="btn out">Open now anyway</div>
+            </div>
+          </div>
+        </div>
+        <div class="btabs"><i class="on">Orders</i><i>Menu</i><i>Hours</i><i>Money</i></div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 9 SWITCH -->
+    <div class="item">
+      <div class="n">09</div><div class="t">Switching back</div>
+      <div class="w">The shared-app payoff. The owner orders lunch from a neighbouring kitchen without logging out or installing anything else.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Account</div></div>
+        </div>
+        <div class="body">
+          <div class="role" style="margin-top:4px">
+            <div class="ic on">🍲</div>
+            <div><div class="nm">Terkimbi's Kitchen</div><div class="ds">You're here now</div></div>
+            <div class="chev" style="color:var(--accent-text);font-size:.75rem">✓</div>
+          </div>
+          <div class="role">
+            <div class="ic">🛒</div>
+            <div><div class="nm">Order food</div><div class="ds">Switch to ordering</div></div>
+            <div class="chev">›</div>
+          </div>
+
+          <div class="sec">Kitchen</div>
+          <div class="trow"><span>Bank account</span><span class="amt" style="font-weight:400;color:var(--text-2)">GTB ••4417 ›</span></div>
+          <div class="trow"><span>Photos &amp; menu</span><span class="amt" style="font-weight:400;color:var(--text-2)">›</span></div>
+          <div class="trow"><span>Staff access</span><span class="amt" style="font-weight:400;color:var(--text-2)">2 phones ›</span></div>
+          <div class="trow" style="border-bottom:none"><span>Help &amp; support</span><span class="amt" style="font-weight:400;color:var(--text-2)">›</span></div>
+
+          <div class="tip">Add a second phone so someone can take orders while you cook. Both get the ring.</div>
+          <div style="margin-top:auto;padding-bottom:10px"><div class="btn gh">Sign out</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

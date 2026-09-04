@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — restaurant page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0F0D; --ink2:#242621; --ink3:#3A3C38;
+  --paper:#FFFFFF; --wash:#F4F4F1; --line:#E8E8E5;
+  --muted:#8E9189; --dim:#6E7169;
+  --acid:#C6F432; --acid-ink:#12180A;
+  --red:#FF6B4A;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.head{max-width:1500px;margin:0 auto 30px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:74ch}
+.rail{max-width:1500px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap}
+.item{width:262px}
+.item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.item .t{font-size:.9rem;font-weight:500;margin-bottom:11px;letter-spacing:-.02em}
+
+.phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+.hbar{width:78px;height:3.5px;border-radius:99px;background:#C6C7C2;margin:0 auto 7px;flex:none}
+
+/* hero */
+.hero{height:150px;flex:none;position:relative;background:var(--wash)}
+.hero img{width:100%;height:100%;object-fit:cover}
+.hero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,15,13,.42) 0%,rgba(14,15,13,0) 42%)}
+.hero .st{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;
+  font-size:.58rem;font-weight:600;padding:9px 15px 0;color:#fff}
+.hbtns{position:absolute;top:30px;left:12px;right:12px;display:flex;justify-content:space-between}
+.rnd{width:29px;height:29px;border-radius:50%;background:rgba(14,15,13,.62);backdrop-filter:blur(6px);
+  color:#fff;display:grid;place-items:center;font-size:.78rem}
+
+/* info block */
+.info{padding:13px 15px 0;flex:none}
+.rname{font-size:1.15rem;font-weight:600;letter-spacing:-.035em;line-height:1.15}
+.rmeta{font-size:.68rem;color:var(--muted);font-weight:300;margin-top:3px}
+.rstats{display:flex;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin-top:11px;padding:9px 0}
+.rstat{flex:1;text-align:center;border-right:1px solid var(--line)}
+.rstat:last-child{border-right:none}
+.rstat b{display:block;font-size:.78rem;font-weight:600}
+.rstat span{font-size:.55rem;color:var(--muted)}
+.notice{background:var(--wash);border-radius:11px;padding:8px 10px;margin-top:10px;
+  font-size:.63rem;color:#5F6259;font-weight:300;line-height:1.5}
+.notice b{font-weight:600;color:var(--ink)}
+
+/* sticky tabs */
+.tabs{display:flex;gap:16px;padding:11px 15px 9px;border-bottom:1px solid var(--line);flex:none;
+  overflow:hidden;background:var(--paper)}
+.tabs a{font-size:.72rem;font-weight:400;color:var(--muted);white-space:nowrap;text-decoration:none;padding-bottom:6px}
+.tabs a.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--acid)}
+
+/* stuck header */
+.stuck{background:var(--paper);border-bottom:1px solid var(--line);flex:none;padding:9px 12px 0}
+.stuck .st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600;margin-bottom:7px}
+.stuck .bar{display:flex;align-items:center;gap:10px;padding-bottom:9px}
+.stuck .rnd2{width:27px;height:27px;border-radius:50%;background:var(--wash);display:grid;place-items:center;font-size:.75rem}
+.stuck .nm{font-size:.82rem;font-weight:600;letter-spacing:-.02em}
+
+/* menu */
+.menu{flex:1;padding:0 15px;overflow:hidden}
+.sechead{font-size:.82rem;font-weight:600;letter-spacing:-.02em;padding:13px 0 3px}
+.seccount{font-size:.6rem;color:var(--muted);font-weight:300;margin-bottom:6px}
+.mrow{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.mrow:last-child{border-bottom:none}
+.mrow .tx{flex:1;min-width:0}
+.mrow .nm{font-size:.76rem;font-weight:500;letter-spacing:-.01em;line-height:1.3}
+.mrow .ds{font-size:.62rem;color:var(--muted);font-weight:300;line-height:1.5;margin-top:3px}
+.mrow .pr{font-size:.76rem;font-weight:600;margin-top:5px}
+.mrow .th{width:62px;height:62px;border-radius:12px;overflow:hidden;background:var(--wash);flex:none;position:relative}
+.mrow .th img{width:100%;height:100%;object-fit:cover}
+.mrow .add{position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;border-radius:50%;
+  background:var(--ink);color:#fff;display:grid;place-items:center;font-size:.72rem;border:2px solid #fff}
+.mrow .add.acid{background:var(--acid);color:var(--acid-ink)}
+.tagline{display:flex;gap:5px;margin-top:5px}
+.tg{font-size:.55rem;font-weight:500;background:var(--wash);border-radius:6px;padding:2px 6px}
+.tg.hot{background:#FFEDE8;color:#C0391C}
+.tg.top{background:var(--acid);color:var(--acid-ink)}
+
+/* sold out */
+.mrow.off .tx{opacity:.42}
+.mrow.off .th{opacity:.42}
+.soldout{font-size:.58rem;font-weight:600;color:var(--red);margin-top:5px}
+
+/* bottom cart bar */
+.cartbar{position:absolute;left:11px;right:11px;bottom:14px;background:var(--ink);color:#fff;
+  border-radius:99px;padding:11px 13px 11px 16px;display:flex;align-items:center;gap:10px;z-index:5}
+.cartbar .ct{width:24px;height:24px;border-radius:50%;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:.65rem;font-weight:600;flex:none}
+.cartbar .lb{font-size:.74rem;font-weight:500}
+.cartbar .pr{margin-left:auto;font-size:.76rem;font-weight:600}
+
+/* closed overlay */
+.closed{position:absolute;left:11px;right:11px;bottom:14px;background:var(--ink);color:#fff;
+  border-radius:18px;padding:14px;z-index:5}
+.closed .h{font-size:.85rem;font-weight:600}
+.closed .p{font-size:.65rem;color:var(--muted);font-weight:300;margin-top:4px;line-height:1.5}
+.closed .btn{background:var(--acid);color:var(--acid-ink);border-radius:99px;padding:11px;
+  text-align:center;font-weight:600;font-size:.78rem;margin-top:11px}
+
+/* search */
+.sbar{display:flex;align-items:center;gap:8px;background:var(--wash);border-radius:99px;
+  padding:10px 14px;font-size:.75rem;color:var(--muted);font-weight:300}
+.sbar .v{color:var(--ink);font-weight:400}
+.chips{display:flex;gap:6px;overflow:hidden;margin-top:11px}
+.chip{flex:none;border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:.66rem;font-weight:500}
+.chip.on{background:var(--acid);border-color:var(--acid)}
+.reshead{font-size:.65rem;color:var(--muted);font-weight:300;margin:13px 0 3px}
+.empty{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:left}
+.eic{width:56px;height:56px;border-radius:18px;background:var(--wash);display:grid;place-items:center;
+  font-size:1.35rem;margin-bottom:14px}
+.eh{font-size:1.1rem;font-weight:600;letter-spacing:-.03em;line-height:1.15}
+.ep{font-size:.72rem;color:var(--muted);font-weight:300;line-height:1.6;margin-top:8px}
+.ebtn{background:var(--ink);color:#fff;border-radius:99px;padding:12px;text-align:center;
+  font-weight:500;font-size:.78rem;margin-top:16px}
+
+.st2{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600;padding:9px 15px 0;flex:none}
+.body{flex:1;padding:11px 15px 0;display:flex;flex-direction:column;overflow:hidden}
+
+@media (max-width:640px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — restaurant page</h1>
+  <p>The screen people actually spend time on. Menu grouped into sections, sticky tabs, and the states that break most delivery apps: kitchen closed, dish sold out, nothing found.</p>
+</div>
+
+<div class="rail">
+
+<!-- 1 · RESTAURANT TOP -->
+<div class="item">
+  <div class="n">01</div><div class="t">Restaurant page</div>
+  <div class="phone"><div class="scr">
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=600&h=340&q=75" alt="">
+      <div class="scrim"></div>
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="hbtns"><div class="rnd">‹</div><div class="rnd">♡</div></div>
+    </div>
+    <div class="info">
+      <div class="rname">Terkimbi's Kitchen</div>
+      <div class="rmeta">Swallow &amp; soups · Wurukum · 2.1 km away</div>
+      <div class="rstats">
+        <div class="rstat"><b>4.8</b><span>320 ratings</span></div>
+        <div class="rstat"><b>25–35</b><span>minutes</span></div>
+        <div class="rstat"><b>₦500</b><span>delivery</span></div>
+      </div>
+      <div class="notice">Open until <b>the pot finishes</b>, usually around 8pm. Closes early on Sundays.</div>
+    </div>
+    <div class="tabs">
+      <a class="on" href="#">Swallow</a><a href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu">
+      <div class="sechead">Swallow</div>
+      <div class="seccount">Served with your choice of soup</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Pounded yam &amp; egusi</div>
+          <div class="ds">Fresh pounded yam with melon seed soup, assorted beef and stockfish.</div>
+          <div class="pr">₦2,800</div>
+          <div class="tagline"><span class="tg top">Most ordered</span><span class="tg hot">Peppery</span></div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Akpu &amp; oha soup</div>
+          <div class="ds">Cassava fufu with oha leaves and goat meat.</div>
+          <div class="pr">₦2,400</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 2 · SCROLLED / STICKY -->
+<div class="item">
+  <div class="n">02</div><div class="t">Scrolled — sticky header</div>
+  <div class="phone"><div class="scr">
+    <div class="stuck">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="bar">
+        <div class="rnd2">‹</div>
+        <div class="nm">Terkimbi's Kitchen</div>
+        <div class="rnd2" style="margin-left:auto">⌕</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <a href="#">Swallow</a><a class="on" href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu">
+      <div class="sechead">Soups</div>
+      <div class="seccount">Sold by the portion. Add swallow separately.</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Egusi soup</div>
+          <div class="ds">Melon seed, bitterleaf, assorted beef and stockfish.</div>
+          <div class="pr">₦1,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add acid">2</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Catfish pepper soup</div>
+          <div class="ds">Fresh Benue river catfish, scent leaf, hot.</div>
+          <div class="pr">₦3,500</div>
+          <div class="tagline"><span class="tg hot">Very peppery</span></div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1661588669110-81142a5b9e57?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Goat meat pepper soup</div>
+          <div class="ds">Slow cooked with local spices.</div>
+          <div class="pr">₦3,000</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="cartbar">
+      <div class="ct">2</div>
+      <div class="lb">View cart</div>
+      <div class="pr">₦4,600</div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 3 · SOLD OUT ITEMS -->
+<div class="item">
+  <div class="n">03</div><div class="t">Items sold out</div>
+  <div class="phone"><div class="scr">
+    <div class="stuck">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="bar">
+        <div class="rnd2">‹</div>
+        <div class="nm">Terkimbi's Kitchen</div>
+        <div class="rnd2" style="margin-left:auto">⌕</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <a class="on" href="#">Swallow</a><a href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu">
+      <div class="sechead">Swallow</div>
+      <div class="seccount">2 of 5 dishes finished for today</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Pounded yam &amp; egusi</div>
+          <div class="ds">Fresh pounded yam with melon seed soup.</div>
+          <div class="pr">₦2,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow off">
+        <div class="tx">
+          <div class="nm">Akpu &amp; oha soup</div>
+          <div class="ds">Cassava fufu with oha leaves and goat meat.</div>
+          <div class="pr">₦2,400</div>
+          <div class="soldout">Finished for today · back tomorrow</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+        </div>
+      </div>
+      <div class="mrow off">
+        <div class="tx">
+          <div class="nm">Semo &amp; okro</div>
+          <div class="ds">With assorted meat.</div>
+          <div class="pr">₦2,200</div>
+          <div class="soldout">Finished for today · back tomorrow</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 4 · CLOSED -->
+<div class="item">
+  <div class="n">04</div><div class="t">Kitchen closed</div>
+  <div class="phone"><div class="scr">
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=600&h=340&q=75" alt="" style="filter:grayscale(.85) brightness(.7)">
+      <div class="scrim"></div>
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="hbtns"><div class="rnd">‹</div><div class="rnd">♡</div></div>
+    </div>
+    <div class="info">
+      <div class="rname">Aondona Breakfast</div>
+      <div class="rmeta">Akara, moi moi &amp; pap · High Level</div>
+      <div class="rstats">
+        <div class="rstat"><b>4.7</b><span>112 ratings</span></div>
+        <div class="rstat"><b>15–25</b><span>minutes</span></div>
+        <div class="rstat"><b>₦500</b><span>delivery</span></div>
+      </div>
+      <div class="notice">Opens <b>tomorrow at 6:30am</b>. This kitchen serves mornings only.</div>
+    </div>
+    <div class="tabs">
+      <a class="on" href="#">Breakfast</a><a href="#">Sides</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu" style="opacity:.4">
+      <div class="sechead">Breakfast</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Akara &amp; pap</div>
+          <div class="ds">Six pieces with hot pap.</div>
+          <div class="pr">₦900</div>
+        </div>
+        <div class="th"><img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=200&h=200&q=70" alt=""></div>
+      </div>
+    </div>
+    <div class="closed">
+      <div class="h">Closed right now</div>
+      <div class="p">Aondona opens at 6:30am tomorrow. We'll let you know when they're taking orders.</div>
+      <div class="btn">Notify me when open</div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 5 · SEARCH -->
+<div class="item">
+  <div class="n">05</div><div class="t">Search results</div>
+  <div class="phone"><div class="scr">
+    <div class="st2"><span>9:41</span><span>▮▮▮ ▰</span></div>
+    <div class="body">
+      <div class="sbar"><span>⌕</span><span class="v">egusi</span><span style="margin-left:auto">✕</span></div>
+      <div class="chips">
+        <div class="chip on">All</div><div class="chip">Dishes</div><div class="chip">Kitchens</div>
+      </div>
+      <div class="reshead">4 results near High Level</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Pounded yam &amp; egusi</div>
+          <div class="ds">Terkimbi's Kitchen · 25–35 min</div>
+          <div class="pr">₦2,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Egusi soup</div>
+          <div class="ds">Terkimbi's Kitchen · 25–35 min</div>
+          <div class="pr">₦1,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Semo &amp; egusi</div>
+          <div class="ds">Ankpa Bukka · 20–30 min</div>
+          <div class="pr">₦2,200</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1638436684761-7e59f8a9072f?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 6 · NO RESULTS -->
+<div class="item">
+  <div class="n">06</div><div class="t">Nothing found</div>
+  <div class="phone"><div class="scr">
+    <div class="st2"><span>9:41</span><span>▮▮▮ ▰</span></div>
+    <div class="body">
+      <div class="sbar"><span>⌕</span><span class="v">shawarma</span><span style="margin-left:auto">✕</span></div>
+      <div class="empty">
+        <div class="eic">🔍</div>
+        <div class="eh">No shawarma<br>near you yet</div>
+        <div class="ep">Nobody in High Level is serving that on M-Kart right now. Tell us what you're looking for and we'll try to sign them up.</div>
+        <div class="ebtn">Suggest a kitchen</div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+</div>
+</body>
+</html>

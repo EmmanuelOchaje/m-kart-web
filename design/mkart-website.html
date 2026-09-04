@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — website &amp; web app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+.pg{
+  --bg:#FFFFFF; --surface:#F6F7F3; --raised:#EDEFE8;
+  --border:#E4E7DE; --border-strong:#D3D7CB;
+  --text:#0E0F0D; --text-2:#6B6F66; --text-3:#9A9E93;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#4E6B00;
+  --danger:#C0391C; --danger-bg:#FFEDE8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D8D8D3;font-family:'DM Sans',system-ui,sans-serif;color:#0E0F0D;padding:42px 20px 66px}
+.head{max-width:1360px;margin:0 auto 28px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:82ch;line-height:1.6}
+.group{max-width:1360px;margin:0 auto 32px}
+.group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid #C2C2BD}
+.group>.gp{font-size:.86rem;color:#5F6259;margin:-2px 0 16px;max-width:80ch;line-height:1.6}
+.rail{display:flex;gap:26px;flex-wrap:wrap}
+.item{width:645px}
+.item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.item .t{font-size:.95rem;font-weight:500;margin-bottom:4px;letter-spacing:-.02em}
+.item .w{font-size:.78rem;color:#6B6F66;line-height:1.55;margin-bottom:11px;min-height:38px}
+
+/* browser frame */
+.br{width:645px;border-radius:11px;overflow:hidden;box-shadow:0 16px 36px rgba(10,11,9,.18);background:#fff}
+.chrome{background:#E9E9E4;padding:8px 11px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #D8D8D3}
+.dots{display:flex;gap:5px}.dots i{width:9px;height:9px;border-radius:50%;background:#C9C9C4;display:block}
+.url{flex:1;background:#fff;border-radius:99px;padding:4px 12px;font-size:.63rem;color:#8A8D85}
+.vp{height:430px;overflow:hidden;position:relative;background:var(--bg);color:var(--text)}
+
+/* site nav */
+.nav{display:flex;align-items:center;gap:22px;padding:13px 26px;border-bottom:1px solid var(--border)}
+.nav.dk{background:#0E0F0D;border-color:#2E312C}
+.logo{font-size:1.02rem;font-weight:300;letter-spacing:-.03em}
+.logo b{font-weight:600}
+.nav.dk .logo{color:#fff}
+.nav a{font-size:.72rem;color:var(--text-2);text-decoration:none;font-weight:400}
+.nav.dk a{color:#8E9189}
+.nav .sp{margin-left:auto;display:flex;gap:9px;align-items:center}
+.btn{border-radius:99px;padding:8px 17px;font-size:.72rem;font-weight:600;background:var(--accent);color:var(--on-accent);display:inline-block}
+.btn.dark{background:#0E0F0D;color:#fff;font-weight:500}
+.btn.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:500}
+.btn.out.dk{border-color:#3A3C38;color:#fff}
+.btn.lg{padding:11px 22px;font-size:.8rem}
+.btn.full{display:block;text-align:center;width:100%}
+
+/* hero */
+.hero{background:#0E0F0D;color:#fff;padding:44px 26px 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center}
+.hero h1{font-size:2.35rem;font-weight:600;letter-spacing:-.05em;line-height:1.02}
+.hero h1 .a{color:var(--accent)}
+.hero p{color:#8E9189;font-size:.85rem;font-weight:300;line-height:1.65;margin-top:12px;max-width:44ch}
+.addr{display:flex;gap:7px;background:#1A1C19;border:1px solid #2E312C;border-radius:99px;padding:6px 6px 6px 16px;margin-top:20px;align-items:center}
+.addr .ph{flex:1;font-size:.76rem;color:#6E7169;font-weight:300}
+.note{font-size:.68rem;color:#6E7169;font-weight:300;margin-top:10px}
+.stats{display:flex;gap:26px;margin-top:22px;padding-top:18px;border-top:1px solid #2E312C}
+.stats b{display:block;font-size:1.05rem;font-weight:600;letter-spacing:-.03em;color:var(--accent)}
+.stats span{font-size:.63rem;color:#8E9189;font-weight:300}
+
+/* mini phone in hero */
+.mini{width:150px;height:290px;border-radius:22px;border:6px solid #242621;background:#fff;margin-left:auto;
+  overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 40px rgba(0,0,0,.4)}
+.mini .mh{padding:9px 10px 7px;border-bottom:1px solid var(--border);flex:none}
+.mini .mloc{display:flex;align-items:center;gap:5px;font-size:.55rem;font-weight:600}
+.mini .mloc .p{width:14px;height:14px;border-radius:5px;background:var(--accent);display:grid;place-items:center;font-size:.42rem;color:var(--on-accent)}
+.mini .mb{padding:7px 10px;flex:1}
+.mrow{display:flex;gap:7px;padding:6px 0;border-bottom:1px solid var(--border);align-items:center}
+.mrow .th{width:26px;height:26px;border-radius:8px;background:var(--surface);display:grid;place-items:center;font-size:.62rem;flex:none}
+.mrow .nm{font-size:.52rem;font-weight:600}
+.mrow .ds{font-size:.45rem;color:var(--text-2)}
+
+/* content sections */
+.sec{padding:26px}
+.eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+h2.big{font-size:1.4rem;font-weight:600;letter-spacing:-.04em;margin-top:6px;line-height:1.14}
+.lede{font-size:.8rem;color:var(--text-2);line-height:1.7;margin-top:9px;max-width:62ch}
+
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:16px}
+.kc{border:1px solid var(--border);border-radius:12px;padding:11px}
+.kc .th{height:52px;border-radius:9px;background:var(--surface);display:grid;place-items:center;font-size:1.25rem;margin-bottom:8px}
+.kc .nm{font-size:.73rem;font-weight:600;letter-spacing:-.01em}
+.kc .cu{font-size:.61rem;color:var(--text-2);margin-top:2px}
+.kc .ft{display:flex;gap:6px;font-size:.6rem;color:var(--text-2);margin-top:6px;align-items:center}
+.kc .ft b{color:var(--accent-text);font-weight:600}
+.kc .tg{font-size:.53rem;font-weight:700;background:var(--accent);color:var(--on-accent);border-radius:5px;padding:1px 5px}
+
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.step .num{width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.72rem;font-weight:700;margin-bottom:8px}
+.step h4{font-size:.75rem;font-weight:600;letter-spacing:-.015em}
+.step p{font-size:.65rem;color:var(--text-2);line-height:1.55;margin-top:4px}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.split .l{padding:26px;background:#0E0F0D;color:#fff}
+.split .r{padding:26px;background:var(--accent);color:var(--on-accent)}
+.split h3{font-size:1.15rem;font-weight:600;letter-spacing:-.035em}
+.split p{font-size:.74rem;line-height:1.65;margin-top:8px;margin-bottom:14px}
+.split .l p{color:#8E9189}
+.split .r p{color:#3F4A18}
+.split ul{list-style:none;margin-bottom:15px}
+.split li{font-size:.7rem;line-height:1.55;margin-bottom:6px;display:flex;gap:7px}
+.split li::before{content:"✓";font-weight:700;flex:none}
+.split .l li{color:#B8BFB6}
+.split .r li{color:#2C3612}
+
+/* menu page */
+.mpage{display:grid;grid-template-columns:1fr 232px;height:100%}
+.mleft{overflow:hidden;padding:0}
+.rhero{height:104px;background:var(--surface);display:grid;place-items:center;font-size:2rem;position:relative}
+.rinfo{padding:13px 22px;border-bottom:1px solid var(--border)}
+.rinfo h2{font-size:1.05rem;font-weight:600;letter-spacing:-.03em}
+.rinfo .m{font-size:.66rem;color:var(--text-2);margin-top:3px}
+.rtabs{display:flex;gap:16px;padding:10px 22px 0;border-bottom:1px solid var(--border)}
+.rtabs a{font-size:.7rem;color:var(--text-2);text-decoration:none;padding-bottom:8px}
+.rtabs a.on{color:var(--text);font-weight:600;border-bottom:2px solid var(--accent)}
+.dishes{padding:6px 22px}
+.dish{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);align-items:center}
+.dish .th{width:44px;height:44px;border-radius:11px;background:var(--surface);display:grid;place-items:center;font-size:1rem;flex:none}
+.dish .nm{font-size:.75rem;font-weight:500}
+.dish .ds{font-size:.62rem;color:var(--text-2);margin-top:2px}
+.dish .pr{font-size:.73rem;font-weight:600;margin-left:auto}
+.dish .add{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.75rem;flex:none;margin-left:9px}
+.cartpane{border-left:1px solid var(--border);background:var(--surface);padding:15px 14px;display:flex;flex-direction:column}
+.cartpane h4{font-size:.78rem;font-weight:600;letter-spacing:-.02em}
+.ci{display:flex;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center}
+.ci .q{font-size:.62rem;font-weight:700;background:#fff;border-radius:6px;padding:2px 6px;flex:none}
+.ci .nm{font-size:.66rem;font-weight:500;line-height:1.3}
+.ci .pr{font-size:.66rem;font-weight:600;margin-left:auto}
+.ln{display:flex;justify-content:space-between;font-size:.66rem;color:var(--text-2);padding:2px 0}
+.ln.big{color:var(--text);font-size:.82rem;font-weight:600;border-top:1px solid var(--border);margin-top:5px;padding-top:8px}
+
+/* checkout */
+.co{display:grid;grid-template-columns:1fr 250px;height:100%}
+.coL{padding:22px 26px;overflow:hidden}
+.coR{border-left:1px solid var(--border);background:var(--surface);padding:20px 18px}
+.fld{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:10px 12px;font-size:.72rem;margin-top:6px}
+.fld .ph2{color:var(--text-3)}
+.lab{font-size:.63rem;font-weight:600;color:var(--text-2);margin-top:13px}
+.pay{display:flex;gap:8px;margin-top:6px}
+.pay .p{flex:1;border:1.5px solid var(--border);border-radius:11px;padding:9px;text-align:center;font-size:.68rem;font-weight:500}
+.pay .p.on{border-color:var(--text);border-width:1.5px;font-weight:600}
+
+/* tracking */
+.trk{display:grid;grid-template-columns:1fr 250px;height:100%}
+.map{background:#EFEFEC;position:relative;overflow:hidden}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.trkR{border-left:1px solid var(--border);padding:20px 18px;display:flex;flex-direction:column}
+.prog{display:flex;align-items:center;gap:5px;margin:14px 0}
+.prog .d{width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.58rem;flex:none}
+.prog .d.off{background:var(--raised);color:var(--text-3)}
+.prog .l{flex:1;height:2px;background:var(--accent);border-radius:99px}
+.prog .l.off{background:var(--raised)}
+.rider{display:flex;align-items:center;gap:9px;border-top:1px solid var(--border);padding-top:12px;margin-top:auto}
+.rider .av{width:34px;height:34px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:.7rem;font-weight:600;color:var(--text-2);flex:none}
+.share{background:var(--surface);border-radius:11px;padding:10px 11px;font-size:.65rem;color:var(--text-2);line-height:1.55;margin-top:12px}
+.share b{color:var(--text);font-weight:600}
+
+/* areas */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chip{border:1px solid var(--border);border-radius:99px;padding:6px 13px;font-size:.7rem;font-weight:500}
+.chip.on{background:var(--accent);border-color:var(--accent)}
+.chip.soon{color:var(--text-3)}
+
+.faq{border-bottom:1px solid var(--border);padding:11px 0}
+.faq .q{font-size:.75rem;font-weight:600;display:flex}
+.faq .q span{margin-left:auto;color:var(--text-3)}
+.faq .a{font-size:.68rem;color:var(--text-2);line-height:1.65;margin-top:6px}
+
+@media (max-width:1400px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — website &amp; web app</h1>
+  <p>One site doing two jobs: marketing pages that sell the idea to customers, restaurants and riders, and a full ordering flow that works in a browser with no app install. Built on the app's design system, so the site and the app finally look like the same company.</p>
+</div>
+
+<div class="group">
+  <h2>Marketing</h2>
+  <p class="gp">Public pages. The job is to get someone to type an address, or to get a restaurant owner to fill in a form.</p>
+  <div class="rail">
+
+    <!-- 1 HOME -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Home</div>
+      <div class="w">One action above the fold: type where you are. The phone in the hero shows the real product, not a stock mockup.</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng</div></div>
+        <div class="vp pg">
+          <div class="nav dk">
+            <div class="logo">m<b>-kart</b></div>
+            <a href="#">Kitchens</a><a href="#">Areas</a><a href="#">For restaurants</a><a href="#">Ride with us</a>
+            <div class="sp"><a href="#">Log in</a><div class="btn">Order now</div></div>
+          </div>
+          <div class="hero">
+            <div>
+              <h1>Makurdi eats.<br><span class="a">We deliver.</span></h1>
+              <p>Order from kitchens around you and follow your rider from the pot to your gate.</p>
+              <div class="addr">
+                <span class="ph">Enter your address or a landmark</span>
+                <div class="btn">Find food</div>
+              </div>
+              <p class="note">No street address? A landmark works — our riders know Makurdi.</p>
+              <div class="stats">
+                <div><b>7 areas</b><span>covered today</span></div>
+                <div><b>29 min</b><span>average to your gate</span></div>
+                <div><b>₦500</b><span>delivery in your area</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="mini">
+                <div class="mh"><div class="mloc"><span class="p">⌖</span>Behind BSU main gate</div></div>
+                <div class="mb">
+                  <div class="mrow"><div class="th">🍲</div><div><div class="nm">Terkimbi's Kitchen</div><div class="ds">0.8 km · 20–30 min</div></div></div>
+                  <div class="mrow"><div class="th">🍛</div><div><div class="nm">Sewuese Rice Spot</div><div class="ds">1.4 km · 25–35 min</div></div></div>
+                  <div class="mrow"><div class="th">🐟</div><div><div class="nm">Benue Grills</div><div class="ds">2.6 km · 35–45 min</div></div></div>
+                  <div class="mrow" style="border:none"><div class="th">🍢</div><div><div class="nm">Modern Market Suya</div><div class="ds">3.1 km · 30–40 min</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 HOW IT WORKS + KITCHENS -->
+    <div class="item">
+      <div class="n">02</div><div class="t">Home, scrolled</div>
+      <div class="w">Real kitchens with real prices, straight on the marketing page. Nothing sells this better than showing what's actually available.</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng</div></div>
+        <div class="vp pg">
+          <div class="sec" style="padding-bottom:14px">
+            <div class="eyebrow">Open right now</div>
+            <h2 class="big">Kitchens in Makurdi</h2>
+            <div class="kgrid">
+              <div class="kc">
+                <div class="th">🍲</div>
+                <div class="nm">Terkimbi's Kitchen</div>
+                <div class="cu">Swallow &amp; soups · Wurukum</div>
+                <div class="ft"><b>0.8 km</b> · 20–30 min <span class="tg">Free delivery</span></div>
+              </div>
+              <div class="kc">
+                <div class="th">🍛</div>
+                <div class="nm">Sewuese Rice Spot</div>
+                <div class="cu">Jollof &amp; chicken · North Bank</div>
+                <div class="ft"><b>1.4 km</b> · 25–35 min</div>
+              </div>
+              <div class="kc">
+                <div class="th">🐟</div>
+                <div class="nm">Benue Grills</div>
+                <div class="cu">Catfish &amp; pepper soup · Judges Qtrs</div>
+                <div class="ft"><b>2.6 km</b> · 35–45 min</div>
+              </div>
+            </div>
+          </div>
+          <div class="sec" style="background:var(--surface);padding-top:20px;padding-bottom:20px">
+            <div class="eyebrow">How it works</div>
+            <h2 class="big">Four steps, no app needed</h2>
+            <div class="steps">
+              <div class="step"><div class="num">1</div><h4>Tell us where</h4><p>An address or a landmark. We show the kitchens that reach you.</p></div>
+              <div class="step"><div class="num">2</div><h4>Pick your food</h4><p>Real menus, today's prices, live availability.</p></div>
+              <div class="step"><div class="num">3</div><h4>Pay your way</h4><p>Card, transfer, or cash to the rider.</p></div>
+              <div class="step"><div class="num">4</div><h4>Watch it come</h4><p>Follow your rider on a map and call them if needed.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 PARTNERS -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Restaurants &amp; riders</div>
+      <div class="w">Two audiences, one band. Concrete terms — commission, payout day, what you need to start — instead of "join our platform".</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng/partners</div></div>
+        <div class="vp pg">
+          <div class="nav">
+            <div class="logo">m<b>-kart</b></div>
+            <a href="#">Kitchens</a><a href="#">Areas</a><a href="#">For restaurants</a><a href="#">Ride with us</a>
+            <div class="sp"><div class="btn dark">Order now</div></div>
+          </div>
+          <div class="split">
+            <div class="l">
+              <h3>Put your kitchen on M-Kart</h3>
+              <p>You cook. We handle orders, riders and money.</p>
+              <ul>
+                <li>15% commission, nothing else — no setup fee, no monthly charge</li>
+                <li>Paid every Friday, straight to your account</li>
+                <li>We photograph your menu for free</li>
+                <li>Mark a dish finished yourself, any time</li>
+                <li>Live within a week of signing</li>
+              </ul>
+              <div class="btn full">List your kitchen</div>
+            </div>
+            <div class="r">
+              <h3>Ride with M-Kart</h3>
+              <p>Know Makurdi roads? Start earning this week.</p>
+              <ul>
+                <li>Paid per trip, every Friday</li>
+                <li>Keep 100% of your tips</li>
+                <li>Choose your own hours</li>
+                <li>Bring a bike, a rider's card and a phone</li>
+                <li>Fuel guarantee during your first two weeks</li>
+              </ul>
+              <div class="btn dark full">Apply to ride</div>
+            </div>
+          </div>
+          <div class="sec" style="padding-top:18px;padding-bottom:18px">
+            <div class="faq"><div class="q">How much do I actually take home?<span>+</span></div>
+              <div class="a">On a ₦3,000 order you receive ₦2,550. The 15% covers the rider, card fees and support. Delivery is charged to the customer, not to you.</div></div>
+            <div class="faq" style="border:none"><div class="q">What if I run out of a dish?<span>+</span></div>
+              <div class="a">Switch it off in the app and it disappears from customers instantly. It comes back on by itself when you open the next morning.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 AREAS -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Areas we cover</div>
+      <div class="w">Honest coverage map, not a claim to serve all of Benue. The "ask us to come" form turns a dead end into a list of where to expand.</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng/areas</div></div>
+        <div class="vp pg">
+          <div class="nav">
+            <div class="logo">m<b>-kart</b></div>
+            <a href="#">Kitchens</a><a href="#">Areas</a><a href="#">For restaurants</a><a href="#">Ride with us</a>
+            <div class="sp"><div class="btn dark">Order now</div></div>
+          </div>
+          <div class="sec">
+            <div class="eyebrow">Coverage</div>
+            <h2 class="big">Where we deliver</h2>
+            <p class="lede">We open an area only when we have enough riders to serve it properly. Better to say no than to take an order we can't deliver.</p>
+            <div class="eyebrow" style="margin-top:18px">Live now</div>
+            <div class="chips">
+              <div class="chip on">High Level</div><div class="chip on">Wurukum</div><div class="chip on">North Bank</div>
+              <div class="chip on">Modern Market</div><div class="chip on">Judges Quarters</div>
+              <div class="chip on">Ankpa Ward</div><div class="chip on">BSU and around</div>
+            </div>
+            <div class="eyebrow" style="margin-top:18px">Coming next</div>
+            <div class="chips">
+              <div class="chip soon">Gyado Villa</div><div class="chip soon">Achusa</div>
+              <div class="chip soon">Logo 1</div><div class="chip soon">Gboko — being asked for a lot</div>
+            </div>
+            <div class="share" style="margin-top:18px">
+              <b>Not on the list?</b> Tell us where you are. We open new areas where people are asking, and it genuinely decides where we go next.
+              <div class="addr" style="background:var(--bg);border-color:var(--border);margin-top:10px">
+                <span class="ph" style="color:var(--text-3)">Your area</span>
+                <div class="btn">Ask M-Kart to come</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group">
+  <h2>Ordering in the browser</h2>
+  <p class="gp">The same flow as the app, no install. This matters more than it sounds: install friction is the biggest drop-off in the funnel, and a web order is one tap from a WhatsApp link.</p>
+  <div class="rail">
+
+    <!-- 5 BROWSE -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Browse kitchens</div>
+      <div class="w">Once an address is set, the whole site becomes the app. Distance and fee per kitchen, exactly as on mobile.</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng/kitchens?area=high-level</div></div>
+        <div class="vp pg">
+          <div class="nav">
+            <div class="logo">m<b>-kart</b></div>
+            <a href="#" style="display:flex;align-items:center;gap:5px;color:var(--text);font-weight:600">⌖ Behind BSU main gate ▾</a>
+            <div class="sp"><a href="#">Orders</a><div class="btn out">🛒 0</div></div>
+          </div>
+          <div class="sec" style="padding-bottom:0">
+            <h2 class="big" style="font-size:1.15rem">Open now near High Level</h2>
+            <div class="lede" style="font-size:.7rem;margin-top:4px">7 kitchens · closest first</div>
+            <div class="kgrid" style="margin-top:13px">
+              <div class="kc"><div class="th">🍲</div><div class="nm">Terkimbi's Kitchen</div>
+                <div class="cu">Swallow &amp; soups</div>
+                <div class="ft"><b>0.8 km</b> · 20–30 min · ₦500 <span class="tg">Free</span></div></div>
+              <div class="kc"><div class="th">🍛</div><div class="nm">Sewuese Rice Spot</div>
+                <div class="cu">Jollof &amp; chicken</div>
+                <div class="ft"><b>1.4 km</b> · 25–35 min · ₦500</div></div>
+              <div class="kc"><div class="th">🐟</div><div class="nm">Benue Grills</div>
+                <div class="cu">Catfish &amp; pepper soup</div>
+                <div class="ft"><b>2.6 km</b> · 35–45 min · ₦800</div></div>
+              <div class="kc"><div class="th">🍢</div><div class="nm">Modern Market Suya</div>
+                <div class="cu">Suya &amp; grills</div>
+                <div class="ft"><b>3.1 km</b> · 30–40 min · ₦900</div></div>
+              <div class="kc"><div class="th">🍗</div><div class="nm">Ankpa Bukka</div>
+                <div class="cu">Local dishes</div>
+                <div class="ft"><b>3.6 km</b> · 35–45 min · ₦900</div></div>
+              <div class="kc" style="opacity:.45"><div class="th">🥣</div><div class="nm">Aondona Breakfast</div>
+                <div class="cu">Opens 6:30am tomorrow</div>
+                <div class="ft">Closed</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 MENU -->
+    <div class="item">
+      <div class="n">06</div><div class="t">Menu &amp; cart</div>
+      <div class="w">Cart lives in a side panel instead of a separate page — the one real advantage of a bigger screen.</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng/k/terkimbis-kitchen</div></div>
+        <div class="vp pg">
+          <div class="mpage">
+            <div class="mleft">
+              <div class="rhero">🍲</div>
+              <div class="rinfo">
+                <h2>Terkimbi's Kitchen</h2>
+                <div class="m">Swallow &amp; soups · Wurukum · 0.8 km · ★ 4.8 · Open until the pot finishes</div>
+              </div>
+              <div class="rtabs"><a class="on" href="#">Swallow</a><a href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a></div>
+              <div class="dishes">
+                <div class="dish"><div class="th">🍲</div>
+                  <div><div class="nm">Pounded yam &amp; egusi</div><div class="ds">Assorted beef, stockfish</div></div>
+                  <div class="pr">₦2,800</div><div class="add">+</div></div>
+                <div class="dish" style="opacity:.45"><div class="th">🥘</div>
+                  <div><div class="nm">Akpu &amp; oha soup</div><div class="ds">Finished for today</div></div>
+                  <div class="pr">₦2,400</div></div>
+                <div class="dish" style="border:none"><div class="th">🐟</div>
+                  <div><div class="nm">Catfish pepper soup</div><div class="ds">Fresh Benue catfish</div></div>
+                  <div class="pr">₦3,500</div><div class="add">+</div></div>
+              </div>
+            </div>
+            <div class="cartpane">
+              <h4>Your order</h4>
+              <div class="ci"><span class="q">1×</span><div class="nm">Pounded yam &amp; egusi</div><div class="pr">₦2,800</div></div>
+              <div class="ci"><span class="q">1×</span><div class="nm">Catfish pepper soup</div><div class="pr">₦3,500</div></div>
+              <div class="ci" style="border:none"><span class="q">2×</span><div class="nm">Chilled zobo</div><div class="pr">₦800</div></div>
+              <div style="margin-top:auto">
+                <div class="ln"><span>Subtotal</span><span>₦7,100</span></div>
+                <div class="ln"><span>Delivery</span><span>₦500</span></div>
+                <div class="ln big"><span>Total</span><span>₦7,600</span></div>
+                <div class="btn full" style="margin-top:11px">Go to checkout</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 CHECKOUT -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Checkout</div>
+      <div class="w">Guest checkout with just a phone number. Forcing account creation before someone has ever tasted your food is how you lose first orders.</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng/checkout</div></div>
+        <div class="vp pg">
+          <div class="nav"><div class="logo">m<b>-kart</b></div><div class="sp"><a href="#">Need help?</a></div></div>
+          <div class="co">
+            <div class="coL">
+              <h2 class="big" style="font-size:1.1rem">Checkout</h2>
+              <div class="lab">Deliver to</div>
+              <div class="fld">Behind BSU main gate, High Level</div>
+              <div class="lab">Anything the rider should know?</div>
+              <div class="fld"><span class="ph2">Gate is painted blue, call at the junction…</span></div>
+              <div class="lab">Your phone number</div>
+              <div class="fld">+234 801 234 5678</div>
+              <div class="lab">How are you paying?</div>
+              <div class="pay">
+                <div class="p on">Card</div><div class="p">Transfer</div><div class="p">Cash to rider</div>
+              </div>
+              <div class="share" style="margin-top:13px">No account needed. We'll text you a link to follow your order.</div>
+            </div>
+            <div class="coR">
+              <h4 style="font-size:.75rem;font-weight:600">Terkimbi's Kitchen</h4>
+              <div class="ci"><span class="q">1×</span><div class="nm">Pounded yam &amp; egusi</div><div class="pr">₦2,800</div></div>
+              <div class="ci"><span class="q">1×</span><div class="nm">Catfish pepper soup</div><div class="pr">₦3,500</div></div>
+              <div class="ci" style="border:none"><span class="q">2×</span><div class="nm">Chilled zobo</div><div class="pr">₦800</div></div>
+              <div class="ln" style="margin-top:8px"><span>Subtotal</span><span>₦7,100</span></div>
+              <div class="ln"><span>Delivery</span><span>₦500</span></div>
+              <div class="ln big"><span>Total</span><span>₦7,600</span></div>
+              <div class="btn full" style="margin-top:12px">Pay ₦7,600</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 TRACKING -->
+    <div class="item">
+      <div class="n">08</div><div class="t">Tracking by link</div>
+      <div class="w">The quiet win. A tracking link works without an account or an app, and every one shared on WhatsApp is free advertising to someone who hasn't heard of you.</div>
+      <div class="br">
+        <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="url">mkart.ng/t/1042-x9k</div></div>
+        <div class="vp pg">
+          <div class="trk">
+            <div class="map">
+              <svg viewBox="0 0 400 430" preserveAspectRatio="xMidYMid slice">
+                <rect width="400" height="430" fill="#EFEFEC"/>
+                <g stroke="#fff" stroke-width="15" stroke-linecap="round">
+                  <path d="M-20 90 L420 74"/><path d="M-20 230 L420 214"/><path d="M-20 360 L420 344"/>
+                  <path d="M70 -20 L86 450"/><path d="M250 -20 L266 450"/>
+                </g>
+                <g stroke="#fff" stroke-width="7">
+                  <path d="M-20 160 L420 146"/><path d="M-20 296 L420 282"/><path d="M160 -20 L174 450"/>
+                </g>
+                <g fill="#E4E4DF">
+                  <rect x="98" y="100" width="42" height="46" rx="4"/><rect x="188" y="96" width="46" height="50" rx="4"/>
+                  <rect x="292" y="176" width="40" height="44" rx="4"/><rect x="104" y="250" width="38" height="42" rx="4"/>
+                  <rect x="196" y="316" width="48" height="38" rx="4"/>
+                </g>
+                <path d="M264 138 L264 208 L172 218 L172 300 L88 312 L88 372"
+                      fill="none" stroke="#0E0F0D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="264" cy="138" r="10" fill="#fff" stroke="#0E0F0D" stroke-width="4"/>
+                <circle cx="88" cy="372" r="8" fill="#C6F432" stroke="#0E0F0D" stroke-width="3.5"/>
+              </svg>
+            </div>
+            <div class="trkR">
+              <div class="eyebrow">Order 1042</div>
+              <h2 class="big" style="font-size:1.05rem;margin-top:4px">Arriving about 6:41 PM</h2>
+              <div class="lede" style="font-size:.68rem;margin-top:5px">Doosuur is 14 minutes away, heading to High Level.</div>
+              <div class="prog">
+                <span class="d">✓</span><span class="l"></span>
+                <span class="d">✓</span><span class="l"></span>
+                <span class="d">🛵</span><span class="l off"></span>
+                <span class="d off">⌂</span>
+              </div>
+              <div style="font-size:.65rem;color:var(--text-2);line-height:1.6">
+                Pounded yam &amp; egusi, catfish pepper soup, 2× chilled zobo<br>
+                <b style="color:var(--text)">₦7,600</b> · paid by card
+              </div>
+              <div class="share">
+                <b>Share this link</b> so whoever is waiting can follow it too. No app, no account.
+              </div>
+              <div class="rider">
+                <div class="av">DT</div>
+                <div><div style="font-size:.7rem;font-weight:600">Doosuur Terhemba</div>
+                     <div style="font-size:.6rem;color:var(--text-2)">Your rider · ★ 4.9</div></div>
+                <div class="btn" style="margin-left:auto;padding:6px 13px">Call</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

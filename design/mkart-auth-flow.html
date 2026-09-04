@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — sign up & sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0F0D;
+  --ink-2:#242621;
+  --ink-3:#3A3C38;
+  --paper:#FFFFFF;
+  --muted:#8E9189;
+  --dim:#6E7169;
+  --line:#E8E8E5;
+  --acid:#C6F432;
+  --acid-ink:#12180A;
+  --red:#FF6B4A;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.head{max-width:1500px;margin:0 auto 30px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:74ch}
+.group{max-width:1500px;margin:0 auto 34px}
+.group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #C9C9C4}
+.rail{display:flex;gap:24px;flex-wrap:wrap}
+.item{width:262px}
+.item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.item .t{font-size:.9rem;font-weight:500;margin-bottom:11px;letter-spacing:-.02em}
+
+.phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--ink);color:#fff;overflow:hidden}
+.scr.lt{background:var(--paper);color:var(--ink)}
+.st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600;padding:9px 15px 0;flex:none}
+.body{flex:1;padding:14px 15px 0;display:flex;flex-direction:column;overflow:hidden}
+.hbar{width:78px;height:3.5px;border-radius:99px;background:var(--ink-3);margin:0 auto 7px;flex:none}
+.hbar.dk{background:#C6C7C2}
+
+.wm{font-size:1.18rem;font-weight:300;letter-spacing:-.02em}
+.wm b{font-weight:600}
+.back{width:29px;height:29px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;font-size:.82rem;flex:none}
+.back.lt{background:#F2F2EF;color:var(--ink)}
+
+.h{font-size:1.58rem;font-weight:600;line-height:1.08;letter-spacing:-.045em}
+.h.sm{font-size:1.36rem}
+.h .a{color:var(--acid)}
+.p{font-size:.76rem;color:var(--muted);line-height:1.6;font-weight:300;margin-top:9px}
+.p .a{color:var(--acid)}
+
+.field{background:var(--ink-2);border-radius:15px;padding:13px 14px;display:flex;align-items:center;gap:9px;font-size:.83rem}
+.field.lt{background:#F4F4F1}
+.field .cc{font-weight:600}
+.field .dv{width:1px;height:14px;background:var(--ink-3)}
+.field .ph{color:var(--dim);font-weight:300}
+.field .val{font-weight:400}
+.lab{font-size:.65rem;font-weight:500;color:var(--muted);margin-bottom:6px}
+
+.btn{border-radius:99px;padding:13px;text-align:center;font-weight:600;font-size:.82rem;background:var(--acid);color:var(--acid-ink)}
+.btn.dark{background:var(--ink);color:#fff;font-weight:500}
+.btn.mut{background:var(--ink-2);color:var(--dim);font-weight:500}
+.btn.gh{background:transparent;color:var(--muted);font-weight:400}
+.fine{font-size:.61rem;color:var(--dim);text-align:center;line-height:1.55;font-weight:300}
+
+.otp{display:flex;gap:6px}
+.otp span{flex:1;aspect-ratio:1/1.14;border-radius:13px;display:grid;place-items:center;font-size:1rem;font-weight:600;
+  background:var(--ink-2)}
+.otp span.on{background:var(--acid);color:var(--acid-ink)}
+.otp span.cur{border:1.5px solid var(--acid)}
+.otp span.err{background:rgba(255,107,74,.13);border:1.5px solid var(--red);color:var(--red)}
+.err-msg{font-size:.68rem;color:var(--red);text-align:center;font-weight:400;margin-top:11px}
+.resend{font-size:.66rem;color:var(--muted);text-align:center;font-weight:300}
+.resend b{color:var(--acid);font-weight:500}
+
+.big-ic{width:64px;height:64px;border-radius:20px;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:1.6rem;flex:none}
+.big-ic.mut{background:var(--ink-2);color:var(--muted)}
+.big-ic.rd{background:rgba(255,107,74,.14);color:var(--red)}
+
+.perm{background:var(--ink-2);border-radius:15px;padding:12px 13px;display:flex;gap:10px;align-items:flex-start}
+.perm .i{width:26px;height:26px;border-radius:9px;background:var(--ink-3);display:grid;place-items:center;font-size:.72rem;flex:none}
+.perm .nm{font-size:.72rem;font-weight:500}
+.perm .ds{font-size:.62rem;color:var(--dim);font-weight:300;line-height:1.5;margin-top:2px}
+
+.sugg{background:var(--ink-2);border-radius:13px;padding:10px 12px;display:flex;align-items:center;gap:9px}
+.sugg .i{width:25px;height:25px;border-radius:8px;background:var(--ink-3);display:grid;place-items:center;font-size:.68rem;flex:none}
+.sugg .nm{font-size:.71rem;font-weight:400}
+.sugg .ds{font-size:.6rem;color:var(--dim);font-weight:300}
+
+.splash{flex:1;display:grid;place-items:center;position:relative}
+.splash .lg{text-align:center}
+.splash .mk{width:62px;height:62px;border-radius:19px;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:1.65rem;font-weight:700;margin:0 auto 14px}
+.splash .nmm{font-size:1.3rem;font-weight:300;letter-spacing:-.025em}
+.splash .nmm b{font-weight:600}
+.splash .tag{font-size:.68rem;color:var(--dim);font-weight:300;margin-top:5px}
+.load{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:52px;height:3px;border-radius:99px;background:var(--ink-2);overflow:hidden}
+.load i{display:block;height:100%;width:56%;background:var(--acid);border-radius:99px}
+
+@media (max-width:640px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — sign up &amp; sign in, complete</h1>
+  <p>Every screen and state in the auth flow. New users go 1 → 6. Returning users go 7 → 3 → Home. The rest are the states that decide whether people get stuck or get through.</p>
+</div>
+
+<!-- ============ NEW USER ============ -->
+<div class="group">
+  <h2>New user · first run</h2>
+  <div class="rail">
+
+    <!-- 1 SPLASH -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Splash</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="splash">
+          <div class="lg">
+            <div class="mk">M</div>
+            <div class="nmm">M<b>-Kart</b>~</div>
+            <div class="tag">Makurdi eats. We deliver.</div>
+          </div>
+          <div class="load"><i></i></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 2 PHONE -->
+    <div class="item">
+      <div class="n">02</div><div class="t">Enter number</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="wm">M<b>-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Makurdi eats.<br><span class="a">We deliver.</span></div>
+            <p class="p">Enter your number to get started. We'll text you a code.</p>
+          </div>
+          <div style="margin-top:19px">
+            <div class="field">
+              <span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="ph">801 234 5678</span>
+            </div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p class="fine" style="margin:13px 0 auto;padding-bottom:11px">By continuing you agree to M-Kart's Terms of Service and Privacy Policy.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 3 OTP -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Verify code</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="a">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:19px">
+            <span class="on">4</span><span class="on">9</span><span class="on">2</span>
+            <span class="cur"></span><span></span><span></span>
+          </div>
+          <p class="resend" style="margin-top:13px">Didn't get it? <b>Resend in 0:24</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 4 LOCATION PERMISSION -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Location permission</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="big-ic" style="margin-bottom:16px">⌖</div>
+            <div class="h sm">Turn on location</div>
+            <p class="p">So we can show you kitchens that actually deliver to your area, and so your rider can find you.</p>
+          </div>
+          <div style="margin-top:17px;display:grid;gap:8px">
+            <div class="perm">
+              <div class="i">◎</div>
+              <div><div class="nm">Only while you're using M-Kart</div><div class="ds">We never track you in the background.</div></div>
+            </div>
+            <div class="perm">
+              <div class="i">✎</div>
+              <div><div class="nm">You can always type it instead</div><div class="ds">A landmark works fine.</div></div>
+            </div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn">Allow location</div>
+            <div class="btn gh">I'll type my address</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 5 NAME + ADDRESS -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Name &amp; address</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:14px">
+            <div class="h sm">Almost there</div>
+            <p class="p">Your rider will use this to reach you.</p>
+          </div>
+          <div style="margin-top:17px">
+            <div class="lab">What should we call you?</div>
+            <div class="field"><span class="val">Terkimbi</span></div>
+          </div>
+          <div style="margin-top:13px">
+            <div class="lab">Where are we delivering?</div>
+            <div class="field"><span class="ph">Landmark or street</span></div>
+          </div>
+          <div style="margin-top:9px;display:grid;gap:6px">
+            <div class="sugg"><div class="i">⌖</div><div><div class="nm">Use my current location</div><div class="ds">High Level, Makurdi</div></div></div>
+            <div class="sugg"><div class="i">⌂</div><div><div class="nm">Behind BSU main gate</div><div class="ds">Recent</div></div></div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Start ordering</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 6 SUCCESS -->
+    <div class="item">
+      <div class="n">06</div><div class="t">You're in</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0;text-align:left">
+            <div class="big-ic" style="margin-bottom:16px">✓</div>
+            <div class="h sm">Welcome, Terkimbi.</div>
+            <p class="p">We deliver to High Level between 8am and 10pm. Twelve kitchens are open right now.</p>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">See what's cooking</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ RETURNING ============ -->
+<div class="group">
+  <h2>Returning user</h2>
+  <div class="rail">
+
+    <!-- 7 SIGN IN -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Sign in</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="wm">M<b>-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Welcome back.</div>
+            <p class="p">Enter your number and we'll text you a code. No password to remember.</p>
+          </div>
+          <div style="margin-top:19px">
+            <div class="field"><span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="val">801 234 5678</span></div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p class="fine" style="margin:13px 0 auto;padding-bottom:11px">New here? Same button — we'll set you up.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 8 SESSION EXPIRED -->
+    <div class="item">
+      <div class="n">08</div><div class="t">Session expired</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="big-ic mut" style="margin-bottom:16px">⏱</div>
+            <div class="h sm">Sign in again</div>
+            <p class="p">You've been signed out for security. Your addresses and order history are safe.</p>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Sign in as 0801 234 5678</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ STATES ============ -->
+<div class="group">
+  <h2>States that decide whether people get through</h2>
+  <div class="rail">
+
+    <!-- 9 WRONG CODE -->
+    <div class="item">
+      <div class="n">09</div><div class="t">Wrong code</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="a">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:19px">
+            <span class="err">4</span><span class="err">9</span><span class="err">2</span>
+            <span class="err">8</span><span class="err">1</span><span class="err">7</span>
+          </div>
+          <p class="err-msg">That code isn't right. 2 tries left.</p>
+          <p class="resend" style="margin-top:9px">Didn't get it? <b>Resend now</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn mut">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 10 CODE NOT ARRIVING -->
+    <div class="item">
+      <div class="n">10</div><div class="t">Code not arriving</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">Still no code?</div>
+            <p class="p">SMS can be slow on some networks. Here's what usually works.</p>
+          </div>
+          <div style="margin-top:17px;display:grid;gap:7px">
+            <div class="sugg"><div class="i">↺</div><div><div class="nm">Send the code again</div><div class="ds">Wait 60 seconds first</div></div></div>
+            <div class="sugg"><div class="i">✎</div><div><div class="nm">Check the number is right</div><div class="ds">+234 801 234 5678</div></div></div>
+            <div class="sugg"><div class="i">✆</div><div><div class="nm">Call me with the code instead</div><div class="ds">We'll ring and read it out</div></div></div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn gh">Chat with support on WhatsApp</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 11 LOCKED OUT -->
+    <div class="item">
+      <div class="n">11</div><div class="t">Too many attempts</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="big-ic rd" style="margin-bottom:16px">🔒</div>
+            <div class="h sm">Hold on a moment</div>
+            <p class="p">Too many wrong codes. For your security, try again in 15 minutes.</p>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn mut">Try again in 14:52</div>
+            <div class="btn gh">Message support</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 12 NO CONNECTION -->
+    <div class="item">
+      <div class="n">12</div><div class="t">No connection</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="big-ic mut" style="margin-bottom:16px">⚠</div>
+            <div class="h sm">You're offline</div>
+            <p class="p">We can't reach M-Kart right now. Check your data or Wi-Fi and try again.</p>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Try again</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 13 PERMISSION DENIED -->
+    <div class="item">
+      <div class="n">13</div><div class="t">Location denied</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">No problem —<br>type it instead</div>
+            <p class="p">Give us a landmark and we'll work out your area. You can turn location on later in Settings.</p>
+          </div>
+          <div style="margin-top:17px">
+            <div class="field"><span class="ph">e.g. opposite Modern Market</span></div>
+          </div>
+          <div style="margin-top:9px;display:grid;gap:6px">
+            <div class="sugg"><div class="i">◷</div><div><div class="nm">High Level</div><div class="ds">Popular area</div></div></div>
+            <div class="sugg"><div class="i">◷</div><div><div class="nm">Wurukum</div><div class="ds">Popular area</div></div></div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Continue</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

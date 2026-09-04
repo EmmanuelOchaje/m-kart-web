@@ -1,0 +1,3240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — customer app, complete design</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* ============ SHELL ============ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#E4E4DF;font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+  color:#0E0F0D;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1540px;margin:0 auto;padding:0 22px}
+a{color:inherit}
+
+/* masthead */
+.mast{background:#0E0F0D;color:#fff;padding:52px 0 46px}
+.mast .kicker{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#C6F432}
+.mast h1{font-size:clamp(2rem,4.4vw,3.1rem);font-weight:600;letter-spacing:-.045em;line-height:1.05;margin:12px 0 0}
+.mast p{color:#8E9189;font-size:1rem;line-height:1.65;font-weight:300;margin-top:14px;max-width:66ch}
+.meta{display:flex;gap:34px;flex-wrap:wrap;margin-top:28px;padding-top:22px;border-top:1px solid #2E312C}
+.meta div b{display:block;font-size:1.35rem;font-weight:600;letter-spacing:-.03em;color:#C6F432}
+.meta div span{font-size:.76rem;color:#8E9189;font-weight:300}
+
+/* sticky nav */
+.nav{position:sticky;top:0;z-index:900;background:rgba(228,228,223,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid #C9C9C4}
+.nav .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px;
+  scrollbar-width:none}
+.nav .wrap::-webkit-scrollbar{display:none}
+.nav a{flex:none;text-decoration:none;font-size:.78rem;font-weight:500;padding:7px 14px;
+  border-radius:99px;background:#fff;border:1px solid #D8D8D3;white-space:nowrap}
+.nav a:hover{border-color:#0E0F0D}
+
+/* read-me */
+.readme{background:#fff;padding:46px 0 50px;border-bottom:1px solid #D3D3CE}
+.readme h2{font-size:1.3rem;font-weight:600;letter-spacing:-.035em;margin:0 0 6px}
+.readme .lead{color:#5F6259;font-size:.95rem;line-height:1.7;max-width:76ch;margin:0 0 30px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.col h3{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#8A8D85;
+  margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid #E4E4DF}
+.col ul{margin:0;padding-left:17px}
+.col li{font-size:.86rem;line-height:1.65;color:#3F433C;margin-bottom:9px}
+.col li b{font-weight:600;color:#0E0F0D}
+.col p{font-size:.86rem;line-height:1.65;color:#3F433C;margin:0 0 10px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.83em;
+  background:#F1F1EC;padding:1.5px 5px;border-radius:4px}
+
+.callout{margin-top:30px;background:#F7F8F3;border-left:3px solid #C6F432;border-radius:0 10px 10px 0;
+  padding:16px 18px}
+.callout h4{margin:0 0 7px;font-size:.9rem;font-weight:600}
+.callout p{margin:0 0 8px;font-size:.87rem;line-height:1.65;color:#3F433C}
+.callout p:last-child{margin-bottom:0}
+
+/* tokens */
+.tokens{background:#F1F1EC;padding:42px 0 46px;border-bottom:1px solid #D3D3CE}
+.tokens h2{font-size:1.15rem;font-weight:600;letter-spacing:-.03em;margin:0 0 4px}
+.tokens .sub{color:#5F6259;font-size:.9rem;margin:0 0 24px;max-width:70ch;line-height:1.6}
+.pals{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pal{background:#fff;border-radius:14px;padding:18px}
+.pal h3{font-size:.7rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#8A8D85;margin:0 0 13px}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.s{width:98px;border:1px solid #E6E6E1;border-radius:9px;overflow:hidden}
+.s .b{height:36px}
+.s .l{padding:5px 7px;font-size:.58rem;line-height:1.4}
+.s .l b{display:block;font-weight:600}
+.s .l span{color:#8A8D85;font-family:ui-monospace,monospace;font-size:.55rem}
+.typerow{background:#fff;border-radius:14px;padding:18px;margin-top:20px}
+.typerow table{width:100%;border-collapse:collapse}
+.typerow th{text-align:left;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:#8A8D85;padding:0 10px 9px 0;border-bottom:1px solid #E9E9E4}
+.typerow td{font-size:.83rem;padding:8px 10px 8px 0;border-bottom:1px solid #F1F1EC;color:#3F433C}
+.typerow td:first-child{font-weight:600;color:#0E0F0D}
+.typerow td code{font-size:.78rem}
+
+/* chapters */
+.chapter{padding:46px 0 10px;border-bottom:1px solid #D3D3CE}
+.chapter:last-of-type{border-bottom:none}
+.chapter-head{max-width:1540px;margin:0 auto 26px;padding:0 22px}
+.chapter-head .num{font-size:.72rem;font-weight:700;letter-spacing:.16em;color:#9A9E93}
+.chapter-head h2{font-size:1.6rem;font-weight:600;letter-spacing:-.04em;margin:5px 0 0}
+.chapter-head p{color:#5F6259;font-size:.94rem;line-height:1.65;margin:9px 0 0;max-width:76ch}
+
+/* neutralise each source file's own page padding */
+.chapter > div[class^="sc-"]{padding:0 !important;background:transparent !important}
+
+footer{background:#0E0F0D;color:#8E9189;padding:44px 0 40px;font-size:.88rem;line-height:1.7}
+footer h3{color:#fff;font-size:1rem;font-weight:600;margin:0 0 10px;letter-spacing:-.02em}
+footer p{margin:0 0 12px;max-width:74ch;font-weight:300}
+footer .fin{margin-top:24px;padding-top:20px;border-top:1px solid #2E312C;font-size:.8rem;color:#6E7169}
+
+@media (max-width:1000px){.cols{grid-template-columns:1fr}.pals{grid-template-columns:1fr}}
+
+/* ============ SCOPED SECTION STYLES ============ */
+/* ===== auth ===== */
+.sc-auth{
+  --ink:#0E0F0D;
+  --ink-2:#242621;
+  --ink-3:#3A3C38;
+  --paper:#FFFFFF;
+  --muted:#8E9189;
+  --dim:#6E7169;
+  --line:#E8E8E5;
+  --acid:#C6F432;
+  --acid-ink:#12180A;
+  --red:#FF6B4A;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+.sc-auth *{box-sizing:border-box;margin:0;padding:0}
+.sc-auth{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.sc-auth .head{max-width:1500px;margin:0 auto 30px}
+.sc-auth .head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.sc-auth .head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:74ch}
+.sc-auth .group{max-width:1500px;margin:0 auto 34px}
+.sc-auth .group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #C9C9C4}
+.sc-auth .rail{display:flex;gap:24px;flex-wrap:wrap}
+.sc-auth .item{width:262px}
+.sc-auth .item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.sc-auth .item .t{font-size:.9rem;font-weight:500;margin-bottom:11px;letter-spacing:-.02em}
+.sc-auth .phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.sc-auth .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--ink);color:#fff;overflow:hidden}
+.sc-auth .scr.lt{background:var(--paper);color:var(--ink)}
+.sc-auth .st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600;padding:9px 15px 0;flex:none}
+.sc-auth .body{flex:1;padding:14px 15px 0;display:flex;flex-direction:column;overflow:hidden}
+.sc-auth .hbar{width:78px;height:3.5px;border-radius:99px;background:var(--ink-3);margin:0 auto 7px;flex:none}
+.sc-auth .hbar.dk{background:#C6C7C2}
+.sc-auth .wm{font-size:1.18rem;font-weight:300;letter-spacing:-.02em}
+.sc-auth .wm b{font-weight:600}
+.sc-auth .back{width:29px;height:29px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;font-size:.82rem;flex:none}
+.sc-auth .back.lt{background:#F2F2EF;color:var(--ink)}
+.sc-auth .h{font-size:1.58rem;font-weight:600;line-height:1.08;letter-spacing:-.045em}
+.sc-auth .h.sm{font-size:1.36rem}
+.sc-auth .h .a{color:var(--acid)}
+.sc-auth .p{font-size:.76rem;color:var(--muted);line-height:1.6;font-weight:300;margin-top:9px}
+.sc-auth .p .a{color:var(--acid)}
+.sc-auth .field{background:var(--ink-2);border-radius:15px;padding:13px 14px;display:flex;align-items:center;gap:9px;font-size:.83rem}
+.sc-auth .field.lt{background:#F4F4F1}
+.sc-auth .field .cc{font-weight:600}
+.sc-auth .field .dv{width:1px;height:14px;background:var(--ink-3)}
+.sc-auth .field .ph{color:var(--dim);font-weight:300}
+.sc-auth .field .val{font-weight:400}
+.sc-auth .lab{font-size:.65rem;font-weight:500;color:var(--muted);margin-bottom:6px}
+.sc-auth .btn{border-radius:99px;padding:13px;text-align:center;font-weight:600;font-size:.82rem;background:var(--acid);color:var(--acid-ink)}
+.sc-auth .btn.dark{background:var(--ink);color:#fff;font-weight:500}
+.sc-auth .btn.mut{background:var(--ink-2);color:var(--dim);font-weight:500}
+.sc-auth .btn.gh{background:transparent;color:var(--muted);font-weight:400}
+.sc-auth .fine{font-size:.61rem;color:var(--dim);text-align:center;line-height:1.55;font-weight:300}
+.sc-auth .otp{display:flex;gap:6px}
+.sc-auth .otp span{flex:1;aspect-ratio:1/1.14;border-radius:13px;display:grid;place-items:center;font-size:1rem;font-weight:600;
+  background:var(--ink-2)}
+.sc-auth .otp span.on{background:var(--acid);color:var(--acid-ink)}
+.sc-auth .otp span.cur{border:1.5px solid var(--acid)}
+.sc-auth .otp span.err{background:rgba(255,107,74,.13);border:1.5px solid var(--red);color:var(--red)}
+.sc-auth .err-msg{font-size:.68rem;color:var(--red);text-align:center;font-weight:400;margin-top:11px}
+.sc-auth .resend{font-size:.66rem;color:var(--muted);text-align:center;font-weight:300}
+.sc-auth .resend b{color:var(--acid);font-weight:500}
+.sc-auth .big-ic{width:64px;height:64px;border-radius:20px;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:1.6rem;flex:none}
+.sc-auth .big-ic.mut{background:var(--ink-2);color:var(--muted)}
+.sc-auth .big-ic.rd{background:rgba(255,107,74,.14);color:var(--red)}
+.sc-auth .perm{background:var(--ink-2);border-radius:15px;padding:12px 13px;display:flex;gap:10px;align-items:flex-start}
+.sc-auth .perm .i{width:26px;height:26px;border-radius:9px;background:var(--ink-3);display:grid;place-items:center;font-size:.72rem;flex:none}
+.sc-auth .perm .nm{font-size:.72rem;font-weight:500}
+.sc-auth .perm .ds{font-size:.62rem;color:var(--dim);font-weight:300;line-height:1.5;margin-top:2px}
+.sc-auth .sugg{background:var(--ink-2);border-radius:13px;padding:10px 12px;display:flex;align-items:center;gap:9px}
+.sc-auth .sugg .i{width:25px;height:25px;border-radius:8px;background:var(--ink-3);display:grid;place-items:center;font-size:.68rem;flex:none}
+.sc-auth .sugg .nm{font-size:.71rem;font-weight:400}
+.sc-auth .sugg .ds{font-size:.6rem;color:var(--dim);font-weight:300}
+.sc-auth .splash{flex:1;display:grid;place-items:center;position:relative}
+.sc-auth .splash .lg{text-align:center}
+.sc-auth .splash .mk{width:62px;height:62px;border-radius:19px;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:1.65rem;font-weight:700;margin:0 auto 14px}
+.sc-auth .splash .nmm{font-size:1.3rem;font-weight:300;letter-spacing:-.025em}
+.sc-auth .splash .nmm b{font-weight:600}
+.sc-auth .splash .tag{font-size:.68rem;color:var(--dim);font-weight:300;margin-top:5px}
+.sc-auth .load{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:52px;height:3px;border-radius:99px;background:var(--ink-2);overflow:hidden}
+.sc-auth .load i{display:block;height:100%;width:56%;background:var(--acid);border-radius:99px}
+@media (max-width:640px){.sc-auth .rail{justify-content:center}}
+
+/* ===== home ===== */
+.sc-home .t-light{
+  --bg:#FFFFFF; --surface:#F6F7F3; --raised:#EDEFE8;
+  --border:#E4E7DE; --border-strong:#D3D7CB;
+  --text:#0E0F0D; --text-2:#6B6F66; --text-3:#9A9E93;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#4E6B00;
+  --danger:#C0391C; --danger-bg:#FFEDE8;
+  --body-weight:400;
+}
+.sc-home .t-dark{
+  --bg:#0E0F0D; --surface:#1A1C19; --raised:#242621;
+  --border:#2E312C; --border-strong:#3A3C38;
+  --text:#FFFFFF; --text-2:#8E9189; --text-3:#6E7169;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#C6F432;
+  --danger:#FF6B4A; --danger-bg:rgba(255,107,74,.14);
+  --body-weight:300;
+}
+.sc-home *{box-sizing:border-box;margin:0;padding:0}
+.sc-home{background:#D8D8D3;font-family:'DM Sans',system-ui,sans-serif;color:#0E0F0D;padding:42px 20px 66px}
+.sc-home .head{max-width:1500px;margin:0 auto 28px}
+.sc-home .head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.sc-home .head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:76ch}
+.sc-home .rail{max-width:1500px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap}
+.sc-home .item{width:262px}
+.sc-home .item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.sc-home .item .t{font-size:.9rem;font-weight:500;margin-bottom:4px;letter-spacing:-.02em}
+.sc-home .item .w{font-size:.72rem;color:#6B6F66;line-height:1.5;margin-bottom:11px;min-height:32px}
+.sc-home .phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.sc-home .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);color:var(--text);overflow:hidden}
+.sc-home .hbar{width:78px;height:3.5px;border-radius:99px;background:var(--border-strong);margin:0 auto 6px;flex:none}
+.sc-home .top{flex:none;padding:9px 15px 0}
+.sc-home .st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600}
+.sc-home /* location header — the anchor of the whole screen */
+.loc{display:flex;align-items:center;gap:6px;padding:3px 0 6px}
+.sc-home .loc .pin{width:19px;height:19px;border-radius:6px;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.55rem;flex:none}
+.sc-home .loc .k{display:none}
+.sc-home .loc .v{font-size:.68rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:center;gap:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:168px}
+.sc-home .loc .v i{font-style:normal;font-size:.53rem;color:var(--text-2)}
+.sc-home .loc .av{margin-left:auto;width:23px;height:23px;border-radius:50%;background:var(--surface);
+  display:grid;place-items:center;font-size:.6rem;font-weight:600;color:var(--text-2);flex:none}
+.sc-home .srch{background:var(--surface);border-radius:99px;padding:7px 13px;display:flex;align-items:center;gap:8px;
+  font-size:.7rem;color:var(--text-3);font-weight:var(--body-weight)}
+.sc-home .body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+.sc-home .shead{display:flex;align-items:baseline;justify-content:space-between;margin:7px 0 1px;flex:none}
+.sc-home .shead h4{font-size:.79rem;font-weight:600;letter-spacing:-.025em}
+.sc-home .shead .ct{font-size:.62rem;color:var(--text-2);font-weight:var(--body-weight)}
+.sc-home .ssub{font-size:.59rem;color:var(--text-2);font-weight:var(--body-weight);margin-bottom:4px;flex:none}
+.sc-home /* the restaurant row — distance is the point */
+.rrow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center;flex:none}
+.sc-home .rrow:last-child{border-bottom:none}
+.sc-home .rrow .th{width:46px;height:46px;border-radius:11px;background:var(--surface);flex:none;
+  display:grid;place-items:center;font-size:1rem;position:relative}
+.sc-home .rrow .tx{flex:1;min-width:0}
+.sc-home .rrow .nm{font-size:.74rem;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.sc-home .rrow .cu{font-size:.59rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-home .facts{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:.6rem;color:var(--text-2);font-weight:var(--body-weight)}
+.sc-home .facts b{color:var(--text);font-weight:600}
+.sc-home .facts .sep{width:2.5px;height:2.5px;border-radius:50%;background:var(--border-strong)}
+.sc-home .near{color:var(--accent-text);font-weight:600}
+.sc-home .tags{display:flex;gap:4px;margin-top:4px}
+.sc-home .tg{font-size:.53rem;font-weight:600;border-radius:5px;padding:1px 6px;background:var(--surface);color:var(--text-2)}
+.sc-home .tg.free{background:var(--accent);color:var(--on-accent)}
+.sc-home .tg.new{background:var(--surface);color:var(--accent-text)}
+.sc-home .tg.busy{background:var(--danger-bg);color:var(--danger)}
+.sc-home .rrow.shut .th, .sc-home .rrow.shut .tx{opacity:.44}
+.sc-home .shutlab{font-size:.58rem;color:var(--text-2);font-weight:600;margin-top:3px}
+.sc-home /* sheets */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-radius:22px 22px 0 0;
+  padding:14px 15px 10px;box-shadow:0 -12px 40px rgba(10,11,9,.28);z-index:5}
+.sc-home .grab{width:34px;height:4px;border-radius:99px;background:var(--border-strong);margin:0 auto 13px}
+.sc-home .sh{font-size:.92rem;font-weight:600;letter-spacing:-.03em;margin-bottom:11px}
+.sc-home .arow{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border)}
+.sc-home .arow:last-of-type{border-bottom:none}
+.sc-home .arow .ic{width:30px;height:30px;border-radius:10px;background:var(--surface);display:grid;place-items:center;font-size:.74rem;flex:none}
+.sc-home .arow .ic.on{background:var(--accent);color:var(--on-accent)}
+.sc-home .arow .nm2{font-size:.74rem;font-weight:500}
+.sc-home .arow .ds2{font-size:.61rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:1px}
+.sc-home .arow .tick{margin-left:auto;color:var(--accent-text);font-size:.8rem}
+.sc-home .btn{border-radius:99px;padding:12px;text-align:center;font-weight:600;font-size:.8rem;
+  background:var(--accent);color:var(--on-accent)}
+.sc-home .btn.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:500}
+.sc-home .btn.gh{background:transparent;color:var(--text-2);font-weight:400}
+.sc-home /* empty */
+.eic{width:58px;height:58px;border-radius:19px;background:var(--surface);display:grid;place-items:center;
+  font-size:1.35rem;margin-bottom:14px}
+.sc-home .eh{font-size:1.14rem;font-weight:600;letter-spacing:-.035em;line-height:1.16}
+.sc-home .ep{font-size:.73rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.6;margin-top:9px}
+.sc-home .card{background:var(--surface);border-radius:14px;padding:11px 12px;margin-top:14px}
+.sc-home .card .k2{font-size:.61rem;color:var(--text-2);font-weight:var(--body-weight)}
+.sc-home .card .v2{font-size:.73rem;font-weight:500;margin-top:2px;line-height:1.45}
+.sc-home .tabs{display:flex;justify-content:space-around;align-items:center;border-top:1px solid var(--border);
+  padding:7px 6px 3px;flex:none;background:var(--bg)}
+.sc-home .tabs i{font-style:normal;font-size:.6rem;color:var(--text-3);font-weight:400;text-align:center}
+.sc-home .tabs i.on{color:var(--text);font-weight:600}
+@media (max-width:640px){.sc-home .rail{justify-content:center}}
+
+/* ===== restaurant ===== */
+.sc-restaurant{
+  --ink:#0E0F0D; --ink2:#242621; --ink3:#3A3C38;
+  --paper:#FFFFFF; --wash:#F4F4F1; --line:#E8E8E5;
+  --muted:#8E9189; --dim:#6E7169;
+  --acid:#C6F432; --acid-ink:#12180A;
+  --red:#FF6B4A;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+.sc-restaurant *{box-sizing:border-box;margin:0;padding:0}
+.sc-restaurant{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.sc-restaurant .head{max-width:1500px;margin:0 auto 30px}
+.sc-restaurant .head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.sc-restaurant .head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:74ch}
+.sc-restaurant .rail{max-width:1500px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap}
+.sc-restaurant .item{width:262px}
+.sc-restaurant .item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.sc-restaurant .item .t{font-size:.9rem;font-weight:500;margin-bottom:11px;letter-spacing:-.02em}
+.sc-restaurant .phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.sc-restaurant .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+.sc-restaurant .hbar{width:78px;height:3.5px;border-radius:99px;background:#C6C7C2;margin:0 auto 7px;flex:none}
+.sc-restaurant /* hero */
+.hero{height:150px;flex:none;position:relative;background:var(--wash)}
+.sc-restaurant .hero img{width:100%;height:100%;object-fit:cover}
+.sc-restaurant .hero .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,15,13,.42) 0%,rgba(14,15,13,0) 42%)}
+.sc-restaurant .hero .st{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;
+  font-size:.58rem;font-weight:600;padding:9px 15px 0;color:#fff}
+.sc-restaurant .hbtns{position:absolute;top:30px;left:12px;right:12px;display:flex;justify-content:space-between}
+.sc-restaurant .rnd{width:29px;height:29px;border-radius:50%;background:rgba(14,15,13,.62);backdrop-filter:blur(6px);
+  color:#fff;display:grid;place-items:center;font-size:.78rem}
+.sc-restaurant /* info block */
+.info{padding:13px 15px 0;flex:none}
+.sc-restaurant .rname{font-size:1.15rem;font-weight:600;letter-spacing:-.035em;line-height:1.15}
+.sc-restaurant .rmeta{font-size:.68rem;color:var(--muted);font-weight:300;margin-top:3px}
+.sc-restaurant .rstats{display:flex;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin-top:11px;padding:9px 0}
+.sc-restaurant .rstat{flex:1;text-align:center;border-right:1px solid var(--line)}
+.sc-restaurant .rstat:last-child{border-right:none}
+.sc-restaurant .rstat b{display:block;font-size:.78rem;font-weight:600}
+.sc-restaurant .rstat span{font-size:.55rem;color:var(--muted)}
+.sc-restaurant .notice{background:var(--wash);border-radius:11px;padding:8px 10px;margin-top:10px;
+  font-size:.63rem;color:#5F6259;font-weight:300;line-height:1.5}
+.sc-restaurant .notice b{font-weight:600;color:var(--ink)}
+.sc-restaurant /* sticky tabs */
+.tabs{display:flex;gap:16px;padding:11px 15px 9px;border-bottom:1px solid var(--line);flex:none;
+  overflow:hidden;background:var(--paper)}
+.sc-restaurant .tabs a{font-size:.72rem;font-weight:400;color:var(--muted);white-space:nowrap;text-decoration:none;padding-bottom:6px}
+.sc-restaurant .tabs a.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--acid)}
+.sc-restaurant /* stuck header */
+.stuck{background:var(--paper);border-bottom:1px solid var(--line);flex:none;padding:9px 12px 0}
+.sc-restaurant .stuck .st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600;margin-bottom:7px}
+.sc-restaurant .stuck .bar{display:flex;align-items:center;gap:10px;padding-bottom:9px}
+.sc-restaurant .stuck .rnd2{width:27px;height:27px;border-radius:50%;background:var(--wash);display:grid;place-items:center;font-size:.75rem}
+.sc-restaurant .stuck .nm{font-size:.82rem;font-weight:600;letter-spacing:-.02em}
+.sc-restaurant /* menu */
+.menu{flex:1;padding:0 15px;overflow:hidden}
+.sc-restaurant .sechead{font-size:.82rem;font-weight:600;letter-spacing:-.02em;padding:13px 0 3px}
+.sc-restaurant .seccount{font-size:.6rem;color:var(--muted);font-weight:300;margin-bottom:6px}
+.sc-restaurant .mrow{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.sc-restaurant .mrow:last-child{border-bottom:none}
+.sc-restaurant .mrow .tx{flex:1;min-width:0}
+.sc-restaurant .mrow .nm{font-size:.76rem;font-weight:500;letter-spacing:-.01em;line-height:1.3}
+.sc-restaurant .mrow .ds{font-size:.62rem;color:var(--muted);font-weight:300;line-height:1.5;margin-top:3px}
+.sc-restaurant .mrow .pr{font-size:.76rem;font-weight:600;margin-top:5px}
+.sc-restaurant .mrow .th{width:62px;height:62px;border-radius:12px;overflow:hidden;background:var(--wash);flex:none;position:relative}
+.sc-restaurant .mrow .th img{width:100%;height:100%;object-fit:cover}
+.sc-restaurant .mrow .add{position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;border-radius:50%;
+  background:var(--ink);color:#fff;display:grid;place-items:center;font-size:.72rem;border:2px solid #fff}
+.sc-restaurant .mrow .add.acid{background:var(--acid);color:var(--acid-ink)}
+.sc-restaurant .tagline{display:flex;gap:5px;margin-top:5px}
+.sc-restaurant .tg{font-size:.55rem;font-weight:500;background:var(--wash);border-radius:6px;padding:2px 6px}
+.sc-restaurant .tg.hot{background:#FFEDE8;color:#C0391C}
+.sc-restaurant .tg.top{background:var(--acid);color:var(--acid-ink)}
+.sc-restaurant /* sold out */
+.mrow.off .tx{opacity:.42}
+.sc-restaurant .mrow.off .th{opacity:.42}
+.sc-restaurant .soldout{font-size:.58rem;font-weight:600;color:var(--red);margin-top:5px}
+.sc-restaurant /* bottom cart bar */
+.cartbar{position:absolute;left:11px;right:11px;bottom:14px;background:var(--ink);color:#fff;
+  border-radius:99px;padding:11px 13px 11px 16px;display:flex;align-items:center;gap:10px;z-index:5}
+.sc-restaurant .cartbar .ct{width:24px;height:24px;border-radius:50%;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:.65rem;font-weight:600;flex:none}
+.sc-restaurant .cartbar .lb{font-size:.74rem;font-weight:500}
+.sc-restaurant .cartbar .pr{margin-left:auto;font-size:.76rem;font-weight:600}
+.sc-restaurant /* closed overlay */
+.closed{position:absolute;left:11px;right:11px;bottom:14px;background:var(--ink);color:#fff;
+  border-radius:18px;padding:14px;z-index:5}
+.sc-restaurant .closed .h{font-size:.85rem;font-weight:600}
+.sc-restaurant .closed .p{font-size:.65rem;color:var(--muted);font-weight:300;margin-top:4px;line-height:1.5}
+.sc-restaurant .closed .btn{background:var(--acid);color:var(--acid-ink);border-radius:99px;padding:11px;
+  text-align:center;font-weight:600;font-size:.78rem;margin-top:11px}
+.sc-restaurant /* search */
+.sbar{display:flex;align-items:center;gap:8px;background:var(--wash);border-radius:99px;
+  padding:10px 14px;font-size:.75rem;color:var(--muted);font-weight:300}
+.sc-restaurant .sbar .v{color:var(--ink);font-weight:400}
+.sc-restaurant .chips{display:flex;gap:6px;overflow:hidden;margin-top:11px}
+.sc-restaurant .chip{flex:none;border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:.66rem;font-weight:500}
+.sc-restaurant .chip.on{background:var(--acid);border-color:var(--acid)}
+.sc-restaurant .reshead{font-size:.65rem;color:var(--muted);font-weight:300;margin:13px 0 3px}
+.sc-restaurant .empty{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:left}
+.sc-restaurant .eic{width:56px;height:56px;border-radius:18px;background:var(--wash);display:grid;place-items:center;
+  font-size:1.35rem;margin-bottom:14px}
+.sc-restaurant .eh{font-size:1.1rem;font-weight:600;letter-spacing:-.03em;line-height:1.15}
+.sc-restaurant .ep{font-size:.72rem;color:var(--muted);font-weight:300;line-height:1.6;margin-top:8px}
+.sc-restaurant .ebtn{background:var(--ink);color:#fff;border-radius:99px;padding:12px;text-align:center;
+  font-weight:500;font-size:.78rem;margin-top:16px}
+.sc-restaurant .st2{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600;padding:9px 15px 0;flex:none}
+.sc-restaurant .body{flex:1;padding:11px 15px 0;display:flex;flex-direction:column;overflow:hidden}
+@media (max-width:640px){.sc-restaurant .rail{justify-content:center}}
+
+/* ===== ordering ===== */
+.sc-ordering{
+  --ink:#0E0F0D;
+  --ink-2:#1B1D1A;
+  --paper:#FFFFFF;
+  --wash:#F4F4F2;
+  --line:#E8E8E5;
+  --muted:#8E9189;
+  --acid:#C6F432;        /* neon lime, from the reference */
+  --acid-ink:#12180A;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+.sc-ordering *{box-sizing:border-box;margin:0;padding:0}
+.sc-ordering{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.sc-ordering .head{max-width:1460px;margin:0 auto 32px}
+.sc-ordering .head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.035em}
+.sc-ordering .head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:72ch;font-weight:400}
+.sc-ordering .rail{max-width:1460px;margin:0 auto;display:flex;gap:26px;flex-wrap:wrap}
+.sc-ordering .item{width:274px}
+.sc-ordering .item .n{font-size:.72rem;font-weight:600;color:#7C7F76;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.sc-ordering .item .t{font-size:.93rem;font-weight:500;margin-bottom:12px}
+.sc-ordering .phone{width:274px;height:593px;border-radius:34px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 20px 44px rgba(10,11,9,.22);position:relative;background:var(--paper)}
+.sc-ordering .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+.sc-ordering .hbar{width:80px;height:3.5px;border-radius:99px;background:#C6C7C2;margin:0 auto 7px;flex:none}
+.sc-ordering .hbar.lt{background:#3A3C38}
+.sc-ordering /* black header block */
+.blk{background:var(--ink);color:#fff;border-radius:0 0 24px 24px;padding:8px 15px 15px;flex:none}
+.sc-ordering .blk .st{display:flex;justify-content:space-between;font-size:.6rem;font-weight:600;margin-bottom:11px}
+.sc-ordering .brand{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sc-ordering .brand .nm{font-size:1.22rem;font-weight:300;letter-spacing:-.01em}
+.sc-ordering .brand .nm b{font-weight:600}
+.sc-ordering .cart{background:var(--acid);color:var(--acid-ink);border-radius:9px;padding:5px 10px;font-size:.68rem;font-weight:600;
+  display:flex;align-items:center;gap:5px}
+.sc-ordering .srch{background:#242621;border-radius:99px;padding:9px 14px;display:flex;align-items:center;gap:8px;
+  font-size:.71rem;color:#7E8178;font-weight:300}
+.sc-ordering /* body */
+.body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+.sc-ordering .quick{padding:4px 0 2px}
+.sc-ordering .qrow{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.75rem;font-weight:400}
+.sc-ordering .qrow .ic{width:15px;text-align:center;font-size:.78rem;color:var(--muted)}
+.sc-ordering .qrow:last-child{border-bottom:none}
+.sc-ordering .sect{display:flex;align-items:center;justify-content:space-between;margin:12px 0 9px}
+.sc-ordering .sect h4{font-size:.85rem;font-weight:600;letter-spacing:-.015em}
+.sc-ordering .sect .all{font-size:.65rem;color:var(--muted);font-weight:400}
+.sc-ordering .chips{display:flex;gap:6px;overflow:hidden}
+.sc-ordering .chip{flex:none;border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:.67rem;font-weight:500;
+  display:flex;align-items:center;gap:5px;background:#fff}
+.sc-ordering .chip.on{background:var(--acid);border-color:var(--acid)}
+.sc-ordering .dot{width:7px;height:7px;border-radius:50%}
+.sc-ordering .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sc-ordering .pcard{border:1px solid var(--line);border-radius:15px;padding:7px;background:#fff}
+.sc-ordering .pcard .th{height:76px;border-radius:11px;overflow:hidden;background:var(--wash)}
+.sc-ordering .pcard .th img{width:100%;height:100%;object-fit:cover}
+.sc-ordering .pcard .nm{font-size:.68rem;font-weight:500;margin-top:7px;line-height:1.3}
+.sc-ordering .pcard .rw{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.sc-ordering .pcard .pr{font-size:.72rem;font-weight:600}
+.sc-ordering .pcard .add{width:19px;height:19px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:.68rem}
+.sc-ordering .btn{background:var(--ink);color:#fff;border-radius:99px;padding:13px;text-align:center;font-weight:500;font-size:.8rem}
+.sc-ordering .btn.acid{background:var(--acid);color:var(--acid-ink);font-weight:600}
+.sc-ordering /* item detail */
+.photo{height:196px;flex:none;background:var(--wash);position:relative}
+.sc-ordering .photo img{width:100%;height:100%;object-fit:cover}
+.sc-ordering .dtitle{font-size:1.08rem;font-weight:600;letter-spacing:-.03em;margin-top:12px}
+.sc-ordering .dsub{font-size:.68rem;color:var(--muted);margin-top:2px}
+.sc-ordering .tags{display:flex;gap:6px;margin-top:9px}
+.sc-ordering .stats{display:flex;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:11px 0;margin-top:12px}
+.sc-ordering .stat{text-align:center;flex:1}
+.sc-ordering .stat b{display:block;font-size:.82rem;font-weight:600}
+.sc-ordering .stat span{font-size:.55rem;color:var(--muted)}
+.sc-ordering .ing{margin-top:11px}
+.sc-ordering .ing h5{font-size:.72rem;font-weight:600;margin-bottom:5px}
+.sc-ordering .ing p{font-size:.66rem;color:var(--muted);line-height:1.6;font-weight:300}
+.sc-ordering .qtybar{display:flex;align-items:center;gap:11px;margin-top:auto;padding:10px 0 9px}
+.sc-ordering .qty{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:99px;padding:8px 13px;font-size:.78rem;font-weight:500}
+.sc-ordering .qtybar .btn{flex:1;padding:12px}
+.sc-ordering /* cart */
+.crow{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--line)}
+.sc-ordering .crow .th{width:38px;height:38px;border-radius:10px;overflow:hidden;background:var(--wash);flex:none}
+.sc-ordering .crow .th img{width:100%;height:100%;object-fit:cover}
+.sc-ordering .crow .nm{font-size:.7rem;font-weight:500;line-height:1.3}
+.sc-ordering .crow .sz{font-size:.58rem;color:var(--muted)}
+.sc-ordering .crow .st{display:flex;align-items:center;gap:8px;font-size:.7rem;font-weight:500;margin-left:auto}
+.sc-ordering .crow .st i{font-style:normal;width:17px;height:17px;border-radius:50%;border:1px solid var(--line);
+  display:grid;place-items:center;font-size:.62rem}
+.sc-ordering .crow .pr{font-size:.72rem;font-weight:600;min-width:44px;text-align:right}
+.sc-ordering .promo{display:flex;align-items:center;justify-content:space-between;margin:11px 0;
+  border:1px dashed var(--line);border-radius:12px;padding:9px 11px}
+.sc-ordering .promo .code{font-size:.7rem;font-weight:500;letter-spacing:.02em}
+.sc-ordering .promo .ok{background:var(--acid);color:var(--acid-ink);border-radius:7px;padding:3px 9px;font-size:.58rem;font-weight:600}
+.sc-ordering .tot .ln{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);padding:4px 0;font-weight:300}
+.sc-ordering .tot .ln.big{color:var(--ink);font-size:.95rem;font-weight:600;border-top:1px solid var(--line);margin-top:6px;padding-top:9px}
+.sc-ordering /* tracking */
+.map{flex:1;position:relative;background:#EFEFEC;overflow:hidden}
+.sc-ordering .map svg{position:absolute;inset:0;width:100%;height:100%}
+.sc-ordering .backb{position:absolute;top:10px;left:12px;background:var(--ink);color:#fff;border-radius:99px;
+  padding:6px 13px;font-size:.66rem;font-weight:500;z-index:3;display:flex;align-items:center;gap:6px}
+.sc-ordering .tcard{position:absolute;left:11px;right:11px;bottom:11px;background:var(--ink);color:#fff;border-radius:20px;padding:14px;z-index:3}
+.sc-ordering .tcard .eta{font-size:.76rem;font-weight:600}
+.sc-ordering .tcard .sub{font-size:.62rem;color:#8E9189;margin-top:2px;font-weight:300}
+.sc-ordering .prog{display:flex;align-items:center;gap:5px;margin:13px 0}
+.sc-ordering .prog .ic{width:22px;height:22px;border-radius:50%;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:.62rem;flex:none}
+.sc-ordering .prog .ic.off{background:#2C2E2A;color:#6E7169}
+.sc-ordering .prog .ln{flex:1;height:2px;border-radius:99px;background:var(--acid)}
+.sc-ordering .prog .ln.off{background:#2C2E2A}
+.sc-ordering .courier{display:flex;align-items:center;gap:9px;border-top:1px solid #262824;padding-top:11px}
+.sc-ordering .courier .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(140deg,#9BBF3A,#4E6318);flex:none}
+.sc-ordering .courier .nm{font-size:.72rem;font-weight:500}
+.sc-ordering .courier .rl{font-size:.58rem;color:#8E9189;font-weight:300}
+.sc-ordering .courier .acts{margin-left:auto;display:flex;gap:7px}
+.sc-ordering .courier .acts i{font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:.7rem}
+.sc-ordering .courier .acts .w{background:#fff;color:var(--ink)}
+.sc-ordering .courier .acts .a{background:var(--acid);color:var(--acid-ink)}
+@media (max-width:640px){.sc-ordering .rail{justify-content:center}}
+
+/* ===== checkout ===== */
+.sc-checkout{
+  --ink:#0E0F0D; --ink2:#242621; --ink3:#3A3C38;
+  --paper:#FFFFFF; --wash:#F4F4F1; --line:#E8E8E5;
+  --muted:#8E9189; --dim:#6E7169;
+  --acid:#C6F432; --acid-ink:#12180A;
+  --red:#FF6B4A;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+.sc-checkout *{box-sizing:border-box;margin:0;padding:0}
+.sc-checkout{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.sc-checkout .head{max-width:1500px;margin:0 auto 30px}
+.sc-checkout .head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.sc-checkout .head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:74ch}
+.sc-checkout .group{max-width:1500px;margin:0 auto 34px}
+.sc-checkout .group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #C9C9C4}
+.sc-checkout .rail{display:flex;gap:24px;flex-wrap:wrap}
+.sc-checkout .item{width:262px}
+.sc-checkout .item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.sc-checkout .item .t{font-size:.9rem;font-weight:500;margin-bottom:11px;letter-spacing:-.02em}
+.sc-checkout .phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.sc-checkout .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+.sc-checkout .scr.dk{background:var(--ink);color:#fff}
+.sc-checkout .hbar{width:78px;height:3.5px;border-radius:99px;background:#C6C7C2;margin:0 auto 7px;flex:none}
+.sc-checkout .hbar.lt{background:var(--ink3)}
+.sc-checkout .top{flex:none;padding:9px 15px 0}
+.sc-checkout .st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600}
+.sc-checkout .bar{display:flex;align-items:center;gap:10px;padding:9px 0 11px}
+.sc-checkout .rnd{width:27px;height:27px;border-radius:50%;background:var(--wash);display:grid;place-items:center;font-size:.75rem;flex:none}
+.sc-checkout .rnd.dk{background:var(--ink2);color:#fff}
+.sc-checkout .ttl{font-size:.86rem;font-weight:600;letter-spacing:-.025em}
+.sc-checkout .body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+.sc-checkout .sec{font-size:.63rem;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin:13px 0 7px}
+.sc-checkout .card{border:1px solid var(--line);border-radius:14px;padding:11px 12px}
+.sc-checkout .card.dk{border-color:var(--ink3);background:var(--ink2)}
+.sc-checkout .rowc{display:flex;align-items:flex-start;gap:10px}
+.sc-checkout .ic{width:30px;height:30px;border-radius:10px;background:var(--wash);display:grid;place-items:center;font-size:.76rem;flex:none}
+.sc-checkout .ic.acid{background:var(--acid);color:var(--acid-ink)}
+.sc-checkout .ic.dk{background:var(--ink3);color:#fff}
+.sc-checkout .nm{font-size:.75rem;font-weight:500;line-height:1.35}
+.sc-checkout .ds{font-size:.63rem;color:var(--muted);font-weight:300;line-height:1.5;margin-top:2px}
+.sc-checkout .edit{margin-left:auto;font-size:.63rem;font-weight:500;color:var(--muted);flex:none}
+.sc-checkout .note{background:var(--wash);border-radius:12px;padding:10px 12px;font-size:.68rem;color:var(--dim);font-weight:300;margin-top:7px}
+.sc-checkout .opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:7px}
+.sc-checkout .opt.on{border-color:var(--ink);border-width:1.5px}
+.sc-checkout .radio{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);margin-left:auto;flex:none}
+.sc-checkout .radio.on{border-color:var(--ink);border-width:5px}
+.sc-checkout .tot{margin-top:auto}
+.sc-checkout .ln{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);padding:3px 0;font-weight:300}
+.sc-checkout .ln.big{color:var(--ink);font-size:.95rem;font-weight:600;border-top:1px solid var(--line);margin-top:6px;padding:9px 0 0}
+.sc-checkout .btn{border-radius:99px;padding:13px;text-align:center;font-weight:600;font-size:.82rem;background:var(--acid);color:var(--acid-ink)}
+.sc-checkout .btn.dark{background:var(--ink);color:#fff;font-weight:500}
+.sc-checkout .btn.gh{background:transparent;color:var(--muted);font-weight:400}
+.sc-checkout .btn.out{background:transparent;border:1.5px solid var(--line);color:var(--ink);font-weight:500}
+.sc-checkout /* confirmation */
+.bigic{width:64px;height:64px;border-radius:20px;background:var(--acid);color:var(--acid-ink);
+  display:grid;place-items:center;font-size:1.6rem;flex:none}
+.sc-checkout .h{font-size:1.42rem;font-weight:600;line-height:1.12;letter-spacing:-.04em}
+.sc-checkout .p{font-size:.75rem;color:var(--muted);line-height:1.6;font-weight:300;margin-top:9px}
+.sc-checkout /* stepper */
+.steps{margin-top:16px}
+.sc-checkout .step{display:flex;gap:10px;align-items:flex-start;padding-bottom:13px;position:relative}
+.sc-checkout .step:last-child{padding-bottom:0}
+.sc-checkout .step .d{width:18px;height:18px;border-radius:50%;background:var(--ink3);display:grid;place-items:center;
+  font-size:.55rem;color:var(--dim);flex:none;z-index:2}
+.sc-checkout .step .d.on{background:var(--acid);color:var(--acid-ink)}
+.sc-checkout .step .line{position:absolute;left:8.5px;top:18px;bottom:-1px;width:1.5px;background:var(--ink3)}
+.sc-checkout .step .line.on{background:var(--acid)}
+.sc-checkout .step .tx .nm{font-size:.72rem;font-weight:500;color:#fff}
+.sc-checkout .step .tx .nm.off{color:var(--dim);font-weight:400}
+.sc-checkout .step .tx .ds{font-size:.6rem;color:var(--dim);font-weight:300;margin-top:1px}
+.sc-checkout /* rating */
+.stars{display:flex;gap:9px;justify-content:center;margin:16px 0 4px}
+.sc-checkout .stars span{font-size:1.55rem;color:var(--line)}
+.sc-checkout .stars span.on{color:var(--acid)}
+.sc-checkout .tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.sc-checkout .tg{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:.66rem;font-weight:500}
+.sc-checkout .tg.on{background:var(--acid);border-color:var(--acid)}
+.sc-checkout .tbox{background:var(--wash);border-radius:14px;padding:11px 12px;font-size:.68rem;color:var(--muted);
+  font-weight:300;min-height:60px;margin-top:11px}
+.sc-checkout .who{text-align:center;margin-top:4px}
+.sc-checkout .who .av{width:52px;height:52px;border-radius:50%;background:var(--wash);margin:0 auto 9px;
+  display:grid;place-items:center;font-size:.9rem;font-weight:600;color:var(--muted)}
+.sc-checkout .who .nm2{font-size:.88rem;font-weight:600;letter-spacing:-.02em}
+.sc-checkout .who .ds2{font-size:.65rem;color:var(--muted);font-weight:300;margin-top:2px}
+.sc-checkout /* history */
+.hrow{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:9px}
+.sc-checkout .hrow .hd{display:flex;align-items:center;gap:8px}
+.sc-checkout .hrow .th{width:34px;height:34px;border-radius:10px;background:var(--wash);flex:none;
+  display:grid;place-items:center;font-size:.8rem}
+.sc-checkout .hrow .k{font-size:.75rem;font-weight:600;letter-spacing:-.01em}
+.sc-checkout .hrow .dt{font-size:.6rem;color:var(--muted);font-weight:300}
+.sc-checkout .pill{margin-left:auto;font-size:.55rem;font-weight:600;border-radius:6px;padding:3px 7px;background:var(--wash)}
+.sc-checkout .pill.ok{background:var(--acid);color:var(--acid-ink)}
+.sc-checkout .pill.bad{background:#FFEDE8;color:#C0391C}
+.sc-checkout .hrow .items{font-size:.63rem;color:var(--muted);font-weight:300;line-height:1.5;margin-top:7px}
+.sc-checkout .hrow .ft{display:flex;align-items:center;gap:8px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+.sc-checkout .hrow .amt{font-size:.75rem;font-weight:600}
+.sc-checkout .mini{margin-left:auto;border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:.63rem;font-weight:500}
+.sc-checkout .mini.acid{background:var(--acid);border-color:var(--acid)}
+.sc-checkout .empty{flex:1;display:flex;flex-direction:column;justify-content:center}
+.sc-checkout .eic{width:56px;height:56px;border-radius:18px;background:var(--wash);display:grid;place-items:center;font-size:1.3rem;margin-bottom:14px}
+@media (max-width:640px){.sc-checkout .rail{justify-content:center}}
+
+/* ===== account ===== */
+.sc-account{
+  --ink:#0E0F0D; --ink2:#242621; --ink3:#3A3C38;
+  --paper:#FFFFFF; --wash:#F4F4F1; --line:#E8E8E5;
+  --muted:#8E9189; --dim:#6E7169;
+  --acid:#C6F432; --acid-ink:#12180A;
+  --red:#FF6B4A; --redbg:#FFEDE8; --reddk:#C0391C;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+.sc-account *{box-sizing:border-box;margin:0;padding:0}
+.sc-account{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.sc-account .head{max-width:1500px;margin:0 auto 30px}
+.sc-account .head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.sc-account .head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:74ch}
+.sc-account .group{max-width:1500px;margin:0 auto 34px}
+.sc-account .group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid #C9C9C4}
+.sc-account .group>.gp{font-size:.85rem;color:#5F6259;margin:-2px 0 14px;max-width:70ch}
+.sc-account .rail{display:flex;gap:24px;flex-wrap:wrap}
+.sc-account .item{width:262px}
+.sc-account .item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.sc-account .item .t{font-size:.9rem;font-weight:500;margin-bottom:11px;letter-spacing:-.02em}
+.sc-account .phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.sc-account .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+.sc-account .scr.dk{background:var(--ink);color:#fff}
+.sc-account .hbar{width:78px;height:3.5px;border-radius:99px;background:#C6C7C2;margin:0 auto 7px;flex:none}
+.sc-account .hbar.lt{background:var(--ink3)}
+.sc-account .top{flex:none;padding:9px 15px 0}
+.sc-account .st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600}
+.sc-account .bar{display:flex;align-items:center;gap:10px;padding:9px 0 11px}
+.sc-account .rnd{width:27px;height:27px;border-radius:50%;background:var(--wash);display:grid;place-items:center;font-size:.75rem;flex:none}
+.sc-account .rnd.dk{background:var(--ink2);color:#fff}
+.sc-account .ttl{font-size:.86rem;font-weight:600;letter-spacing:-.025em}
+.sc-account .body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+.sc-account .sec{font-size:.63rem;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin:14px 0 7px}
+.sc-account .row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+.sc-account .row:last-child{border-bottom:none}
+.sc-account .ic{width:31px;height:31px;border-radius:10px;background:var(--wash);display:grid;place-items:center;font-size:.76rem;flex:none}
+.sc-account .ic.acid{background:var(--acid);color:var(--acid-ink)}
+.sc-account .nm{font-size:.75rem;font-weight:500;line-height:1.35}
+.sc-account .ds{font-size:.62rem;color:var(--muted);font-weight:300;line-height:1.5;margin-top:2px}
+.sc-account .chev{margin-left:auto;color:#C6C7C2;font-size:.8rem;flex:none}
+.sc-account .tick{margin-left:auto;font-size:.72rem;color:var(--acid-ink);background:var(--acid);width:19px;height:19px;
+  border-radius:50%;display:grid;place-items:center;flex:none}
+.sc-account /* profile head */
+.prof{display:flex;align-items:center;gap:12px;padding:4px 0 2px}
+.sc-account .prof .av{width:52px;height:52px;border-radius:50%;background:var(--wash);display:grid;place-items:center;
+  font-size:1.05rem;font-weight:600;color:var(--muted);flex:none}
+.sc-account .prof .nm2{font-size:1.05rem;font-weight:600;letter-spacing:-.03em}
+.sc-account .prof .ph{font-size:.68rem;color:var(--muted);font-weight:300;margin-top:1px}
+.sc-account /* switch */
+.sw{margin-left:auto;width:36px;height:21px;border-radius:99px;background:var(--line);position:relative;flex:none}
+.sc-account .sw i{position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sc-account .sw.on{background:var(--acid)}
+.sc-account .sw.on i{left:auto;right:2.5px}
+.sc-account /* field */
+.lab{font-size:.63rem;font-weight:500;color:var(--muted);margin-bottom:6px}
+.sc-account .field{background:var(--wash);border-radius:14px;padding:12px 13px;font-size:.78rem}
+.sc-account .field .ph2{color:#B4B9B2;font-weight:300}
+.sc-account .tagrow{display:flex;gap:6px;margin-top:8px}
+.sc-account .tg{border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:.66rem;font-weight:500}
+.sc-account .tg.on{background:var(--acid);border-color:var(--acid)}
+.sc-account .btn{border-radius:99px;padding:13px;text-align:center;font-weight:600;font-size:.82rem;background:var(--acid);color:var(--acid-ink)}
+.sc-account .btn.dark{background:var(--ink);color:#fff;font-weight:500}
+.sc-account .btn.out{background:transparent;border:1.5px solid var(--line);color:var(--ink);font-weight:500}
+.sc-account .btn.gh{background:transparent;color:var(--muted);font-weight:400}
+.sc-account .btn.dang{background:transparent;color:var(--reddk);font-weight:500}
+.sc-account /* problem states */
+.bigic{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:1.55rem;flex:none}
+.sc-account .bigic.acid{background:var(--acid);color:var(--acid-ink)}
+.sc-account .bigic.warn{background:var(--redbg);color:var(--reddk)}
+.sc-account .bigic.mut{background:var(--ink2);color:var(--muted)}
+.sc-account .h{font-size:1.34rem;font-weight:600;line-height:1.14;letter-spacing:-.04em}
+.sc-account .p{font-size:.75rem;color:var(--muted);line-height:1.6;font-weight:300;margin-top:9px}
+.sc-account .p.lt{color:var(--muted)}
+.sc-account .card{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-top:14px}
+.sc-account .card.dk{border-color:var(--ink3);background:var(--ink2)}
+.sc-account .card .k{font-size:.63rem;color:var(--muted);font-weight:300}
+.sc-account .card .v{font-size:.75rem;font-weight:500;margin-top:2px}
+.sc-account .opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:7px}
+.sc-account .opt.dk{border-color:var(--ink3)}
+.sc-account .rd{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);margin-left:auto;flex:none}
+.sc-account .rd.on{border-color:var(--acid);border-width:5px}
+@media (max-width:640px){.sc-account .rail{justify-content:center}}
+
+/* ===== modes ===== */
+.sc-modes /* ============================================================
+   SEMANTIC TOKENS — identical structure, .sc-modes two palettes
+   ============================================================ */
+.t-dark{
+  --bg:#0E0F0D; --surface:#1A1C19; --raised:#242621;
+  --border:#2E312C; --border-strong:#3A3C38;
+  --text:#FFFFFF; --text-2:#8E9189; --text-3:#6E7169;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#C6F432;
+  --danger:#FF6B4A; --danger-bg:rgba(255,107,74,.14); --danger-text:#FF8E74;
+  --body-weight:300;
+  --shadow:none;
+}
+.sc-modes .t-light{
+  --bg:#FFFFFF; --surface:#F6F7F3; --raised:#EDEFE8;
+  --border:#E4E7DE; --border-strong:#D3D7CB;
+  --text:#0E0F0D; --text-2:#6B6F66; --text-3:#9A9E93;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#4E6B00;
+  --danger:#C0391C; --danger-bg:#FFEDE8; --danger-text:#C0391C;
+  --body-weight:400;
+  --shadow:0 4px 12px rgba(10,11,9,.08);
+}
+.sc-modes *{box-sizing:border-box;margin:0;padding:0}
+.sc-modes{background:#D8D8D3;font-family:'DM Sans',system-ui,sans-serif;color:#0E0F0D;padding:42px 20px 66px}
+.sc-modes .head{max-width:1360px;margin:0 auto 26px}
+.sc-modes .head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.sc-modes .head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:76ch}
+.sc-modes /* swatches */
+.swatches{max-width:1360px;margin:0 auto 34px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sc-modes .sw{border-radius:14px;padding:18px;background:#fff}
+.sc-modes .sw h3{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;margin-bottom:12px}
+.sc-modes .chipset{display:flex;flex-wrap:wrap;gap:8px}
+.sc-modes .cs{border:1px solid #E0E0DB;border-radius:9px;overflow:hidden;width:96px}
+.sc-modes .cs .box{height:38px}
+.sc-modes .cs .lb{font-size:.58rem;padding:5px 6px;line-height:1.35}
+.sc-modes .cs .lb b{display:block;font-weight:600}
+.sc-modes .cs .lb span{color:#8A8D85;font-family:ui-monospace,monospace;font-size:.55rem}
+.sc-modes .note{max-width:1360px;margin:0 auto 30px;background:#fff;border-left:3px solid #C6F432;
+  border-radius:0 10px 10px 0;padding:14px 16px;font-size:.86rem;color:#3F433C;line-height:1.6}
+.sc-modes .note b{font-weight:600;color:#0E0F0D}
+.sc-modes /* rails */
+.group{max-width:1360px;margin:0 auto 30px}
+.sc-modes .group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #C2C2BD}
+.sc-modes .rail{display:flex;gap:22px;flex-wrap:wrap}
+.sc-modes .item{width:250px}
+.sc-modes .item .t{font-size:.86rem;font-weight:500;margin-bottom:4px;letter-spacing:-.02em}
+.sc-modes .item .m{font-size:.66rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px}
+.sc-modes .item .m.d{color:#4A4D46}
+.sc-modes .item .m.l{color:#8A8D85}
+.sc-modes .phone{width:250px;height:542px;border-radius:32px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 16px 36px rgba(10,11,9,.2);position:relative}
+.sc-modes .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);color:var(--text);overflow:hidden}
+.sc-modes .hbar{width:74px;height:3.5px;border-radius:99px;background:var(--border-strong);margin:0 auto 7px;flex:none}
+.sc-modes .top{flex:none;padding:9px 14px 0}
+.sc-modes .st{display:flex;justify-content:space-between;font-size:.56rem;font-weight:600}
+.sc-modes .bar{display:flex;align-items:center;gap:10px;padding:9px 0 11px}
+.sc-modes .rnd{width:26px;height:26px;border-radius:50%;background:var(--raised);display:grid;place-items:center;
+  font-size:.72rem;flex:none;color:var(--text)}
+.sc-modes .ttl{font-size:.83rem;font-weight:600;letter-spacing:-.025em}
+.sc-modes .body{flex:1;padding:0 14px;overflow:hidden;display:flex;flex-direction:column}
+.sc-modes .h{font-size:1.3rem;font-weight:600;line-height:1.14;letter-spacing:-.04em}
+.sc-modes .p{font-size:.73rem;color:var(--text-2);line-height:1.6;font-weight:var(--body-weight);margin-top:8px}
+.sc-modes .sec{font-size:.61rem;font-weight:600;color:var(--text-2);letter-spacing:.05em;text-transform:uppercase;margin:13px 0 7px}
+.sc-modes .field{background:var(--surface);border-radius:15px;padding:12px 13px;display:flex;align-items:center;gap:9px;font-size:.8rem}
+.sc-modes .field .cc{font-weight:600}
+.sc-modes .field .dv{width:1px;height:13px;background:var(--border-strong)}
+.sc-modes .field .ph{color:var(--text-3);font-weight:var(--body-weight)}
+.sc-modes .btn{border-radius:99px;padding:12px;text-align:center;font-weight:600;font-size:.8rem;
+  background:var(--accent);color:var(--on-accent)}
+.sc-modes .btn.sec{background:var(--raised);color:var(--text);font-weight:500}
+.sc-modes .btn.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:500}
+.sc-modes .btn.gh{background:transparent;color:var(--text-2);font-weight:400}
+.sc-modes .card{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:11px 12px;box-shadow:var(--shadow)}
+.sc-modes .rowc{display:flex;align-items:flex-start;gap:10px}
+.sc-modes .ic{width:30px;height:30px;border-radius:10px;background:var(--raised);display:grid;place-items:center;
+  font-size:.74rem;flex:none;color:var(--text)}
+.sc-modes .ic.acid{background:var(--accent);color:var(--on-accent)}
+.sc-modes .nm{font-size:.74rem;font-weight:500;line-height:1.35}
+.sc-modes .ds{font-size:.62rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.5;margin-top:2px}
+.sc-modes .lk{color:var(--accent-text);font-weight:500}
+.sc-modes .chev{margin-left:auto;color:var(--text-3);font-size:.78rem}
+.sc-modes .otp{display:flex;gap:6px}
+.sc-modes .otp span{flex:1;aspect-ratio:1/1.14;border-radius:13px;display:grid;place-items:center;
+  font-size:.98rem;font-weight:600;background:var(--surface);color:var(--text)}
+.sc-modes .otp span.on{background:var(--accent);color:var(--on-accent)}
+.sc-modes .otp span.cur{border:1.5px solid var(--accent-text)}
+.sc-modes .ln{display:flex;justify-content:space-between;font-size:.69rem;color:var(--text-2);padding:3px 0;font-weight:var(--body-weight)}
+.sc-modes .ln.big{color:var(--text);font-size:.92rem;font-weight:600;border-top:1px solid var(--border);margin-top:6px;padding:9px 0 0}
+.sc-modes .row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.sc-modes .row:last-child{border-bottom:none}
+.sc-modes .sw2{margin-left:auto;width:35px;height:20px;border-radius:99px;background:var(--border-strong);position:relative;flex:none}
+.sc-modes .sw2 i{position:absolute;top:2.5px;left:2.5px;width:15px;height:15px;border-radius:50%;background:#fff}
+.sc-modes .sw2.on{background:var(--accent)}
+.sc-modes .sw2.on i{left:auto;right:2.5px;background:var(--on-accent)}
+.sc-modes .bigic{width:60px;height:60px;border-radius:20px;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:1.5rem;flex:none}
+.sc-modes .bigic.warn{background:var(--danger-bg);color:var(--danger-text)}
+.sc-modes .tabs{display:flex;gap:15px;padding:10px 14px 0;border-bottom:1px solid var(--border);flex:none}
+.sc-modes .tabs a{font-size:.7rem;font-weight:var(--body-weight);color:var(--text-2);text-decoration:none;padding-bottom:7px}
+.sc-modes .tabs a.on{color:var(--text);font-weight:600;border-bottom:2px solid var(--accent)}
+.sc-modes .mrow{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.sc-modes .mrow .th{width:52px;height:52px;border-radius:12px;background:var(--raised);flex:none;
+  display:grid;place-items:center;font-size:1rem}
+.sc-modes .mrow .pr{font-size:.73rem;font-weight:600;margin-top:4px}
+.sc-modes .add{width:21px;height:21px;border-radius:50%;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.7rem;margin-left:auto;flex:none}
+@media (max-width:1000px){.sc-modes .swatches{grid-template-columns:1fr}}
+@media (max-width:640px){.sc-modes .rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="mast">
+  <div class="wrap">
+    <div class="kicker">M-Kart · Makurdi</div>
+    <h1>Customer app —<br>complete design</h1>
+    <p>Every screen of the customer-facing mobile app, including the states that most delivery apps skip. Android first, React Native. This document is the design spec; pair it with <code style="background:#242621;color:#C6F432">theme.v2.ts</code> for the values and <code style="background:#242621;color:#C6F432">mkart-handoff.md</code> for the behaviour rules.</p>
+    <div class="meta">
+      <div><b>~56</b><span>screens</span></div>
+      <div><b>7</b><span>sections</span></div>
+      <div><b>DM Sans</b><span>single family</span></div>
+      <div><b>#C6F432</b><span>accent</span></div>
+      <div><b>390px</b><span>design width</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav"><div class="wrap">
+  <a href="#read">Read me first</a>
+  <a href="#tokens">Tokens</a>
+  <a href="#auth">Sign up &amp; sign in</a>
+<a href="#home">Home feed</a>
+<a href="#restaurant">Restaurant &amp; menu</a>
+<a href="#ordering">Dish, cart &amp; tracking</a>
+<a href="#checkout">Checkout &amp; after the order</a>
+<a href="#account">Account &amp; problem states</a>
+<a href="#modes">Light &amp; dark proof</a>
+</div></div>
+
+<div class="readme" id="read">
+  <div class="wrap">
+    <h2>Read me first</h2>
+    <p class="lead">The phone frames are mockup furniture &mdash; the bezel, status bar and home indicator are not part of the design. Your screen starts at the safe-area inset. Everything else on screen is real and specified.</p>
+
+    <div class="cols">
+      <div class="col">
+        <h3>How to read this</h3>
+        <p>Right-click any element and choose <b>Inspect</b>. The Computed panel gives exact hex, px, weights, padding and radii &mdash; the same information a Figma inspect panel would.</p>
+        <p>Set device mode to <code>390px</code> wide to see true phone rendering rather than the scaled preview.</p>
+        <p>Food photos appear as coloured blocks or emoji here. Real photography is still outstanding.</p>
+      </div>
+      <div class="col">
+        <h3>Global rules</h3>
+        <ul>
+          <li><b>16px</b> horizontal padding on every screen, no exceptions.</li>
+          <li>Buttons and chips are fully rounded. Cards and fields are 15px. Nothing in between.</li>
+          <li><b>Lime is a fill, never text on white.</b> See the tokens section.</li>
+          <li>Dark screens carry no shadows. Depth comes from surface steps.</li>
+          <li>Body copy is 300 on dark, 400 on light.</li>
+          <li>Minimum tap target 44&times;44 even where the visual is smaller.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>Build these first</h3>
+        <p>Every screen is assembled from these. Build them as shared components before building any screen:</p>
+        <ul>
+          <li><b>Button</b> &mdash; accent, dark, muted, outline, ghost</li>
+          <li><b>TextField</b> &mdash; dark and light</li>
+          <li><b>PhoneField</b> &mdash; formats as you type</li>
+          <li><b>OtpInput</b> &mdash; auto-advance, auto-submit, paste-fill</li>
+          <li><b>ListRow</b> &mdash; icon, title, subtitle, trailing</li>
+          <li><b>RestaurantRow</b> &mdash; the home feed row</li>
+          <li><b>Chip</b>, <b>BackButton</b>, <b>FeatureIcon</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h4>Open decisions &mdash; confirm before building</h4>
+      <p><b>Location permission timing.</b> Currently asked during onboarding (screen 04). There is a good argument for asking at first restaurant tap instead: better conversion, same permission. Not settled.</p>
+      <p><b>One restaurant per order.</b> The cart currently shows items from two kitchens. That means two pickups, roughly double rider time and cost for one delivery fee. Recommend restricting to one kitchen per order for v1.</p>
+      <p><b>Late-order credit.</b> The &ldquo;running late&rdquo; screen grants &#8358;500 automatically. Needs to be a written policy, not a judgement call at 8pm.</p>
+      <p><b>Maps.</b> Every map in here is a hand-drawn placeholder. Real maps mean Google Maps or Mapbox, and the cost scales with order volume. Price it before committing.</p>
+    </div>
+  </div>
+</div>
+
+<div class="tokens" id="tokens">
+  <div class="wrap">
+    <h2>Tokens</h2>
+    <p class="sub">Components reference roles, never raw hex. Switching mode swaps the palette underneath with no component changes. Full definitions in <code>theme.v2.ts</code>.</p>
+
+    <div class="pals">
+      <div class="pal">
+        <h3>Dark</h3>
+        <div class="sw">
+          <div class="s"><div class="b" style="background:#0E0F0D"></div><div class="l"><b>bg</b><span>#0E0F0D</span></div></div>
+          <div class="s"><div class="b" style="background:#1A1C19"></div><div class="l"><b>surface</b><span>#1A1C19</span></div></div>
+          <div class="s"><div class="b" style="background:#242621"></div><div class="l"><b>raised</b><span>#242621</span></div></div>
+          <div class="s"><div class="b" style="background:#2E312C"></div><div class="l"><b>border</b><span>#2E312C</span></div></div>
+          <div class="s"><div class="b" style="background:#FFFFFF"></div><div class="l"><b>text</b><span>#FFFFFF</span></div></div>
+          <div class="s"><div class="b" style="background:#8E9189"></div><div class="l"><b>text-2</b><span>#8E9189</span></div></div>
+          <div class="s"><div class="b" style="background:#C6F432"></div><div class="l"><b>accent</b><span>#C6F432</span></div></div>
+          <div class="s"><div class="b" style="background:#C6F432"></div><div class="l"><b>accent-text</b><span>#C6F432</span></div></div>
+          <div class="s"><div class="b" style="background:#FF6B4A"></div><div class="l"><b>danger</b><span>#FF6B4A</span></div></div>
+        </div>
+      </div>
+      <div class="pal">
+        <h3>Light</h3>
+        <div class="sw">
+          <div class="s"><div class="b" style="background:#FFFFFF;border-bottom:1px solid #EEE"></div><div class="l"><b>bg</b><span>#FFFFFF</span></div></div>
+          <div class="s"><div class="b" style="background:#F6F7F3"></div><div class="l"><b>surface</b><span>#F6F7F3</span></div></div>
+          <div class="s"><div class="b" style="background:#EDEFE8"></div><div class="l"><b>raised</b><span>#EDEFE8</span></div></div>
+          <div class="s"><div class="b" style="background:#E4E7DE"></div><div class="l"><b>border</b><span>#E4E7DE</span></div></div>
+          <div class="s"><div class="b" style="background:#0E0F0D"></div><div class="l"><b>text</b><span>#0E0F0D</span></div></div>
+          <div class="s"><div class="b" style="background:#6B6F66"></div><div class="l"><b>text-2</b><span>#6B6F66</span></div></div>
+          <div class="s"><div class="b" style="background:#C6F432"></div><div class="l"><b>accent</b><span>#C6F432</span></div></div>
+          <div class="s"><div class="b" style="background:#4E6B00"></div><div class="l"><b>accent-text</b><span>#4E6B00</span></div></div>
+          <div class="s"><div class="b" style="background:#C0391C"></div><div class="l"><b>danger</b><span>#C0391C</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="background:#fff">
+      <h4>The one rule that is easy to break</h4>
+      <p><code>#C6F432</code> as <b>text on white</b> measures 1.4:1. That is unreadable, and Makurdi is sunny. On light backgrounds the same hue drops to <code>#4E6B00</code>, which measures 7.1:1. The lime <b>fill</b> is byte-identical in both modes &mdash; same button, same badge, same chip.</p>
+    </div>
+
+    <div class="typerow">
+      <table>
+        <tr><th>Role</th><th>Size</th><th>Line</th><th>Tracking</th><th>Weight</th><th>Used for</th></tr>
+        <tr><td>display</td><td>25</td><td>27</td><td>-1.1</td><td>600</td><td>&ldquo;Makurdi eats.&rdquo;</td></tr>
+        <tr><td>h1</td><td>22</td><td>24</td><td>-0.9</td><td>600</td><td>screen titles</td></tr>
+        <tr><td>h2</td><td>17</td><td>21</td><td>-0.5</td><td>600</td><td>dish titles</td></tr>
+        <tr><td>h3</td><td>14</td><td>18</td><td>-0.2</td><td>600</td><td>section headers</td></tr>
+        <tr><td>body</td><td>13</td><td>21</td><td>0</td><td>300 / 400</td><td>paragraph copy</td></tr>
+        <tr><td>label</td><td>12</td><td>16</td><td>0</td><td>500</td><td>field labels</td></tr>
+        <tr><td>caption</td><td>11</td><td>17</td><td>0</td><td>300</td><td>helper text</td></tr>
+        <tr><td>micro</td><td>10</td><td>15</td><td>0</td><td>300</td><td>legal, meta</td></tr>
+        <tr><td>button</td><td>14</td><td>18</td><td>-0.2</td><td>600</td><td>all buttons</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<section class="chapter" id="auth">
+  <div class="chapter-head">
+    <div class="num">01</div>
+    <h2>Sign up &amp; sign in</h2>
+    <p>13 screens. New users run 01&nbsp;&rarr;&nbsp;06, returning users 07&nbsp;&rarr;&nbsp;03. The rest are the states that decide whether people get stuck.</p>
+  </div>
+  <div class="sc-auth">
+
+
+
+<!-- ============ NEW USER ============ -->
+<div class="group">
+  <h2>New user · first run</h2>
+  <div class="rail">
+
+    <!-- 1 SPLASH -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Splash</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="splash">
+          <div class="lg">
+            <div class="mk">M</div>
+            <div class="nmm">M<b>-Kart</b>~</div>
+            <div class="tag">Makurdi eats. We deliver.</div>
+          </div>
+          <div class="load"><i></i></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 2 PHONE -->
+    <div class="item">
+      <div class="n">02</div><div class="t">Enter number</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="wm">M<b>-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Makurdi eats.<br><span class="a">We deliver.</span></div>
+            <p class="p">Enter your number to get started. We'll text you a code.</p>
+          </div>
+          <div style="margin-top:19px">
+            <div class="field">
+              <span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="ph">801 234 5678</span>
+            </div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p class="fine" style="margin:13px 0 auto;padding-bottom:11px">By continuing you agree to M-Kart's Terms of Service and Privacy Policy.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 3 OTP -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Verify code</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="a">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:19px">
+            <span class="on">4</span><span class="on">9</span><span class="on">2</span>
+            <span class="cur"></span><span></span><span></span>
+          </div>
+          <p class="resend" style="margin-top:13px">Didn't get it? <b>Resend in 0:24</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 4 LOCATION PERMISSION -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Location permission</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="big-ic" style="margin-bottom:16px">⌖</div>
+            <div class="h sm">Turn on location</div>
+            <p class="p">So we can show you kitchens that actually deliver to your area, and so your rider can find you.</p>
+          </div>
+          <div style="margin-top:17px;display:grid;gap:8px">
+            <div class="perm">
+              <div class="i">◎</div>
+              <div><div class="nm">Only while you're using M-Kart</div><div class="ds">We never track you in the background.</div></div>
+            </div>
+            <div class="perm">
+              <div class="i">✎</div>
+              <div><div class="nm">You can always type it instead</div><div class="ds">A landmark works fine.</div></div>
+            </div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn">Allow location</div>
+            <div class="btn gh">I'll type my address</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 5 NAME + ADDRESS -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Name &amp; address</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:14px">
+            <div class="h sm">Almost there</div>
+            <p class="p">Your rider will use this to reach you.</p>
+          </div>
+          <div style="margin-top:17px">
+            <div class="lab">What should we call you?</div>
+            <div class="field"><span class="val">Terkimbi</span></div>
+          </div>
+          <div style="margin-top:13px">
+            <div class="lab">Where are we delivering?</div>
+            <div class="field"><span class="ph">Landmark or street</span></div>
+          </div>
+          <div style="margin-top:9px;display:grid;gap:6px">
+            <div class="sugg"><div class="i">⌖</div><div><div class="nm">Use my current location</div><div class="ds">High Level, Makurdi</div></div></div>
+            <div class="sugg"><div class="i">⌂</div><div><div class="nm">Behind BSU main gate</div><div class="ds">Recent</div></div></div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Start ordering</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 6 SUCCESS -->
+    <div class="item">
+      <div class="n">06</div><div class="t">You're in</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0;text-align:left">
+            <div class="big-ic" style="margin-bottom:16px">✓</div>
+            <div class="h sm">Welcome, Terkimbi.</div>
+            <p class="p">We deliver to High Level between 8am and 10pm. Twelve kitchens are open right now.</p>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">See what's cooking</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ RETURNING ============ -->
+<div class="group">
+  <h2>Returning user</h2>
+  <div class="rail">
+
+    <!-- 7 SIGN IN -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Sign in</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="wm">M<b>-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Welcome back.</div>
+            <p class="p">Enter your number and we'll text you a code. No password to remember.</p>
+          </div>
+          <div style="margin-top:19px">
+            <div class="field"><span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="val">801 234 5678</span></div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p class="fine" style="margin:13px 0 auto;padding-bottom:11px">New here? Same button — we'll set you up.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 8 SESSION EXPIRED -->
+    <div class="item">
+      <div class="n">08</div><div class="t">Session expired</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="big-ic mut" style="margin-bottom:16px">⏱</div>
+            <div class="h sm">Sign in again</div>
+            <p class="p">You've been signed out for security. Your addresses and order history are safe.</p>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Sign in as 0801 234 5678</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ STATES ============ -->
+<div class="group">
+  <h2>States that decide whether people get through</h2>
+  <div class="rail">
+
+    <!-- 9 WRONG CODE -->
+    <div class="item">
+      <div class="n">09</div><div class="t">Wrong code</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="a">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:19px">
+            <span class="err">4</span><span class="err">9</span><span class="err">2</span>
+            <span class="err">8</span><span class="err">1</span><span class="err">7</span>
+          </div>
+          <p class="err-msg">That code isn't right. 2 tries left.</p>
+          <p class="resend" style="margin-top:9px">Didn't get it? <b>Resend now</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn mut">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 10 CODE NOT ARRIVING -->
+    <div class="item">
+      <div class="n">10</div><div class="t">Code not arriving</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">Still no code?</div>
+            <p class="p">SMS can be slow on some networks. Here's what usually works.</p>
+          </div>
+          <div style="margin-top:17px;display:grid;gap:7px">
+            <div class="sugg"><div class="i">↺</div><div><div class="nm">Send the code again</div><div class="ds">Wait 60 seconds first</div></div></div>
+            <div class="sugg"><div class="i">✎</div><div><div class="nm">Check the number is right</div><div class="ds">+234 801 234 5678</div></div></div>
+            <div class="sugg"><div class="i">✆</div><div><div class="nm">Call me with the code instead</div><div class="ds">We'll ring and read it out</div></div></div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn gh">Chat with support on WhatsApp</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 11 LOCKED OUT -->
+    <div class="item">
+      <div class="n">11</div><div class="t">Too many attempts</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="big-ic rd" style="margin-bottom:16px">🔒</div>
+            <div class="h sm">Hold on a moment</div>
+            <p class="p">Too many wrong codes. For your security, try again in 15 minutes.</p>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn mut">Try again in 14:52</div>
+            <div class="btn gh">Message support</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 12 NO CONNECTION -->
+    <div class="item">
+      <div class="n">12</div><div class="t">No connection</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="big-ic mut" style="margin-bottom:16px">⚠</div>
+            <div class="h sm">You're offline</div>
+            <p class="p">We can't reach M-Kart right now. Check your data or Wi-Fi and try again.</p>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Try again</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 13 PERMISSION DENIED -->
+    <div class="item">
+      <div class="n">13</div><div class="t">Location denied</div>
+      <div class="phone"><div class="scr">
+        <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        <div class="body">
+          <div class="back">‹</div>
+          <div style="margin-top:auto">
+            <div class="h sm">No problem —<br>type it instead</div>
+            <p class="p">Give us a landmark and we'll work out your area. You can turn location on later in Settings.</p>
+          </div>
+          <div style="margin-top:17px">
+            <div class="field"><span class="ph">e.g. opposite Modern Market</span></div>
+          </div>
+          <div style="margin-top:9px;display:grid;gap:6px">
+            <div class="sugg"><div class="i">◷</div><div><div class="nm">High Level</div><div class="ds">Popular area</div></div></div>
+            <div class="sugg"><div class="i">◷</div><div><div class="nm">Wurukum</div><div class="ds">Popular area</div></div></div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Continue</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</section>
+<section class="chapter" id="home">
+  <div class="chapter-head">
+    <div class="num">02</div>
+    <h2>Home feed</h2>
+    <p>Everything here answers one question: where are you? Kitchens sort by distance, and the delivery fee is calculated per kitchen, not flat.</p>
+  </div>
+  <div class="sc-home">
+
+
+
+<div class="rail">
+
+<!-- 1 · HOME -->
+<div class="item">
+  <div class="n">01</div><div class="t">Home</div>
+  <div class="w">Seven kitchens visible without scrolling.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div>
+          <div class="k">DELIVERING TO</div>
+          <div class="v">Behind BSU main gate <i>▾</i></div>
+        </div>
+        <div class="av">TK</div>
+      </div>
+      <div class="srch"><span>⌕</span><span>Search kitchens or dishes</span></div>
+    </div>
+    <div class="body">
+
+      <div class="shead"><h4>Open now near you</h4><span class="ct">7 kitchens</span></div>
+      <div class="ssub">Closest first · High Level</div>
+
+      <div class="rrow">
+        <div class="th">🍲</div>
+        <div class="tx">
+          <div class="nm">Terkimbi's Kitchen</div>
+          <div class="cu">Swallow &amp; soups</div>
+          <div class="facts"><span class="near">0.8 km</span><span class="sep"></span><b>20–30 min</b><span class="sep"></span>₦500</div>
+          <div class="tags"><span class="tg free">Free delivery</span><span class="tg">★ 4.8</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍛</div>
+        <div class="tx">
+          <div class="nm">Sewuese Rice Spot</div>
+          <div class="cu">Jollof, fried rice &amp; chicken</div>
+          <div class="facts"><span class="near">1.4 km</span><span class="sep"></span><b>25–35 min</b><span class="sep"></span>₦500</div>
+          <div class="tags"><span class="tg">★ 4.6</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🐟</div>
+        <div class="tx">
+          <div class="nm">Benue Grills</div>
+          <div class="cu">Catfish &amp; pepper soup</div>
+          <div class="facts"><span class="near">2.6 km</span><span class="sep"></span><b>35–45 min</b><span class="sep"></span>₦800</div>
+          <div class="tags"><span class="tg busy">Busy</span><span class="tg">★ 4.5</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍢</div>
+        <div class="tx">
+          <div class="nm">Modern Market Suya</div>
+          <div class="cu">Suya &amp; grills</div>
+          <div class="facts"><span class="near">3.1 km</span><span class="sep"></span><b>30–40 min</b><span class="sep"></span>₦900</div>
+          <div class="tags"><span class="tg new">New</span><span class="tg">★ 4.9</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍗</div>
+        <div class="tx">
+          <div class="nm">Ankpa Bukka</div>
+          <div class="cu">Local dishes &amp; grills</div>
+          <div class="facts"><span class="near">3.6 km</span><span class="sep"></span><b>35–45 min</b><span class="sep"></span>₦900</div>
+          <div class="tags"><span class="tg">★ 4.4</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍚</div>
+        <div class="tx">
+          <div class="nm">Judges Quarters Buka</div>
+          <div class="cu">Rice, beans &amp; stew</div>
+          <div class="facts"><span class="near">4.0 km</span><span class="sep"></span><b>35–45 min</b><span class="sep"></span>₦1,000</div>
+          <div class="tags"><span class="tg">★ 4.3</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🥣</div>
+        <div class="tx">
+          <div class="nm">Wurukum Pepper Soup</div>
+          <div class="cu">Pepper soup &amp; grills</div>
+          <div class="facts"><span class="near">4.4 km</span><span class="sep"></span><b>40–50 min</b><span class="sep"></span>₦1,100</div>
+          <div class="tags"><span class="tg">★ 4.2</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 2 · SCROLLED -->
+<div class="item">
+  <div class="n">02</div><div class="t">Further down</div>
+  <div class="w">Closed kitchens sit below the open ones, never hidden and never mixed in.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Behind BSU main gate <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="rrow">
+        <div class="th">🍢</div>
+        <div class="tx">
+          <div class="nm">Modern Market Suya</div>
+          <div class="cu">Suya &amp; grills</div>
+          <div class="facts"><span class="near">3.1 km</span><span class="sep"></span><b>30–40 min</b><span class="sep"></span>₦900</div>
+          <div class="tags"><span class="tg new">New</span><span class="tg">★ 4.9</span></div>
+        </div>
+      </div>
+
+      <div class="shead"><h4>Opens later</h4><span class="ct">3 kitchens</span></div>
+      <div class="ssub">We'll tell you when they start taking orders</div>
+
+      <div class="rrow shut">
+        <div class="th">🥣</div>
+        <div class="tx">
+          <div class="nm">Aondona Breakfast</div>
+          <div class="cu">Akara, moi moi &amp; pap · 1.1 km</div>
+          <div class="shutlab">Opens 6:30am tomorrow</div>
+        </div>
+      </div>
+      <div class="rrow shut">
+        <div class="th">🍗</div>
+        <div class="tx">
+          <div class="nm">Ankpa Bukka</div>
+          <div class="cu">Local dishes · 2.2 km</div>
+          <div class="shutlab">Opens 11:00am tomorrow</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="k2">Not seeing your favourite kitchen?</div>
+        <div class="v2">Tell us who to sign up next — it decides where we go.</div>
+        <div class="btn out" style="margin-top:10px;padding:9px;font-size:.72rem">Suggest a kitchen</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 3 · CHANGE LOCATION -->
+<div class="item">
+  <div class="n">03</div><div class="t">Change location</div>
+  <div class="w">Tapping the address opens this. The feed rebuilds around whatever they pick.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Behind BSU main gate <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+      <div class="srch"><span>⌕</span><span>Search kitchens or dishes</span></div>
+    </div>
+    <div class="body" style="opacity:.3">
+      <div class="shead"><h4>Open now near you</h4><span class="ct">7 kitchens</span></div>
+      <div class="rrow"><div class="th">🍲</div><div class="tx"><div class="nm">Terkimbi's Kitchen</div><div class="cu">Swallow &amp; soups</div></div></div>
+      <div class="rrow"><div class="th">🍛</div><div class="tx"><div class="nm">Sewuese Rice Spot</div><div class="cu">Jollof &amp; chicken</div></div></div>
+    </div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="sh">Where are we delivering?</div>
+      <div class="arow">
+        <div class="ic on">⌂</div>
+        <div><div class="nm2">Home</div><div class="ds2">Behind BSU main gate, High Level</div></div>
+        <div class="tick">✓</div>
+      </div>
+      <div class="arow">
+        <div class="ic">💼</div>
+        <div><div class="nm2">Office</div><div class="ds2">Opposite Modern Market</div></div>
+      </div>
+      <div class="arow">
+        <div class="ic">⌖</div>
+        <div><div class="nm2">Use my current location</div><div class="ds2">Wurukum · 4 kitchens nearby</div></div>
+      </div>
+      <div class="btn" style="margin:12px 0 8px">Add a new address</div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 4 · NOTHING OPEN -->
+<div class="item">
+  <div class="n">04</div><div class="t">Nothing open</div>
+  <div class="w">Late at night. Names the next opening time instead of showing an empty list.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>11:47</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Behind BSU main gate <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+    </div>
+    <div class="body">
+      <div style="margin:auto 0">
+        <div class="eic">🌙</div>
+        <div class="eh">Everyone's closed<br>for the night</div>
+        <p class="ep">M-Kart delivers 8am to 10pm. Aondona Breakfast opens first, at 6:30am.</p>
+        <div class="card">
+          <div class="k2">Opening first tomorrow</div>
+          <div class="v2">Aondona Breakfast · 6:30am · 1.1 km</div>
+          <div class="btn out" style="margin-top:10px;padding:9px;font-size:.72rem">Remind me when they open</div>
+        </div>
+        <div class="btn" style="margin-top:9px">Browse tomorrow's menus</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 5 · THIN COVERAGE -->
+<div class="item">
+  <div class="n">05</div><div class="t">Thin coverage</div>
+  <div class="w">A newly opened area with two kitchens. Honest about it rather than padding the list.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Ankpa Ward <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+      <div class="srch"><span>⌕</span><span>Search kitchens or dishes</span></div>
+    </div>
+    <div class="body">
+      <div class="card" style="margin-top:11px">
+        <div class="k2">We just opened here</div>
+        <div class="v2">Two kitchens deliver to Ankpa Ward so far. More are coming as we sign up riders.</div>
+      </div>
+
+      <div class="shead"><h4>Open now near you</h4><span class="ct">2 kitchens</span></div>
+      <div class="ssub">Closest first · Ankpa Ward</div>
+
+      <div class="rrow">
+        <div class="th">🍗</div>
+        <div class="tx">
+          <div class="nm">Ankpa Bukka</div>
+          <div class="cu">Local dishes &amp; grills</div>
+          <div class="facts"><span class="near">0.4 km</span><span class="sep"></span><b>15–25 min</b><span class="sep"></span>₦500</div>
+          <div class="tags"><span class="tg free">Free delivery</span><span class="tg">★ 4.4</span></div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="th">🍲</div>
+        <div class="tx">
+          <div class="nm">Terkimbi's Kitchen</div>
+          <div class="cu">Swallow &amp; soups</div>
+          <div class="facts"><span class="near">4.2 km</span><span class="sep"></span><b>40–50 min</b><span class="sep"></span>₦1,100</div>
+          <div class="tags"><span class="tg">★ 4.8</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="k2">Who should we sign up?</div>
+        <div class="v2">Name a kitchen in Ankpa Ward and we'll go and talk to them.</div>
+        <div class="btn out" style="margin-top:10px;padding:9px;font-size:.72rem">Suggest a kitchen</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 6 · NO COVERAGE -->
+<div class="item">
+  <div class="n">06</div><div class="t">Outside coverage</div>
+  <div class="w">The reason the address is captured at signup — this can be shown before they build a cart.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin" style="background:var(--danger-bg);color:var(--danger)">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Gboko <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+    </div>
+    <div class="body">
+      <div style="margin:auto 0">
+        <div class="eic">📍</div>
+        <div class="eh">We're not in<br>Gboko yet</div>
+        <p class="ep">M-Kart only covers Makurdi for now. We open new areas where people are asking for us.</p>
+        <div class="card">
+          <div class="k2">Nearest area we cover</div>
+          <div class="v2">Wurukum, Makurdi · about 68 km away</div>
+        </div>
+        <div class="btn" style="margin-top:11px">Tell us to come to Gboko</div>
+        <div class="btn gh" style="margin-top:5px">Use a different address</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+</div>
+</div>
+</section>
+<section class="chapter" id="restaurant">
+  <div class="chapter-head">
+    <div class="num">03</div>
+    <h2>Restaurant &amp; menu</h2>
+    <p>The most-used screen in the app. Menu grouped into sections, sticky tabs, plus sold-out and closed states.</p>
+  </div>
+  <div class="sc-restaurant">
+
+
+
+<div class="rail">
+
+<!-- 1 · RESTAURANT TOP -->
+<div class="item">
+  <div class="n">01</div><div class="t">Restaurant page</div>
+  <div class="phone"><div class="scr">
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=600&h=340&q=75" alt="">
+      <div class="scrim"></div>
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="hbtns"><div class="rnd">‹</div><div class="rnd">♡</div></div>
+    </div>
+    <div class="info">
+      <div class="rname">Terkimbi's Kitchen</div>
+      <div class="rmeta">Swallow &amp; soups · Wurukum · 2.1 km away</div>
+      <div class="rstats">
+        <div class="rstat"><b>4.8</b><span>320 ratings</span></div>
+        <div class="rstat"><b>25–35</b><span>minutes</span></div>
+        <div class="rstat"><b>₦500</b><span>delivery</span></div>
+      </div>
+      <div class="notice">Open until <b>the pot finishes</b>, usually around 8pm. Closes early on Sundays.</div>
+    </div>
+    <div class="tabs">
+      <a class="on" href="#">Swallow</a><a href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu">
+      <div class="sechead">Swallow</div>
+      <div class="seccount">Served with your choice of soup</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Pounded yam &amp; egusi</div>
+          <div class="ds">Fresh pounded yam with melon seed soup, assorted beef and stockfish.</div>
+          <div class="pr">₦2,800</div>
+          <div class="tagline"><span class="tg top">Most ordered</span><span class="tg hot">Peppery</span></div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Akpu &amp; oha soup</div>
+          <div class="ds">Cassava fufu with oha leaves and goat meat.</div>
+          <div class="pr">₦2,400</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 2 · SCROLLED / STICKY -->
+<div class="item">
+  <div class="n">02</div><div class="t">Scrolled — sticky header</div>
+  <div class="phone"><div class="scr">
+    <div class="stuck">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="bar">
+        <div class="rnd2">‹</div>
+        <div class="nm">Terkimbi's Kitchen</div>
+        <div class="rnd2" style="margin-left:auto">⌕</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <a href="#">Swallow</a><a class="on" href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu">
+      <div class="sechead">Soups</div>
+      <div class="seccount">Sold by the portion. Add swallow separately.</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Egusi soup</div>
+          <div class="ds">Melon seed, bitterleaf, assorted beef and stockfish.</div>
+          <div class="pr">₦1,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add acid">2</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Catfish pepper soup</div>
+          <div class="ds">Fresh Benue river catfish, scent leaf, hot.</div>
+          <div class="pr">₦3,500</div>
+          <div class="tagline"><span class="tg hot">Very peppery</span></div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1661588669110-81142a5b9e57?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Goat meat pepper soup</div>
+          <div class="ds">Slow cooked with local spices.</div>
+          <div class="pr">₦3,000</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="cartbar">
+      <div class="ct">2</div>
+      <div class="lb">View cart</div>
+      <div class="pr">₦4,600</div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 3 · SOLD OUT ITEMS -->
+<div class="item">
+  <div class="n">03</div><div class="t">Items sold out</div>
+  <div class="phone"><div class="scr">
+    <div class="stuck">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="bar">
+        <div class="rnd2">‹</div>
+        <div class="nm">Terkimbi's Kitchen</div>
+        <div class="rnd2" style="margin-left:auto">⌕</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <a class="on" href="#">Swallow</a><a href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu">
+      <div class="sechead">Swallow</div>
+      <div class="seccount">2 of 5 dishes finished for today</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Pounded yam &amp; egusi</div>
+          <div class="ds">Fresh pounded yam with melon seed soup.</div>
+          <div class="pr">₦2,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow off">
+        <div class="tx">
+          <div class="nm">Akpu &amp; oha soup</div>
+          <div class="ds">Cassava fufu with oha leaves and goat meat.</div>
+          <div class="pr">₦2,400</div>
+          <div class="soldout">Finished for today · back tomorrow</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+        </div>
+      </div>
+      <div class="mrow off">
+        <div class="tx">
+          <div class="nm">Semo &amp; okro</div>
+          <div class="ds">With assorted meat.</div>
+          <div class="pr">₦2,200</div>
+          <div class="soldout">Finished for today · back tomorrow</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 4 · CLOSED -->
+<div class="item">
+  <div class="n">04</div><div class="t">Kitchen closed</div>
+  <div class="phone"><div class="scr">
+    <div class="hero">
+      <img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=600&h=340&q=75" alt="" style="filter:grayscale(.85) brightness(.7)">
+      <div class="scrim"></div>
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="hbtns"><div class="rnd">‹</div><div class="rnd">♡</div></div>
+    </div>
+    <div class="info">
+      <div class="rname">Aondona Breakfast</div>
+      <div class="rmeta">Akara, moi moi &amp; pap · High Level</div>
+      <div class="rstats">
+        <div class="rstat"><b>4.7</b><span>112 ratings</span></div>
+        <div class="rstat"><b>15–25</b><span>minutes</span></div>
+        <div class="rstat"><b>₦500</b><span>delivery</span></div>
+      </div>
+      <div class="notice">Opens <b>tomorrow at 6:30am</b>. This kitchen serves mornings only.</div>
+    </div>
+    <div class="tabs">
+      <a class="on" href="#">Breakfast</a><a href="#">Sides</a><a href="#">Drinks</a>
+    </div>
+    <div class="menu" style="opacity:.4">
+      <div class="sechead">Breakfast</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Akara &amp; pap</div>
+          <div class="ds">Six pieces with hot pap.</div>
+          <div class="pr">₦900</div>
+        </div>
+        <div class="th"><img src="https://images.unsplash.com/photo-1583946193644-49fe1fe958cf?auto=format&fit=crop&w=200&h=200&q=70" alt=""></div>
+      </div>
+    </div>
+    <div class="closed">
+      <div class="h">Closed right now</div>
+      <div class="p">Aondona opens at 6:30am tomorrow. We'll let you know when they're taking orders.</div>
+      <div class="btn">Notify me when open</div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 5 · SEARCH -->
+<div class="item">
+  <div class="n">05</div><div class="t">Search results</div>
+  <div class="phone"><div class="scr">
+    <div class="st2"><span>9:41</span><span>▮▮▮ ▰</span></div>
+    <div class="body">
+      <div class="sbar"><span>⌕</span><span class="v">egusi</span><span style="margin-left:auto">✕</span></div>
+      <div class="chips">
+        <div class="chip on">All</div><div class="chip">Dishes</div><div class="chip">Kitchens</div>
+      </div>
+      <div class="reshead">4 results near High Level</div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Pounded yam &amp; egusi</div>
+          <div class="ds">Terkimbi's Kitchen · 25–35 min</div>
+          <div class="pr">₦2,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Egusi soup</div>
+          <div class="ds">Terkimbi's Kitchen · 25–35 min</div>
+          <div class="pr">₦1,800</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="tx">
+          <div class="nm">Semo &amp; egusi</div>
+          <div class="ds">Ankpa Bukka · 20–30 min</div>
+          <div class="pr">₦2,200</div>
+        </div>
+        <div class="th">
+          <img src="https://images.unsplash.com/photo-1638436684761-7e59f8a9072f?auto=format&fit=crop&w=200&h=200&q=70" alt="">
+          <div class="add">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 6 · NO RESULTS -->
+<div class="item">
+  <div class="n">06</div><div class="t">Nothing found</div>
+  <div class="phone"><div class="scr">
+    <div class="st2"><span>9:41</span><span>▮▮▮ ▰</span></div>
+    <div class="body">
+      <div class="sbar"><span>⌕</span><span class="v">shawarma</span><span style="margin-left:auto">✕</span></div>
+      <div class="empty">
+        <div class="eic">🔍</div>
+        <div class="eh">No shawarma<br>near you yet</div>
+        <div class="ep">Nobody in High Level is serving that on M-Kart right now. Tell us what you're looking for and we'll try to sign them up.</div>
+        <div class="ebtn">Suggest a kitchen</div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+</div>
+</div>
+</section>
+<section class="chapter" id="ordering">
+  <div class="chapter-head">
+    <div class="num">04</div>
+    <h2>Dish, cart &amp; tracking</h2>
+    <p>Dish detail, cart, and live tracking. The tracking map here is a placeholder &mdash; real one needs Google Maps or Mapbox.</p>
+  </div>
+  <div class="sc-ordering">
+
+
+
+<div class="rail">
+
+
+<!-- 0 · SIGN UP -->
+<div class="item">
+  <div class="n">Screen 1</div>
+  <div class="t">Sign up</div>
+  <div class="phone"><div class="scr" style="background:var(--ink)">
+    <div class="st" style="display:flex;justify-content:space-between;font-size:.6rem;font-weight:600;color:#fff;padding:9px 15px 0">
+      <span>9:41</span><span>▮▮▮ ▰</span>
+    </div>
+    <div class="body" style="color:#fff;padding-top:16px">
+      <div class="nm" style="font-size:1.22rem;font-weight:300;letter-spacing:-.01em">M<b style="font-weight:600">-Kart</b>~</div>
+
+      <div style="margin-top:auto">
+        <div style="font-size:1.7rem;font-weight:600;line-height:1.06;letter-spacing:-.045em">
+          Makurdi eats.<br><span style="color:var(--acid)">We deliver.</span>
+        </div>
+        <p style="font-size:.78rem;color:#8E9189;line-height:1.6;font-weight:300;margin-top:11px">
+          Enter your number to get started. We'll text you a code.
+        </p>
+      </div>
+
+      <div style="margin-top:20px">
+        <div class="srch" style="border-radius:16px;padding:14px 15px;color:#fff;font-weight:400;font-size:.85rem;gap:10px">
+          <span style="font-weight:600">🇳🇬 +234</span>
+          <span style="width:1px;height:15px;background:#3A3C38"></span>
+          <span style="color:#6E7169;font-weight:300">801 234 5678</span>
+        </div>
+        <div class="btn acid" style="margin-top:10px">Send me a code</div>
+      </div>
+
+      <p style="font-size:.62rem;color:#6E7169;text-align:center;line-height:1.55;font-weight:300;margin:14px 0 auto;padding-bottom:12px">
+        By continuing you agree to M-Kart's Terms of Service and Privacy Policy.
+      </p>
+    </div>
+    <div class="hbar lt"></div>
+  </div></div>
+</div>
+
+<!-- 0b · OTP -->
+<div class="item">
+  <div class="n">Screen 2</div>
+  <div class="t">Verify code</div>
+  <div class="phone"><div class="scr" style="background:var(--ink)">
+    <div class="st" style="display:flex;justify-content:space-between;font-size:.6rem;font-weight:600;color:#fff;padding:9px 15px 0">
+      <span>9:41</span><span>▮▮▮ ▰</span>
+    </div>
+    <div class="body" style="color:#fff;padding-top:16px">
+      <div style="width:30px;height:30px;border-radius:50%;background:#242621;display:grid;place-items:center;font-size:.85rem">‹</div>
+
+      <div style="margin-top:auto">
+        <div style="font-size:1.5rem;font-weight:600;line-height:1.1;letter-spacing:-.04em">Enter your code</div>
+        <p style="font-size:.78rem;color:#8E9189;line-height:1.6;font-weight:300;margin-top:9px">
+          Sent to +234 801 234 5678. <span style="color:var(--acid)">Change number</span>
+        </p>
+      </div>
+
+      <div style="display:flex;gap:7px;margin-top:20px">
+        <span style="flex:1;aspect-ratio:1/1.12;background:var(--acid);color:var(--acid-ink);border-radius:14px;display:grid;place-items:center;font-size:1.05rem;font-weight:600">4</span>
+        <span style="flex:1;aspect-ratio:1/1.12;background:var(--acid);color:var(--acid-ink);border-radius:14px;display:grid;place-items:center;font-size:1.05rem;font-weight:600">9</span>
+        <span style="flex:1;aspect-ratio:1/1.12;background:var(--acid);color:var(--acid-ink);border-radius:14px;display:grid;place-items:center;font-size:1.05rem;font-weight:600">2</span>
+        <span style="flex:1;aspect-ratio:1/1.12;background:#242621;border:1.5px solid var(--acid);border-radius:14px"></span>
+        <span style="flex:1;aspect-ratio:1/1.12;background:#242621;border-radius:14px"></span>
+        <span style="flex:1;aspect-ratio:1/1.12;background:#242621;border-radius:14px"></span>
+      </div>
+
+      <p style="font-size:.68rem;color:#8E9189;text-align:center;font-weight:300;margin-top:14px">
+        Didn't get it? <b style="color:var(--acid);font-weight:500">Resend in 0:24</b>
+      </p>
+
+      <div style="margin-top:auto;padding-bottom:12px"><div class="btn acid">Verify</div></div>
+    </div>
+    <div class="hbar lt"></div>
+  </div></div>
+</div>
+
+<!-- 1 · HOME -->
+<div class="item">
+  <div class="n">Screen 3</div>
+  <div class="t">Home</div>
+  <div class="phone"><div class="scr">
+    <div class="blk">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="brand">
+        <div class="nm">M<b>-Kart</b>~</div>
+        <div class="cart">🛒 2</div>
+      </div>
+      <div class="srch"><span>⌕</span><span>Search for something tasty…</span></div>
+    </div>
+    <div class="body">
+      <div class="quick">
+        <div class="qrow"><span class="ic">↺</span>Repeat last order</div>
+        <div class="qrow"><span class="ic">?</span>Help me choose</div>
+        <div class="qrow"><span class="ic">✦</span>Surprise me</div>
+      </div>
+      <div class="sect"><h4>Top categories</h4><span class="all">View all →</span></div>
+      <div class="chips">
+        <div class="chip on"><span class="dot" style="background:#12180A"></span>Swallow</div>
+        <div class="chip"><span class="dot" style="background:#E0391F"></span>Rice</div>
+        <div class="chip"><span class="dot" style="background:#8E4425"></span>Suya</div>
+        <div class="chip"><span class="dot" style="background:#0C7C43"></span>Soup</div>
+      </div>
+      <div class="sect"><h4>Near High Level</h4><span class="all">View all →</span></div>
+      <div class="pgrid">
+        <div class="pcard">
+          <div class="th"><img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=300&h=230&q=70" alt=""></div>
+          <div class="nm">Terkimbi's — Pounded yam &amp; egusi</div>
+          <div class="rw"><span class="pr">₦2,800</span><span class="add">+</span></div>
+        </div>
+        <div class="pcard">
+          <div class="th"><img src="https://images.unsplash.com/photo-1603496987674-79600a000f55?auto=format&fit=crop&w=300&h=230&q=70" alt=""></div>
+          <div class="nm">Sewuese — Jollof &amp; chicken</div>
+          <div class="rw"><span class="pr">₦1,800</span><span class="add">+</span></div>
+        </div>
+      </div>
+      <div style="margin-top:auto;padding-bottom:9px"><div class="btn">Check out 2 items · ₦4,600</div></div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 2 · ITEM -->
+<div class="item">
+  <div class="n">Screen 4</div>
+  <div class="t">Dish detail</div>
+  <div class="phone"><div class="scr">
+    <div class="blk" style="padding-bottom:11px">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="brand" style="margin-bottom:0">
+        <div class="nm">M<b>-Kart</b>~</div>
+        <div class="cart">🛒 1</div>
+      </div>
+    </div>
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=600&h=440&q=75" alt="">
+    </div>
+    <div class="body">
+      <div class="dtitle">Pounded yam &amp; egusi</div>
+      <div class="dsub">Terkimbi's Kitchen · Wurukum</div>
+      <div class="tags">
+        <div class="chip on">🌶 Peppery</div>
+        <div class="chip">🥩 Assorted meat</div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>25<span style="font-size:.55rem"> min</span></b><span>Prep</span></div>
+        <div class="stat"><b>4.8</b><span>Rating</span></div>
+        <div class="stat"><b>320</b><span>Orders</span></div>
+        <div class="stat"><b>1</b><span>Serves</span></div>
+      </div>
+      <div class="ing">
+        <h5>What's in it</h5>
+        <p>Pounded yam, melon seed, palm oil, ground crayfish, bitterleaf, assorted beef, stockfish, fresh pepper and seasoning.</p>
+      </div>
+      <div class="qtybar">
+        <div class="qty"><span>−</span><span>1</span><span>+</span></div>
+        <div class="btn">Add · ₦2,800</div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 3 · CART -->
+<div class="item">
+  <div class="n">Screen 5</div>
+  <div class="t">Cart &amp; checkout</div>
+  <div class="phone"><div class="scr">
+    <div class="blk" style="padding-bottom:11px">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="brand" style="margin-bottom:0">
+        <div class="nm">Your <b>order</b></div>
+        <div class="cart">🛒 3</div>
+      </div>
+    </div>
+    <div class="body" style="padding-top:4px">
+      <div class="crow">
+        <div class="th"><img src="https://images.unsplash.com/photo-1763048443535-1243379234e2?auto=format&fit=crop&w=120&h=120&q=70" alt=""></div>
+        <div><div class="nm">Pounded yam &amp; egusi</div><div class="sz">Terkimbi's</div></div>
+        <div class="st"><i>−</i>1<i>+</i></div><div class="pr">₦2,800</div>
+      </div>
+      <div class="crow">
+        <div class="th"><img src="https://images.unsplash.com/photo-1661588669110-81142a5b9e57?auto=format&fit=crop&w=120&h=120&q=70" alt=""></div>
+        <div><div class="nm">Catfish pepper soup</div><div class="sz">Benue Grills</div></div>
+        <div class="st"><i>−</i>1<i>+</i></div><div class="pr">₦3,500</div>
+      </div>
+      <div class="crow" style="border-bottom:none">
+        <div class="th"><img src="https://images.unsplash.com/photo-1664993090321-b2caff794431?auto=format&fit=crop&w=120&h=120&q=70" alt=""></div>
+        <div><div class="nm">Chilled zobo</div><div class="sz">500ml</div></div>
+        <div class="st"><i>−</i>2<i>+</i></div><div class="pr">₦800</div>
+      </div>
+
+      <div class="promo">
+        <span class="code">MAKURDI10</span>
+        <span class="ok">Promo applied</span>
+      </div>
+
+      <div class="tot">
+        <div class="ln"><span>Subtotal</span><span>₦7,100</span></div>
+        <div class="ln"><span>Delivery to High Level</span><span>₦500</span></div>
+        <div class="ln"><span>Promo discount</span><span>−₦710</span></div>
+        <div class="ln big"><span>Total</span><span>₦6,890</span></div>
+      </div>
+
+      <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+        <div class="chip" style="justify-content:center;padding:9px">💳 Paying by card · change</div>
+        <div class="btn">Place order</div>
+      </div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 4 · TRACKING -->
+<div class="item">
+  <div class="n">Screen 6</div>
+  <div class="t">Live tracking</div>
+  <div class="phone"><div class="scr">
+    <div class="map">
+      <svg viewBox="0 0 274 593" preserveAspectRatio="xMidYMid slice">
+        <rect width="274" height="593" fill="#EFEFEC"/>
+        <g stroke="#FFFFFF" stroke-width="13" stroke-linecap="round">
+          <path d="M-20 120 L300 96"/><path d="M-20 268 L300 250"/><path d="M-20 430 L300 408"/>
+          <path d="M52 -20 L70 620"/><path d="M172 -20 L188 620"/>
+        </g>
+        <g stroke="#FFFFFF" stroke-width="6">
+          <path d="M-20 194 L300 178"/><path d="M-20 350 L300 332"/><path d="M112 -20 L126 620"/><path d="M228 -20 L242 620"/>
+        </g>
+        <g fill="#E4E4DF">
+          <rect x="76" y="130" width="30" height="42" rx="3"/><rect x="132" y="126" width="34" height="46" rx="3"/>
+          <rect x="196" y="200" width="28" height="40" rx="3"/><rect x="80" y="284" width="26" height="38" rx="3"/>
+          <rect x="140" y="366" width="36" height="34" rx="3"/><rect x="196" y="440" width="30" height="36" rx="3"/>
+        </g>
+        <path d="M186 168 L186 236 L120 244 L120 330 L64 340 L64 424"
+              fill="none" stroke="#0E0F0D" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="186" cy="168" r="9" fill="#FFFFFF" stroke="#0E0F0D" stroke-width="3.5"/>
+        <circle cx="64" cy="424" r="7" fill="#C6F432" stroke="#0E0F0D" stroke-width="3"/>
+      </svg>
+      <div class="backb">‹ Back</div>
+
+      <div class="tcard">
+        <div class="eta">Arriving about 6:41 PM</div>
+        <div class="sub">Doosuur is 14 minutes away, heading to High Level</div>
+        <div class="prog">
+          <span class="ic">✓</span><span class="ln"></span>
+          <span class="ic">✓</span><span class="ln"></span>
+          <span class="ic">🛵</span><span class="ln off"></span>
+          <span class="ic off">⌂</span>
+        </div>
+        <div class="courier">
+          <div class="av"></div>
+          <div><div class="nm">Doosuur Terhemba</div><div class="rl">Your rider · 4.9 ★</div></div>
+          <div class="acts"><i class="w">✆</i><i class="a">✉</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="hbar lt" style="position:absolute;bottom:0;left:0;right:0;background:#C6C7C2"></div>
+  </div></div>
+</div>
+
+</div>
+</div>
+</section>
+<section class="chapter" id="checkout">
+  <div class="chapter-head">
+    <div class="num">05</div>
+    <h2>Checkout &amp; after the order</h2>
+    <p>Checkout through to rating, tipping and order history.</p>
+  </div>
+  <div class="sc-checkout">
+
+
+
+<div class="group">
+  <h2>Checkout</h2>
+  <div class="rail">
+
+    <!-- 1 CHECKOUT -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Checkout</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Checkout</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Deliver to</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic acid">⌖</div>
+              <div><div class="nm">Behind BSU main gate</div><div class="ds">High Level · 2.1 km from Terkimbi's</div></div>
+              <div class="edit">Change</div>
+            </div>
+          </div>
+          <div class="note">Gate is painted blue, call when you reach the junction.</div>
+
+          <div class="sec">Pay with</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic">💳</div>
+              <div><div class="nm">Card ending 4417</div><div class="ds">Verve · expires 09/28</div></div>
+              <div class="edit">Change</div>
+            </div>
+          </div>
+
+          <div class="tot">
+            <div class="ln"><span>Subtotal · 3 items</span><span>₦7,100</span></div>
+            <div class="ln"><span>Delivery</span><span>₦500</span></div>
+            <div class="ln"><span>Promo MAKURDI10</span><span>−₦710</span></div>
+            <div class="ln big"><span>Total</span><span>₦6,890</span></div>
+            <div class="btn" style="margin:11px 0 9px">Pay ₦6,890</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 2 PAYMENT -->
+    <div class="item">
+      <div class="n">02</div><div class="t">Payment method</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">How are you paying?</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Saved</div>
+          <div class="opt on">
+            <div class="ic">💳</div>
+            <div><div class="nm">Card ending 4417</div><div class="ds">Verve · 09/28</div></div>
+            <div class="radio on"></div>
+          </div>
+
+          <div class="sec">Other ways</div>
+          <div class="opt">
+            <div class="ic">🏦</div>
+            <div><div class="nm">Bank transfer</div><div class="ds">We'll show you an account number</div></div>
+            <div class="radio"></div>
+          </div>
+          <div class="opt">
+            <div class="ic">💵</div>
+            <div><div class="nm">Cash to the rider</div><div class="ds">Have ₦6,890 ready — riders carry little change</div></div>
+            <div class="radio"></div>
+          </div>
+          <div class="opt">
+            <div class="ic">＋</div>
+            <div><div class="nm">Add a new card</div><div class="ds">Saved securely for next time</div></div>
+            <div class="radio"></div>
+          </div>
+
+          <div style="margin-top:auto;padding-bottom:9px"><div class="btn">Use this method</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 3 ORDER PLACED -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Order placed</div>
+      <div class="phone"><div class="scr dk">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:26px">
+            <div class="bigic" style="margin-bottom:16px">✓</div>
+            <div class="h">Order 1042<br>is in.</div>
+            <p class="p">Terkimbi's has your order. We'll tell you the moment a rider picks it up.</p>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="line on"></div>
+              <div class="d on">✓</div>
+              <div class="tx"><div class="nm">Order placed</div><div class="ds">6:12pm · paid by card</div></div>
+            </div>
+            <div class="step">
+              <div class="line"></div>
+              <div class="d on">●</div>
+              <div class="tx"><div class="nm">Terkimbi's is cooking</div><div class="ds">About 25 minutes</div></div>
+            </div>
+            <div class="step">
+              <div class="line"></div>
+              <div class="d">3</div>
+              <div class="tx"><div class="nm off">Rider picks it up</div></div>
+            </div>
+            <div class="step">
+              <div class="d">4</div>
+              <div class="tx"><div class="nm off">At your gate</div></div>
+            </div>
+          </div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Track my order</div>
+            <div class="btn gh">Back to home</div>
+          </div>
+        </div>
+        <div class="hbar lt"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group">
+  <h2>After the order</h2>
+  <div class="rail">
+
+    <!-- 4 RATE ORDER -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Rate the kitchen</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">✕</div><div class="ttl">How was it?</div></div>
+        </div>
+        <div class="body">
+          <div class="who" style="margin-top:14px">
+            <div class="av">TK</div>
+            <div class="nm2">Terkimbi's Kitchen</div>
+            <div class="ds2">Pounded yam &amp; egusi · ₦2,800</div>
+          </div>
+          <div class="stars">
+            <span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span><span>★</span>
+          </div>
+          <div style="text-align:center;font-size:.68rem;color:var(--muted);font-weight:300">Good, would order again</div>
+
+          <div class="sec">What went well?</div>
+          <div class="tagrow">
+            <div class="tg on">Tasted great</div>
+            <div class="tg">Good portion</div>
+            <div class="tg on">Still hot</div>
+            <div class="tg">Well packed</div>
+            <div class="tg">Worth the price</div>
+          </div>
+          <div class="tbox">Anything else? (optional)</div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Submit</div>
+            <div class="btn gh">Skip</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 5 RATE RIDER -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Rate the rider &amp; tip</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Your rider</div></div>
+        </div>
+        <div class="body">
+          <div class="who" style="margin-top:14px">
+            <div class="av">DT</div>
+            <div class="nm2">Doosuur Terhemba</div>
+            <div class="ds2">Delivered in 29 minutes</div>
+          </div>
+          <div class="stars">
+            <span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span>
+          </div>
+          <div style="text-align:center;font-size:.68rem;color:var(--muted);font-weight:300">Excellent</div>
+
+          <div class="sec">Add a tip? Doosuur keeps 100%</div>
+          <div class="tagrow">
+            <div class="tg">₦200</div><div class="tg on">₦500</div><div class="tg">₦1,000</div><div class="tg">Other</div>
+          </div>
+
+          <div class="note" style="margin-top:12px">Tips go straight to your rider in their weekly payout. M-Kart takes nothing.</div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Send ₦500 tip</div>
+            <div class="btn gh">No tip this time</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 6 ORDER HISTORY -->
+    <div class="item">
+      <div class="n">06</div><div class="t">Order history</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="ttl">Your orders</div></div>
+        </div>
+        <div class="body">
+          <div class="hrow">
+            <div class="hd">
+              <div class="th">🍲</div>
+              <div><div class="k">Terkimbi's Kitchen</div><div class="dt">Today · 6:41pm</div></div>
+              <div class="pill ok">Delivered</div>
+            </div>
+            <div class="items">Pounded yam &amp; egusi, catfish pepper soup, 2× zobo</div>
+            <div class="ft"><div class="amt">₦6,890</div><div class="mini acid">Order again</div></div>
+          </div>
+
+          <div class="hrow">
+            <div class="hd">
+              <div class="th">🍛</div>
+              <div><div class="k">Sewuese Rice Spot</div><div class="dt">Sat 29 Aug</div></div>
+              <div class="pill ok">Delivered</div>
+            </div>
+            <div class="items">Jollof &amp; chicken, chilled malt</div>
+            <div class="ft"><div class="amt">₦2,600</div><div class="mini">Order again</div></div>
+          </div>
+
+          <div class="hrow">
+            <div class="hd">
+              <div class="th">🍢</div>
+              <div><div class="k">Modern Market Suya</div><div class="dt">Thu 27 Aug</div></div>
+              <div class="pill bad">Refunded</div>
+            </div>
+            <div class="items">Ram suya (large)</div>
+            <div class="ft"><div class="amt">₦2,000</div><div class="mini">View details</div></div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 7 RECEIPT -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Order detail</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Order 1042</div></div>
+        </div>
+        <div class="body">
+          <div class="card" style="margin-top:4px">
+            <div class="rowc">
+              <div class="ic acid">✓</div>
+              <div><div class="nm">Delivered in 29 minutes</div><div class="ds">Today at 6:41pm by Doosuur</div></div>
+            </div>
+          </div>
+
+          <div class="sec">From Terkimbi's Kitchen</div>
+          <div class="ln" style="color:var(--ink);font-weight:400"><span>1× Pounded yam &amp; egusi</span><span>₦2,800</span></div>
+          <div class="ln" style="color:var(--ink);font-weight:400"><span>1× Catfish pepper soup</span><span>₦3,500</span></div>
+          <div class="ln" style="color:var(--ink);font-weight:400"><span>2× Chilled zobo</span><span>₦800</span></div>
+
+          <div class="sec">Payment</div>
+          <div class="ln"><span>Subtotal</span><span>₦7,100</span></div>
+          <div class="ln"><span>Delivery to High Level</span><span>₦500</span></div>
+          <div class="ln"><span>Promo MAKURDI10</span><span>−₦710</span></div>
+          <div class="ln"><span>Tip to rider</span><span>₦500</span></div>
+          <div class="ln big"><span>Paid by card</span><span>₦7,390</span></div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Order this again</div>
+            <div class="btn out">Report a problem</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 8 EMPTY -->
+    <div class="item">
+      <div class="n">08</div><div class="t">No orders yet</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="ttl">Your orders</div></div>
+        </div>
+        <div class="body">
+          <div class="empty">
+            <div class="eic">🧾</div>
+            <div class="h" style="font-size:1.2rem">Nothing here yet</div>
+            <p class="p">Once you order, everything shows up here — receipts, and one tap to order the same thing again.</p>
+            <div class="btn" style="margin-top:16px">See what's cooking</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</section>
+<section class="chapter" id="account">
+  <div class="chapter-head">
+    <div class="num">06</div>
+    <h2>Account &amp; problem states</h2>
+    <p>Settings and addresses, plus the six ways an order can go wrong.</p>
+  </div>
+  <div class="sc-account">
+
+
+
+<!-- ============ ACCOUNT ============ -->
+<div class="group">
+  <h2>Account</h2>
+  <div class="rail">
+
+    <!-- 1 ACCOUNT HOME -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Account</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="ttl">Account</div></div>
+        </div>
+        <div class="body">
+          <div class="prof">
+            <div class="av">TK</div>
+            <div><div class="nm2">Terkimbi</div><div class="ph">+234 801 234 5678</div></div>
+            <div class="chev">›</div>
+          </div>
+
+          <div class="sec">Ordering</div>
+          <div class="row"><div class="ic">📍</div><div><div class="nm">Saved addresses</div><div class="ds">2 saved</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">💳</div><div><div class="nm">Payment methods</div><div class="ds">Card ending 4417</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">🧾</div><div><div class="nm">Order history</div></div><div class="chev">›</div></div>
+
+          <div class="sec">App</div>
+          <div class="row"><div class="ic">🔔</div><div><div class="nm">Notifications</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">💬</div><div><div class="nm">Help &amp; support</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">📄</div><div><div class="nm">Terms &amp; privacy</div></div><div class="chev">›</div></div>
+
+          <div style="margin-top:auto;padding-bottom:9px">
+            <div class="btn gh">Sign out</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 2 ADDRESSES -->
+    <div class="item">
+      <div class="n">02</div><div class="t">Saved addresses</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Saved addresses</div></div>
+        </div>
+        <div class="body">
+          <div class="row" style="align-items:flex-start">
+            <div class="ic acid">⌂</div>
+            <div><div class="nm">Home</div><div class="ds">Behind BSU main gate, High Level<br>Gate is painted blue</div></div>
+            <div class="tick">✓</div>
+          </div>
+          <div class="row" style="align-items:flex-start">
+            <div class="ic">💼</div>
+            <div><div class="nm">Office</div><div class="ds">Opposite Modern Market, second floor<br>Ask for Terkimbi at reception</div></div>
+            <div class="chev">›</div>
+          </div>
+
+          <div class="sec">We deliver to</div>
+          <div style="font-size:.68rem;color:var(--muted);font-weight:300;line-height:1.7">
+            High Level · Wurukum · North Bank · Modern Market · Judges Quarters · Ankpa Ward · BSU and around
+          </div>
+
+          <div style="margin-top:auto;padding-bottom:9px"><div class="btn">Add an address</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 3 ADD ADDRESS -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Add address</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Add an address</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:4px">
+            <div class="lab">Landmark or street</div>
+            <div class="field">Behind BSU main gate</div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="lab">Anything the rider should know?</div>
+            <div class="field"><span class="ph2">Gate colour, floor, who to ask for…</span></div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="lab">Save as</div>
+            <div class="tagrow">
+              <div class="tg on">Home</div><div class="tg">Office</div><div class="tg">Other</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="k">Area detected</div>
+            <div class="v">High Level · we deliver here</div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:9px"><div class="btn">Save address</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 4 NOTIFICATIONS -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Notifications</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Notifications</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your orders</div>
+          <div class="row"><div><div class="nm">Order updates</div><div class="ds">Cooking, picked up, arriving</div></div><div class="sw on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Rider is at your gate</div><div class="ds">Also rings your phone</div></div><div class="sw on"><i></i></div></div>
+
+          <div class="sec">From M-Kart</div>
+          <div class="row"><div><div class="nm">New kitchens in your area</div></div><div class="sw on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Offers and promo codes</div></div><div class="sw"><i></i></div></div>
+          <div class="row"><div><div class="nm">A kitchen you saved has opened</div></div><div class="sw on"><i></i></div></div>
+
+          <div class="card" style="margin-top:16px">
+            <div class="k">Note</div>
+            <div class="v" style="font-weight:300;font-size:.68rem;line-height:1.55">Order updates also arrive by SMS if your data is off.</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 5 HELP -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Help &amp; support</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Help</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your last order</div>
+          <div class="row"><div class="ic">🧾</div><div><div class="nm">Terkimbi's Kitchen</div><div class="ds">Today 6:41pm · ₦6,890</div></div><div class="chev">›</div></div>
+
+          <div class="sec">Common problems</div>
+          <div class="row"><div><div class="nm">My order is late</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">Something was missing or wrong</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">The food arrived cold</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">I was charged twice</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">I want a refund</div></div><div class="chev">›</div></div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Chat on WhatsApp</div>
+            <div class="btn out">Call us · 8am–10pm</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 6 REPORT -->
+    <div class="item">
+      <div class="n">06</div><div class="t">Report a problem</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">What went wrong?</div></div>
+        </div>
+        <div class="body">
+          <div class="card" style="margin-top:2px">
+            <div class="k">Order 1042 · Terkimbi's Kitchen</div>
+            <div class="v">Today at 6:41pm · ₦6,890</div>
+          </div>
+
+          <div class="sec">Which items?</div>
+          <div class="opt"><div class="nm">Pounded yam &amp; egusi</div><div class="rd on"></div></div>
+          <div class="opt"><div class="nm">Catfish pepper soup</div><div class="rd"></div></div>
+          <div class="opt"><div class="nm">Chilled zobo ×2</div><div class="rd"></div></div>
+
+          <div class="sec">Tell us what happened</div>
+          <div class="field" style="min-height:56px"><span class="ph2">The more detail, the faster we fix it.</span></div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn out">Add a photo</div>
+            <div class="btn">Send report</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PROBLEM STATES ============ -->
+<div class="group">
+  <h2>When an order goes wrong</h2>
+  <p class="gp">These decide whether someone orders a second time. Each one names what happened, says what we're doing about it, and gives one clear next step.</p>
+  <div class="rail">
+
+    <!-- 7 PAYMENT FAILED -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Payment failed</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Checkout</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic warn" style="margin-bottom:16px">✕</div>
+            <div class="h">Your card was declined</div>
+            <p class="p">Your bank turned down the payment. Nothing was taken and your order hasn't been placed.</p>
+          </div>
+          <div class="card">
+            <div class="k">Your cart is safe</div>
+            <div class="v">3 items from Terkimbi's · ₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Try another way to pay</div>
+            <div class="btn out">Try the same card again</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 8 RESTAURANT REJECTED -->
+    <div class="item">
+      <div class="n">08</div><div class="t">Kitchen can't take it</div>
+      <div class="phone"><div class="scr dk">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic warn" style="margin-bottom:16px">!</div>
+            <div class="h">Terkimbi's can't cook this right now</div>
+            <p class="p">They've run out of egusi for today. We're refunding you in full — it should be back within 3 working days.</p>
+          </div>
+          <div class="card dk">
+            <div class="k">Refunding to card ending 4417</div>
+            <div class="v">₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Find something else</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar lt"></div>
+      </div></div>
+    </div>
+
+    <!-- 9 NO RIDERS -->
+    <div class="item">
+      <div class="n">09</div><div class="t">No riders free</div>
+      <div class="phone"><div class="scr dk">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic mut" style="margin-bottom:16px">🛵</div>
+            <div class="h">Looking for a rider</div>
+            <p class="p">Every rider near High Level is busy. We're still trying — this usually clears within 10 minutes.</p>
+          </div>
+          <div class="card dk">
+            <div class="k">Your food</div>
+            <div class="v">Terkimbi's has started cooking</div>
+          </div>
+          <div class="card dk">
+            <div class="k">If we can't find one</div>
+            <div class="v" style="font-weight:300;font-size:.7rem;line-height:1.55">We'll cancel and refund you in full. You won't be charged for a delivery that doesn't happen.</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn gh">Cancel and refund me</div>
+          </div>
+        </div>
+        <div class="hbar lt"></div>
+      </div></div>
+    </div>
+
+    <!-- 10 RUNNING LATE -->
+    <div class="item">
+      <div class="n">10</div><div class="t">Running late</div>
+      <div class="phone"><div class="scr dk">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd dk">‹</div><div class="ttl">Order 1042</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:14px">
+            <div class="bigic mut" style="margin-bottom:16px">⏱</div>
+            <div class="h">Running about<br>15 minutes late</div>
+            <p class="p">Doosuur is stuck in traffic near Wurukum roundabout. New estimate is 7:05pm.</p>
+          </div>
+          <div class="card dk">
+            <div class="k">Sorry about this</div>
+            <div class="v" style="font-weight:300;font-size:.7rem;line-height:1.55">We've put ₦500 credit on your account for the delay. It applies to your next order automatically.</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Call Doosuur</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar lt"></div>
+      </div></div>
+    </div>
+
+    <!-- 11 CANCELLED / REFUND -->
+    <div class="item">
+      <div class="n">11</div><div class="t">Refund status</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Order 1039</div></div>
+        </div>
+        <div class="body">
+          <div class="card" style="margin-top:2px;border-color:var(--red);background:var(--redbg)">
+            <div class="k" style="color:var(--reddk)">Cancelled</div>
+            <div class="v" style="color:var(--reddk)">Modern Market Suya · Thu 27 Aug</div>
+          </div>
+
+          <div class="sec">What happened</div>
+          <div style="font-size:.7rem;color:var(--muted);font-weight:300;line-height:1.65">
+            The kitchen closed before your order was picked up. You were refunded in full, including delivery.
+          </div>
+
+          <div class="sec">Refund</div>
+          <div class="row"><div class="ic acid">✓</div><div><div class="nm">₦2,000 refunded</div><div class="ds">To card ending 4417 · 28 Aug</div></div></div>
+          <div class="row"><div class="ic">🧾</div><div><div class="nm">See the receipt</div></div><div class="chev">›</div></div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn out">This still isn't resolved</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 12 OUTSIDE AREA -->
+    <div class="item">
+      <div class="n">12</div><div class="t">Outside our area</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Delivery address</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic warn" style="margin-bottom:16px">📍</div>
+            <div class="h">We don't reach<br>Gboko yet</div>
+            <p class="p">M-Kart is only in Makurdi for now. We're adding areas as we sign up riders.</p>
+          </div>
+          <div class="card">
+            <div class="k">Tell us where you are</div>
+            <div class="v" style="font-weight:300;font-size:.7rem;line-height:1.55">We open new areas where people are asking. It genuinely decides where we go next.</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Tell M-Kart to come to Gboko</div>
+            <div class="btn out">Use a different address</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</section>
+<section class="chapter" id="modes">
+  <div class="chapter-head">
+    <div class="num">07</div>
+    <h2>Light &amp; dark proof</h2>
+    <p>Each pair is byte-identical markup with a different theme class. If a screen only works in one mode, the tokens are wrong.</p>
+  </div>
+  <div class="sc-modes">
+
+
+
+<div class="swatches">
+  <div class="sw">
+    <h3>Dark palette</h3>
+    <div class="chipset">
+      <div class="cs"><div class="box" style="background:#0E0F0D"></div><div class="lb"><b>bg</b><span>#0E0F0D</span></div></div>
+      <div class="cs"><div class="box" style="background:#1A1C19"></div><div class="lb"><b>surface</b><span>#1A1C19</span></div></div>
+      <div class="cs"><div class="box" style="background:#242621"></div><div class="lb"><b>raised</b><span>#242621</span></div></div>
+      <div class="cs"><div class="box" style="background:#FFFFFF"></div><div class="lb"><b>text</b><span>#FFFFFF</span></div></div>
+      <div class="cs"><div class="box" style="background:#8E9189"></div><div class="lb"><b>text-2</b><span>#8E9189</span></div></div>
+      <div class="cs"><div class="box" style="background:#C6F432"></div><div class="lb"><b>accent</b><span>#C6F432</span></div></div>
+      <div class="cs"><div class="box" style="background:#C6F432"></div><div class="lb"><b>accent-text</b><span>#C6F432</span></div></div>
+      <div class="cs"><div class="box" style="background:#FF6B4A"></div><div class="lb"><b>danger</b><span>#FF6B4A</span></div></div>
+    </div>
+  </div>
+  <div class="sw">
+    <h3>Light palette</h3>
+    <div class="chipset">
+      <div class="cs"><div class="box" style="background:#FFFFFF;border-bottom:1px solid #EEE"></div><div class="lb"><b>bg</b><span>#FFFFFF</span></div></div>
+      <div class="cs"><div class="box" style="background:#F6F7F3"></div><div class="lb"><b>surface</b><span>#F6F7F3</span></div></div>
+      <div class="cs"><div class="box" style="background:#EDEFE8"></div><div class="lb"><b>raised</b><span>#EDEFE8</span></div></div>
+      <div class="cs"><div class="box" style="background:#0E0F0D"></div><div class="lb"><b>text</b><span>#0E0F0D</span></div></div>
+      <div class="cs"><div class="box" style="background:#6B6F66"></div><div class="lb"><b>text-2</b><span>#6B6F66</span></div></div>
+      <div class="cs"><div class="box" style="background:#C6F432"></div><div class="lb"><b>accent</b><span>#C6F432</span></div></div>
+      <div class="cs"><div class="box" style="background:#4E6B00"></div><div class="lb"><b>accent-text</b><span>#4E6B00</span></div></div>
+      <div class="cs"><div class="box" style="background:#C0391C"></div><div class="lb"><b>danger</b><span>#C0391C</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <b>The one thing that differs by mode is accent-as-text.</b> The lime fill is byte-identical in both — same button, same chip, same badge. But <code>#C6F432</code> as <em>text</em> on white measures 1.4:1, which is unreadable outdoors. So on light backgrounds the same hue drops to <code>#4E6B00</code>, which measures 7.1:1. One colour, two lightnesses, because contrast requires it.
+</div>
+
+<div class="group">
+  <h2>Sign in</h2>
+  <div class="rail">
+    <div class="item">
+      <div class="t">Sign in</div><div class="m d">Dark · shipping</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="font-size:1.1rem;font-weight:300;letter-spacing:-.02em;padding-top:5px">M<b style="font-weight:600">-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Makurdi eats.<br><span style="color:var(--accent-text)">We deliver.</span></div>
+            <p class="p">Enter your number to get started. We'll text you a code.</p>
+          </div>
+          <div style="margin-top:18px">
+            <div class="field"><span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="ph">801 234 5678</span></div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p style="font-size:.6rem;color:var(--text-3);text-align:center;margin:12px 0 auto;padding-bottom:11px;line-height:1.5;font-weight:var(--body-weight)">By continuing you agree to M-Kart's Terms and Privacy Policy.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Sign in</div><div class="m l">Light · same markup</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="font-size:1.1rem;font-weight:300;letter-spacing:-.02em;padding-top:5px">M<b style="font-weight:600">-Kart</b>~</div>
+          <div style="margin-top:auto">
+            <div class="h">Makurdi eats.<br><span style="color:var(--accent-text)">We deliver.</span></div>
+            <p class="p">Enter your number to get started. We'll text you a code.</p>
+          </div>
+          <div style="margin-top:18px">
+            <div class="field"><span class="cc">🇳🇬 +234</span><span class="dv"></span><span class="ph">801 234 5678</span></div>
+            <div class="btn" style="margin-top:9px">Send me a code</div>
+          </div>
+          <p style="font-size:.6rem;color:var(--text-3);text-align:center;margin:12px 0 auto;padding-bottom:11px;line-height:1.5;font-weight:var(--body-weight)">By continuing you agree to M-Kart's Terms and Privacy Policy.</p>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Verify code</div><div class="m d">Dark · shipping</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:auto">
+            <div class="h">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="lk">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:18px">
+            <span class="on">4</span><span class="on">9</span><span class="on">2</span><span class="cur"></span><span></span><span></span>
+          </div>
+          <p style="font-size:.65rem;color:var(--text-2);text-align:center;margin-top:12px;font-weight:var(--body-weight)">Didn't get it? <b style="color:var(--accent-text);font-weight:500">Resend in 0:24</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Verify code</div><div class="m l">Light · same markup</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:auto">
+            <div class="h">Enter your code</div>
+            <p class="p">Sent to +234 801 234 5678. <span class="lk">Change number</span></p>
+          </div>
+          <div class="otp" style="margin-top:18px">
+            <span class="on">4</span><span class="on">9</span><span class="on">2</span><span class="cur"></span><span></span><span></span>
+          </div>
+          <p style="font-size:.65rem;color:var(--text-2);text-align:center;margin-top:12px;font-weight:var(--body-weight)">Didn't get it? <b style="color:var(--accent-text);font-weight:500">Resend in 0:24</b></p>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">Verify</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="group">
+  <h2>Restaurant menu</h2>
+  <div class="rail">
+    <div class="item">
+      <div class="t">Menu</div><div class="m l">Light · shipping</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Terkimbi's Kitchen</div></div>
+        </div>
+        <div class="tabs"><a href="#">Swallow</a><a class="on" href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a></div>
+        <div class="body">
+          <div class="sec">Soups</div>
+          <div class="mrow">
+            <div class="th">🍲</div>
+            <div style="flex:1"><div class="nm">Egusi soup</div><div class="ds">Melon seed, bitterleaf, assorted beef.</div><div class="pr">₦1,800</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow">
+            <div class="th">🐟</div>
+            <div style="flex:1"><div class="nm">Catfish pepper soup</div><div class="ds">Fresh Benue river catfish, scent leaf.</div><div class="pr">₦3,500</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow" style="border-bottom:none">
+            <div class="th">🍖</div>
+            <div style="flex:1"><div class="nm">Goat meat pepper soup</div><div class="ds">Slow cooked with local spices.</div><div class="pr">₦3,000</div></div>
+            <div class="add">+</div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">View cart · ₦4,600</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Menu</div><div class="m d">Dark · same markup</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Terkimbi's Kitchen</div></div>
+        </div>
+        <div class="tabs"><a href="#">Swallow</a><a class="on" href="#">Soups</a><a href="#">Rice</a><a href="#">Drinks</a></div>
+        <div class="body">
+          <div class="sec">Soups</div>
+          <div class="mrow">
+            <div class="th">🍲</div>
+            <div style="flex:1"><div class="nm">Egusi soup</div><div class="ds">Melon seed, bitterleaf, assorted beef.</div><div class="pr">₦1,800</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow">
+            <div class="th">🐟</div>
+            <div style="flex:1"><div class="nm">Catfish pepper soup</div><div class="ds">Fresh Benue river catfish, scent leaf.</div><div class="pr">₦3,500</div></div>
+            <div class="add">+</div>
+          </div>
+          <div class="mrow" style="border-bottom:none">
+            <div class="th">🍖</div>
+            <div style="flex:1"><div class="nm">Goat meat pepper soup</div><div class="ds">Slow cooked with local spices.</div><div class="pr">₦3,000</div></div>
+            <div class="add">+</div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:11px"><div class="btn">View cart · ₦4,600</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Checkout</div><div class="m l">Light · shipping</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Checkout</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Deliver to</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic acid">⌖</div>
+              <div><div class="nm">Behind BSU main gate</div><div class="ds">High Level · 2.1 km away</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div class="sec">Pay with</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic">💳</div>
+              <div><div class="nm">Card ending 4417</div><div class="ds">Verve · 09/28</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div style="margin-top:auto">
+            <div class="ln"><span>Subtotal · 3 items</span><span>₦7,100</span></div>
+            <div class="ln"><span>Delivery</span><span>₦500</span></div>
+            <div class="ln"><span>Promo MAKURDI10</span><span>−₦710</span></div>
+            <div class="ln big"><span>Total</span><span>₦6,890</span></div>
+            <div class="btn" style="margin:11px 0 11px">Pay ₦6,890</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Checkout</div><div class="m d">Dark · same markup</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Checkout</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Deliver to</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic acid">⌖</div>
+              <div><div class="nm">Behind BSU main gate</div><div class="ds">High Level · 2.1 km away</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div class="sec">Pay with</div>
+          <div class="card">
+            <div class="rowc">
+              <div class="ic">💳</div>
+              <div><div class="nm">Card ending 4417</div><div class="ds">Verve · 09/28</div></div>
+              <div style="margin-left:auto;font-size:.62rem;color:var(--accent-text);font-weight:500">Change</div>
+            </div>
+          </div>
+          <div style="margin-top:auto">
+            <div class="ln"><span>Subtotal · 3 items</span><span>₦7,100</span></div>
+            <div class="ln"><span>Delivery</span><span>₦500</span></div>
+            <div class="ln"><span>Promo MAKURDI10</span><span>−₦710</span></div>
+            <div class="ln big"><span>Total</span><span>₦6,890</span></div>
+            <div class="btn" style="margin:11px 0 11px">Pay ₦6,890</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="group">
+  <h2>Account &amp; failure</h2>
+  <div class="rail">
+    <div class="item">
+      <div class="t">Notifications</div><div class="m l">Light · shipping</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Notifications</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your orders</div>
+          <div class="row"><div><div class="nm">Order updates</div><div class="ds">Cooking, picked up, arriving</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Rider is at your gate</div><div class="ds">Also rings your phone</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="sec">From M-Kart</div>
+          <div class="row"><div><div class="nm">New kitchens near you</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Offers and promo codes</div></div><div class="sw2"><i></i></div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Notifications</div><div class="m d">Dark · same markup</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Notifications</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your orders</div>
+          <div class="row"><div><div class="nm">Order updates</div><div class="ds">Cooking, picked up, arriving</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Rider is at your gate</div><div class="ds">Also rings your phone</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="sec">From M-Kart</div>
+          <div class="row"><div><div class="nm">New kitchens near you</div></div><div class="sw2 on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Offers and promo codes</div></div><div class="sw2"><i></i></div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Order rejected</div><div class="m d">Dark · shipping</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="margin-top:24px">
+            <div class="bigic warn" style="margin-bottom:15px">!</div>
+            <div class="h">Terkimbi's can't cook this right now</div>
+            <p class="p">They've run out of egusi for today. We're refunding you in full.</p>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="ds">Refunding to card ending 4417</div>
+            <div class="nm" style="margin-top:2px">₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn">Find something else</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <div class="item">
+      <div class="t">Order rejected</div><div class="m l">Light · same markup</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top"><div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div></div>
+        <div class="body">
+          <div style="margin-top:24px">
+            <div class="bigic warn" style="margin-bottom:15px">!</div>
+            <div class="h">Terkimbi's can't cook this right now</div>
+            <p class="p">They've run out of egusi for today. We're refunding you in full.</p>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="ds">Refunding to card ending 4417</div>
+            <div class="nm" style="margin-top:2px">₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:11px">
+            <div class="btn">Find something else</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+</div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h3>What is not in here</h3>
+    <p><b>Rider app</b> (~10 screens), <b>restaurant dashboard</b> (~8, web, tablet-first), <b>admin and dispatch panel</b> (~10, web). The customer app is one of four surfaces.</p>
+    <p><b>Real photography.</b> Every food image is a placeholder. This is the largest outstanding gap and no amount of design substitutes for it.</p>
+    <p><b>Backend.</b> No schema yet. The endpoints implied by these screens are listed in <code style="background:#242621;color:#C6F432">mkart-handoff.md</code>.</p>
+    <p><b>Two things the backend must support that are easy to miss:</b> a coverage polygon per area with a distance-based delivery fee table (the feed shows a different fee per kitchen), and an instant restaurant-controlled sold-out toggle (bukkas run out mid-afternoon; if they have to phone you, customers order food that does not exist).</p>
+    <div class="fin">M-Kart &middot; Makurdi, Benue State &middot; customer app design v1 &middot; DM Sans &middot; accent #C6F432</div>
+  </div>
+</footer>
+
+</body>
+</html>

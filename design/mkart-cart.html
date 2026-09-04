@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — cart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+.t-light{
+  --bg:#FFFFFF; --surface:#F6F7F3; --raised:#EDEFE8;
+  --border:#E4E7DE; --border-strong:#D3D7CB;
+  --text:#0E0F0D; --text-2:#6B6F66; --text-3:#9A9E93;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#4E6B00;
+  --danger:#C0391C; --danger-bg:#FFEDE8;
+  --body-weight:400;
+}
+.t-dark{
+  --bg:#0E0F0D; --surface:#1A1C19; --raised:#242621;
+  --border:#2E312C; --border-strong:#3A3C38;
+  --text:#FFFFFF; --text-2:#8E9189; --text-3:#6E7169;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#C6F432;
+  --danger:#FF6B4A; --danger-bg:rgba(255,107,74,.14);
+  --body-weight:300;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D8D8D3;font-family:'DM Sans',system-ui,sans-serif;color:#0E0F0D;padding:42px 20px 66px}
+.head{max-width:1500px;margin:0 auto 28px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:78ch;line-height:1.6}
+.group{max-width:1500px;margin:0 auto 32px}
+.group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #C2C2BD}
+.rail{display:flex;gap:24px;flex-wrap:wrap}
+.item{width:262px}
+.item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.item .t{font-size:.9rem;font-weight:500;margin-bottom:4px;letter-spacing:-.02em}
+.item .w{font-size:.72rem;color:#6B6F66;line-height:1.5;margin-bottom:11px;min-height:44px}
+
+.phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);color:var(--text);overflow:hidden}
+.hbar{width:78px;height:3.5px;border-radius:99px;background:var(--border-strong);margin:0 auto 6px;flex:none}
+
+.top{flex:none;padding:9px 15px 0}
+.st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600}
+.bar{display:flex;align-items:center;gap:10px;padding:9px 0 10px}
+.rnd{width:27px;height:27px;border-radius:50%;background:var(--surface);display:grid;place-items:center;
+  font-size:.75rem;flex:none;color:var(--text)}
+.ttl{font-size:.85rem;font-weight:600;letter-spacing:-.025em}
+.clear{margin-left:auto;font-size:.65rem;color:var(--text-2);font-weight:var(--body-weight)}
+.body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+
+/* kitchen header inside the cart */
+.kit{display:flex;align-items:center;gap:9px;background:var(--surface);border-radius:13px;padding:9px 11px;flex:none}
+.kit .th{width:28px;height:28px;border-radius:9px;background:var(--raised);display:grid;place-items:center;font-size:.8rem;flex:none}
+.kit .nm{font-size:.74rem;font-weight:600;letter-spacing:-.01em}
+.kit .ds{font-size:.6rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:1px}
+
+/* line items */
+.li{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start;flex:none}
+.li .th{width:44px;height:44px;border-radius:11px;background:var(--surface);flex:none;display:grid;place-items:center;font-size:.95rem}
+.li .tx{flex:1;min-width:0}
+.li .nm{font-size:.74rem;font-weight:500;line-height:1.3}
+.li .op{font-size:.61rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:2px;line-height:1.45}
+.li .note{font-size:.61rem;color:var(--accent-text);font-weight:500;margin-top:3px}
+.li .rt{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex:none}
+.li .pr{font-size:.74rem;font-weight:600}
+.stp{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:99px;padding:3px 8px}
+.stp i{font-style:normal;font-size:.72rem;color:var(--text-2);width:11px;text-align:center}
+.stp b{font-size:.7rem;font-weight:600;min-width:9px;text-align:center}
+.li.gone .th,.li.gone .tx{opacity:.4}
+.li .soldout{font-size:.61rem;color:var(--danger);font-weight:600;margin-top:3px}
+
+.addmore{display:flex;align-items:center;justify-content:center;gap:7px;border:1px dashed var(--border-strong);
+  border-radius:12px;padding:9px;font-size:.69rem;font-weight:500;color:var(--text-2);margin-top:11px;flex:none}
+
+.tot{margin-top:auto;flex:none}
+.ln{display:flex;justify-content:space-between;font-size:.69rem;color:var(--text-2);padding:3px 0;font-weight:var(--body-weight)}
+.ln.big{color:var(--text);font-size:.92rem;font-weight:600;border-top:1px solid var(--border);margin-top:6px;padding:9px 0 0}
+.btn{border-radius:99px;padding:12px;text-align:center;font-weight:600;font-size:.8rem;
+  background:var(--accent);color:var(--on-accent)}
+.btn.mut{background:var(--raised);color:var(--text-3)}
+.btn.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:500}
+.btn.gh{background:transparent;color:var(--text-2);font-weight:400}
+
+/* progress toward minimum */
+.minbar{background:var(--surface);border-radius:12px;padding:10px 11px;flex:none;margin-top:10px}
+.minbar .k{font-size:.65rem;font-weight:500}
+.minbar .k b{color:var(--accent-text);font-weight:600}
+.track{height:5px;border-radius:99px;background:var(--border);margin-top:7px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);border-radius:99px}
+
+/* banners */
+.ban{border-radius:12px;padding:10px 11px;flex:none;margin-top:10px;display:flex;gap:9px;align-items:flex-start}
+.ban.warn{background:var(--danger-bg)}
+.ban.info{background:var(--surface)}
+.ban .i{font-size:.78rem;flex:none;line-height:1.35}
+.ban .k{font-size:.68rem;font-weight:600;line-height:1.35}
+.ban .d{font-size:.62rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.5;margin-top:2px}
+.ban.warn .k{color:var(--danger)}
+.ban.warn .d{color:var(--danger)}
+
+/* sticky cart bar over the menu */
+.cartbar{position:absolute;left:11px;right:11px;bottom:13px;background:var(--text);color:var(--bg);
+  border-radius:99px;padding:10px 13px 10px 15px;display:flex;align-items:center;gap:10px;z-index:5}
+.cartbar .ct{width:23px;height:23px;border-radius:50%;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.63rem;font-weight:600;flex:none}
+.cartbar .lb{font-size:.73rem;font-weight:500}
+.cartbar .pr{margin-left:auto;font-size:.75rem;font-weight:600}
+
+/* menu bg for the cartbar screen */
+.mrow{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center;flex:none}
+.mrow .th{width:44px;height:44px;border-radius:11px;background:var(--surface);flex:none;display:grid;place-items:center;font-size:.95rem}
+.mrow .nm{font-size:.73rem;font-weight:500}
+.mrow .ds{font-size:.6rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:1px}
+.mrow .pr{font-size:.72rem;font-weight:600;margin-top:3px}
+.mrow .add{width:21px;height:21px;border-radius:50%;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.7rem;margin-left:auto;flex:none}
+
+/* sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-radius:22px 22px 0 0;
+  padding:14px 15px 10px;box-shadow:0 -12px 40px rgba(10,11,9,.3);z-index:6}
+.grab{width:34px;height:4px;border-radius:99px;background:var(--border-strong);margin:0 auto 13px}
+.sh{font-size:.95rem;font-weight:600;letter-spacing:-.03em;line-height:1.2}
+.sp{font-size:.7rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.55;margin-top:7px}
+.scrim{position:absolute;inset:0;background:rgba(14,15,13,.42);z-index:5}
+
+/* empty */
+.eic{width:58px;height:58px;border-radius:19px;background:var(--surface);display:grid;place-items:center;
+  font-size:1.35rem;margin-bottom:14px}
+.eh{font-size:1.14rem;font-weight:600;letter-spacing:-.035em;line-height:1.16}
+.ep{font-size:.73rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.6;margin-top:9px}
+.rec{display:flex;gap:9px;align-items:center;background:var(--surface);border-radius:13px;padding:9px 11px;margin-top:8px}
+.rec .th{width:32px;height:32px;border-radius:10px;background:var(--raised);display:grid;place-items:center;font-size:.85rem;flex:none}
+.rec .nm{font-size:.71rem;font-weight:500}
+.rec .ds{font-size:.6rem;color:var(--text-2);font-weight:var(--body-weight)}
+
+@media (max-width:640px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — the cart, properly</h1>
+  <p>The old cart was one screen built before the token system, and it let you order from two kitchens at once. This is the full set: one kitchen per order, a minimum-order rule, and the case that breaks real delivery apps — an item selling out while it sits in someone's cart.</p>
+</div>
+
+<div class="group">
+  <h2>The normal path</h2>
+  <div class="rail">
+
+    <!-- 1 CART BAR -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Cart bar</div>
+      <div class="w">Follows you down the menu. Shows count and running total so nobody has to open the cart to check.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Terkimbi's Kitchen</div></div>
+        </div>
+        <div class="body">
+          <div class="mrow"><div class="th">🍲</div><div><div class="nm">Pounded yam &amp; egusi</div><div class="ds">Assorted beef, stockfish</div><div class="pr">₦2,800</div></div><div class="add">+</div></div>
+          <div class="mrow"><div class="th">🥘</div><div><div class="nm">Akpu &amp; oha soup</div><div class="ds">With goat meat</div><div class="pr">₦2,400</div></div><div class="add">+</div></div>
+          <div class="mrow"><div class="th">🐟</div><div><div class="nm">Catfish pepper soup</div><div class="ds">Fresh Benue catfish</div><div class="pr">₦3,500</div></div><div class="add">+</div></div>
+          <div class="mrow"><div class="th">🍖</div><div><div class="nm">Goat meat pepper soup</div><div class="ds">Slow cooked</div><div class="pr">₦3,000</div></div><div class="add">+</div></div>
+          <div class="mrow"><div class="th">🥤</div><div><div class="nm">Chilled zobo</div><div class="ds">500ml</div><div class="pr">₦400</div></div><div class="add">+</div></div>
+        </div>
+        <div class="cartbar"><div class="ct">3</div><div class="lb">View cart</div><div class="pr">₦7,100</div></div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 2 CART -->
+    <div class="item">
+      <div class="n">02</div><div class="t">Cart</div>
+      <div class="w">One kitchen, named at the top. Steppers on each line, and a way back to the menu without losing anything.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Your cart</div><div class="clear">Clear</div></div>
+        </div>
+        <div class="body">
+          <div class="kit">
+            <div class="th">🍲</div>
+            <div><div class="nm">Terkimbi's Kitchen</div><div class="ds">Wurukum · 20–30 min · ₦500 delivery</div></div>
+          </div>
+
+          <div class="li">
+            <div class="th">🍲</div>
+            <div class="tx">
+              <div class="nm">Pounded yam &amp; egusi</div>
+              <div class="op">Extra assorted meat</div>
+              <div class="note">No pepper please</div>
+            </div>
+            <div class="rt"><div class="pr">₦3,300</div><div class="stp"><i>−</i><b>1</b><i>+</i></div></div>
+          </div>
+
+          <div class="li">
+            <div class="th">🐟</div>
+            <div class="tx"><div class="nm">Catfish pepper soup</div></div>
+            <div class="rt"><div class="pr">₦3,500</div><div class="stp"><i>−</i><b>1</b><i>+</i></div></div>
+          </div>
+
+          <div class="li" style="border-bottom:none">
+            <div class="th">🥤</div>
+            <div class="tx"><div class="nm">Chilled zobo</div><div class="op">500ml</div></div>
+            <div class="rt"><div class="pr">₦800</div><div class="stp"><i>−</i><b>2</b><i>+</i></div></div>
+          </div>
+
+          <div class="addmore">＋ Add more from Terkimbi's</div>
+
+          <div class="tot">
+            <div class="ln"><span>Subtotal</span><span>₦7,600</span></div>
+            <div class="ln"><span>Delivery to High Level</span><span>₦500</span></div>
+            <div class="ln big"><span>Total</span><span>₦8,100</span></div>
+            <div class="btn" style="margin:10px 0 10px">Go to checkout</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 3 EMPTY -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Empty cart</div>
+      <div class="w">Doesn't just say "empty". Offers the last thing they ordered, because reorders will be a big share of your volume.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="ttl">Your cart</div></div>
+        </div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="eic">🛒</div>
+            <div class="eh">Nothing in here yet</div>
+            <p class="ep">Six kitchens are open near High Level right now.</p>
+
+            <div style="font-size:.63rem;font-weight:600;color:var(--text-2);letter-spacing:.05em;text-transform:uppercase;margin:16px 0 7px">Order again</div>
+            <div class="rec">
+              <div class="th">🍲</div>
+              <div style="flex:1"><div class="nm">Terkimbi's Kitchen</div><div class="ds">Pounded yam &amp; egusi + 2 · ₦6,890</div></div>
+              <div style="font-size:.62rem;color:var(--accent-text);font-weight:600">Add</div>
+            </div>
+            <div class="rec">
+              <div class="th">🍛</div>
+              <div style="flex:1"><div class="nm">Sewuese Rice Spot</div><div class="ds">Jollof &amp; chicken · ₦2,600</div></div>
+              <div style="font-size:.62rem;color:var(--accent-text);font-weight:600">Add</div>
+            </div>
+
+            <div class="btn" style="margin-top:14px">Browse kitchens</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group">
+  <h2>The rules the cart has to enforce</h2>
+  <div class="rail">
+
+    <!-- 4 MINIMUM -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Below minimum order</div>
+      <div class="w">Kitchens set a minimum so a ₦400 zobo run doesn't cost you a whole rider trip. Shows the gap, not just a blocked button.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Your cart</div><div class="clear">Clear</div></div>
+        </div>
+        <div class="body">
+          <div class="kit">
+            <div class="th">🍲</div>
+            <div><div class="nm">Terkimbi's Kitchen</div><div class="ds">Minimum order ₦2,000</div></div>
+          </div>
+
+          <div class="li" style="border-bottom:none">
+            <div class="th">🥤</div>
+            <div class="tx"><div class="nm">Chilled zobo</div><div class="op">500ml</div></div>
+            <div class="rt"><div class="pr">₦800</div><div class="stp"><i>−</i><b>2</b><i>+</i></div></div>
+          </div>
+
+          <div class="minbar">
+            <div class="k">Add <b>₦1,200</b> more to reach this kitchen's minimum</div>
+            <div class="track"><i style="width:40%"></i></div>
+          </div>
+
+          <div class="addmore">＋ Add more from Terkimbi's</div>
+
+          <div class="tot">
+            <div class="ln"><span>Subtotal</span><span>₦800</span></div>
+            <div class="ln"><span>Delivery to High Level</span><span>₦500</span></div>
+            <div class="ln big"><span>Total</span><span>₦1,300</span></div>
+            <div class="btn mut" style="margin:10px 0 10px">₦1,200 to minimum</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 5 SWITCH KITCHEN -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Different kitchen</div>
+      <div class="w">One kitchen per order in v1. Two pickups doubles rider time and cost for one delivery fee. This is the moment that rule gets explained.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Benue Grills</div></div>
+        </div>
+        <div class="body" style="opacity:.55">
+          <div class="mrow"><div class="th">🐟</div><div><div class="nm">Catfish pepper soup</div><div class="pr">₦3,500</div></div><div class="add">+</div></div>
+          <div class="mrow"><div class="th">🍖</div><div><div class="nm">Goat pepper soup</div><div class="pr">₦3,000</div></div><div class="add">+</div></div>
+        </div>
+        <div class="scrim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="sh">Start a new cart?</div>
+          <p class="sp">Your cart has 3 items from <b style="color:var(--text);font-weight:600">Terkimbi's Kitchen</b>. We deliver from one kitchen per order, so adding this will clear what's there.</p>
+          <div class="ban info" style="margin-top:12px">
+            <div class="i">🛵</div>
+            <div><div class="k">Why?</div><div class="d">Two pickups means two trips, which doubles the wait and the delivery fee.</div></div>
+          </div>
+          <div style="display:grid;gap:7px;margin:13px 0 8px">
+            <div class="btn">Clear and start with Benue Grills</div>
+            <div class="btn out">Keep my Terkimbi's cart</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 6 SOLD OUT IN CART -->
+    <div class="item">
+      <div class="n">06</div><div class="t">Sold out while in cart</div>
+      <div class="w">The one that breaks real delivery apps. Caught here, not after payment — otherwise you refund an order the kitchen never could have cooked.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Your cart</div><div class="clear">Clear</div></div>
+        </div>
+        <div class="body">
+          <div class="ban warn">
+            <div class="i">⚠</div>
+            <div><div class="k">Terkimbi's just ran out of egusi</div><div class="d">We've removed it. Everything else is still available.</div></div>
+          </div>
+
+          <div class="li gone">
+            <div class="th">🍲</div>
+            <div class="tx">
+              <div class="nm">Pounded yam &amp; egusi</div>
+              <div class="soldout">Finished for today</div>
+            </div>
+            <div class="rt"><div class="pr" style="text-decoration:line-through;color:var(--text-3)">₦2,800</div></div>
+          </div>
+
+          <div class="li">
+            <div class="th">🐟</div>
+            <div class="tx"><div class="nm">Catfish pepper soup</div></div>
+            <div class="rt"><div class="pr">₦3,500</div><div class="stp"><i>−</i><b>1</b><i>+</i></div></div>
+          </div>
+
+          <div class="li" style="border-bottom:none">
+            <div class="th">🥤</div>
+            <div class="tx"><div class="nm">Chilled zobo</div></div>
+            <div class="rt"><div class="pr">₦800</div><div class="stp"><i>−</i><b>2</b><i>+</i></div></div>
+          </div>
+
+          <div class="addmore">＋ Pick something instead</div>
+
+          <div class="tot">
+            <div class="ln"><span>Subtotal</span><span>₦4,300</span></div>
+            <div class="ln"><span>Delivery to High Level</span><span>₦500</span></div>
+            <div class="ln big"><span>Total</span><span>₦4,800</span></div>
+            <div class="btn" style="margin:10px 0 10px">Checkout without it</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group">
+  <h2>Edges</h2>
+  <div class="rail">
+
+    <!-- 7 KITCHEN CLOSED -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Kitchen closed meanwhile</div>
+      <div class="w">Cart survives; the order doesn't go through. Keeps it for tomorrow rather than throwing it away.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>20:14</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Your cart</div><div class="clear">Clear</div></div>
+        </div>
+        <div class="body">
+          <div class="ban warn">
+            <div class="i">🌙</div>
+            <div><div class="k">Terkimbi's has closed for today</div><div class="d">They open again at 10am. We'll keep your cart until then.</div></div>
+          </div>
+
+          <div class="li" style="opacity:.5">
+            <div class="th">🍲</div>
+            <div class="tx"><div class="nm">Pounded yam &amp; egusi</div></div>
+            <div class="rt"><div class="pr">₦2,800</div></div>
+          </div>
+          <div class="li" style="opacity:.5;border-bottom:none">
+            <div class="th">🐟</div>
+            <div class="tx"><div class="nm">Catfish pepper soup</div></div>
+            <div class="rt"><div class="pr">₦3,500</div></div>
+          </div>
+
+          <div class="tot">
+            <div class="ln"><span>Subtotal</span><span>₦6,300</span></div>
+            <div class="ln big"><span>Total</span><span>₦6,800</span></div>
+            <div style="display:grid;gap:7px;margin:10px 0 10px">
+              <div class="btn">Find somewhere open now</div>
+              <div class="btn out">Remind me at 10am</div>
+            </div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 8 REMOVE LAST -->
+    <div class="item">
+      <div class="n">08</div><div class="t">Removing the last item</div>
+      <div class="w">Undo instead of a confirm dialog. Nobody reads confirm dialogs, and this costs one tap to reverse.</div>
+      <div class="phone"><div class="scr t-light">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Your cart</div></div>
+        </div>
+        <div class="body">
+          <div style="margin:auto 0">
+            <div class="eic">🛒</div>
+            <div class="eh">Nothing in here yet</div>
+            <p class="ep">Six kitchens are open near High Level right now.</p>
+            <div class="btn" style="margin-top:14px">Browse kitchens</div>
+          </div>
+        </div>
+        <div style="position:absolute;left:12px;right:12px;bottom:16px;background:var(--text);color:var(--bg);
+             border-radius:14px;padding:11px 13px;display:flex;align-items:center;gap:10px;z-index:6">
+          <div style="font-size:.71rem;font-weight:500">Removed catfish pepper soup</div>
+          <div style="margin-left:auto;font-size:.71rem;font-weight:600;color:var(--accent)">Undo</div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 9 DARK -->
+    <div class="item">
+      <div class="n">09</div><div class="t">Same cart, dark</div>
+      <div class="w">Byte-identical markup with the theme class swapped, per the token system. Ships light; dark exists so a toggle later is config, not a redesign.</div>
+      <div class="phone"><div class="scr t-dark">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Your cart</div><div class="clear">Clear</div></div>
+        </div>
+        <div class="body">
+          <div class="kit">
+            <div class="th">🍲</div>
+            <div><div class="nm">Terkimbi's Kitchen</div><div class="ds">Wurukum · 20–30 min · ₦500 delivery</div></div>
+          </div>
+          <div class="li">
+            <div class="th">🍲</div>
+            <div class="tx"><div class="nm">Pounded yam &amp; egusi</div><div class="op">Extra assorted meat</div><div class="note">No pepper please</div></div>
+            <div class="rt"><div class="pr">₦3,300</div><div class="stp"><i>−</i><b>1</b><i>+</i></div></div>
+          </div>
+          <div class="li">
+            <div class="th">🐟</div>
+            <div class="tx"><div class="nm">Catfish pepper soup</div></div>
+            <div class="rt"><div class="pr">₦3,500</div><div class="stp"><i>−</i><b>1</b><i>+</i></div></div>
+          </div>
+          <div class="li" style="border-bottom:none">
+            <div class="th">🥤</div>
+            <div class="tx"><div class="nm">Chilled zobo</div><div class="op">500ml</div></div>
+            <div class="rt"><div class="pr">₦800</div><div class="stp"><i>−</i><b>2</b><i>+</i></div></div>
+          </div>
+          <div class="addmore">＋ Add more from Terkimbi's</div>
+          <div class="tot">
+            <div class="ln"><span>Subtotal</span><span>₦7,600</span></div>
+            <div class="ln"><span>Delivery to High Level</span><span>₦500</span></div>
+            <div class="ln big"><span>Total</span><span>₦8,100</span></div>
+            <div class="btn" style="margin:10px 0 10px">Go to checkout</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

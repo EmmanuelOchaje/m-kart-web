@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — account & problem states</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0F0D; --ink2:#242621; --ink3:#3A3C38;
+  --paper:#FFFFFF; --wash:#F4F4F1; --line:#E8E8E5;
+  --muted:#8E9189; --dim:#6E7169;
+  --acid:#C6F432; --acid-ink:#12180A;
+  --red:#FF6B4A; --redbg:#FFEDE8; --reddk:#C0391C;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#DEDEDA;font-family:var(--f);color:var(--ink);padding:42px 20px 66px}
+.head{max-width:1500px;margin:0 auto 30px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:74ch}
+.group{max-width:1500px;margin:0 auto 34px}
+.group>h2{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#7C7F76;
+  margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid #C9C9C4}
+.group>.gp{font-size:.85rem;color:#5F6259;margin:-2px 0 14px;max-width:70ch}
+.rail{display:flex;gap:24px;flex-wrap:wrap}
+.item{width:262px}
+.item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.item .t{font-size:.9rem;font-weight:500;margin-bottom:11px;letter-spacing:-.02em}
+
+.phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper);overflow:hidden}
+.scr.dk{background:var(--ink);color:#fff}
+.hbar{width:78px;height:3.5px;border-radius:99px;background:#C6C7C2;margin:0 auto 7px;flex:none}
+.hbar.lt{background:var(--ink3)}
+
+.top{flex:none;padding:9px 15px 0}
+.st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600}
+.bar{display:flex;align-items:center;gap:10px;padding:9px 0 11px}
+.rnd{width:27px;height:27px;border-radius:50%;background:var(--wash);display:grid;place-items:center;font-size:.75rem;flex:none}
+.rnd.dk{background:var(--ink2);color:#fff}
+.ttl{font-size:.86rem;font-weight:600;letter-spacing:-.025em}
+.body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+
+.sec{font-size:.63rem;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin:14px 0 7px}
+.row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.ic{width:31px;height:31px;border-radius:10px;background:var(--wash);display:grid;place-items:center;font-size:.76rem;flex:none}
+.ic.acid{background:var(--acid);color:var(--acid-ink)}
+.nm{font-size:.75rem;font-weight:500;line-height:1.35}
+.ds{font-size:.62rem;color:var(--muted);font-weight:300;line-height:1.5;margin-top:2px}
+.chev{margin-left:auto;color:#C6C7C2;font-size:.8rem;flex:none}
+.tick{margin-left:auto;font-size:.72rem;color:var(--acid-ink);background:var(--acid);width:19px;height:19px;
+  border-radius:50%;display:grid;place-items:center;flex:none}
+
+/* profile head */
+.prof{display:flex;align-items:center;gap:12px;padding:4px 0 2px}
+.prof .av{width:52px;height:52px;border-radius:50%;background:var(--wash);display:grid;place-items:center;
+  font-size:1.05rem;font-weight:600;color:var(--muted);flex:none}
+.prof .nm2{font-size:1.05rem;font-weight:600;letter-spacing:-.03em}
+.prof .ph{font-size:.68rem;color:var(--muted);font-weight:300;margin-top:1px}
+
+/* switch */
+.sw{margin-left:auto;width:36px;height:21px;border-radius:99px;background:var(--line);position:relative;flex:none}
+.sw i{position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw.on{background:var(--acid)}
+.sw.on i{left:auto;right:2.5px}
+
+/* field */
+.lab{font-size:.63rem;font-weight:500;color:var(--muted);margin-bottom:6px}
+.field{background:var(--wash);border-radius:14px;padding:12px 13px;font-size:.78rem}
+.field .ph2{color:#B4B9B2;font-weight:300}
+.tagrow{display:flex;gap:6px;margin-top:8px}
+.tg{border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:.66rem;font-weight:500}
+.tg.on{background:var(--acid);border-color:var(--acid)}
+
+.btn{border-radius:99px;padding:13px;text-align:center;font-weight:600;font-size:.82rem;background:var(--acid);color:var(--acid-ink)}
+.btn.dark{background:var(--ink);color:#fff;font-weight:500}
+.btn.out{background:transparent;border:1.5px solid var(--line);color:var(--ink);font-weight:500}
+.btn.gh{background:transparent;color:var(--muted);font-weight:400}
+.btn.dang{background:transparent;color:var(--reddk);font-weight:500}
+
+/* problem states */
+.bigic{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:1.55rem;flex:none}
+.bigic.acid{background:var(--acid);color:var(--acid-ink)}
+.bigic.warn{background:var(--redbg);color:var(--reddk)}
+.bigic.mut{background:var(--ink2);color:var(--muted)}
+.h{font-size:1.34rem;font-weight:600;line-height:1.14;letter-spacing:-.04em}
+.p{font-size:.75rem;color:var(--muted);line-height:1.6;font-weight:300;margin-top:9px}
+.p.lt{color:var(--muted)}
+.card{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-top:14px}
+.card.dk{border-color:var(--ink3);background:var(--ink2)}
+.card .k{font-size:.63rem;color:var(--muted);font-weight:300}
+.card .v{font-size:.75rem;font-weight:500;margin-top:2px}
+.opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:7px}
+.opt.dk{border-color:var(--ink3)}
+.rd{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);margin-left:auto;flex:none}
+.rd.on{border-color:var(--acid);border-width:5px}
+
+@media (max-width:640px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — account &amp; problem states</h1>
+  <p>The last of the customer app. The account section, and the six ways an order can go wrong.</p>
+</div>
+
+<!-- ============ ACCOUNT ============ -->
+<div class="group">
+  <h2>Account</h2>
+  <div class="rail">
+
+    <!-- 1 ACCOUNT HOME -->
+    <div class="item">
+      <div class="n">01</div><div class="t">Account</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="ttl">Account</div></div>
+        </div>
+        <div class="body">
+          <div class="prof">
+            <div class="av">TK</div>
+            <div><div class="nm2">Terkimbi</div><div class="ph">+234 801 234 5678</div></div>
+            <div class="chev">›</div>
+          </div>
+
+          <div class="sec">Ordering</div>
+          <div class="row"><div class="ic">📍</div><div><div class="nm">Saved addresses</div><div class="ds">2 saved</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">💳</div><div><div class="nm">Payment methods</div><div class="ds">Card ending 4417</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">🧾</div><div><div class="nm">Order history</div></div><div class="chev">›</div></div>
+
+          <div class="sec">App</div>
+          <div class="row"><div class="ic">🔔</div><div><div class="nm">Notifications</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">💬</div><div><div class="nm">Help &amp; support</div></div><div class="chev">›</div></div>
+          <div class="row"><div class="ic">📄</div><div><div class="nm">Terms &amp; privacy</div></div><div class="chev">›</div></div>
+
+          <div style="margin-top:auto;padding-bottom:9px">
+            <div class="btn gh">Sign out</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 2 ADDRESSES -->
+    <div class="item">
+      <div class="n">02</div><div class="t">Saved addresses</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Saved addresses</div></div>
+        </div>
+        <div class="body">
+          <div class="row" style="align-items:flex-start">
+            <div class="ic acid">⌂</div>
+            <div><div class="nm">Home</div><div class="ds">Behind BSU main gate, High Level<br>Gate is painted blue</div></div>
+            <div class="tick">✓</div>
+          </div>
+          <div class="row" style="align-items:flex-start">
+            <div class="ic">💼</div>
+            <div><div class="nm">Office</div><div class="ds">Opposite Modern Market, second floor<br>Ask for Terkimbi at reception</div></div>
+            <div class="chev">›</div>
+          </div>
+
+          <div class="sec">We deliver to</div>
+          <div style="font-size:.68rem;color:var(--muted);font-weight:300;line-height:1.7">
+            High Level · Wurukum · North Bank · Modern Market · Judges Quarters · Ankpa Ward · BSU and around
+          </div>
+
+          <div style="margin-top:auto;padding-bottom:9px"><div class="btn">Add an address</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 3 ADD ADDRESS -->
+    <div class="item">
+      <div class="n">03</div><div class="t">Add address</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Add an address</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:4px">
+            <div class="lab">Landmark or street</div>
+            <div class="field">Behind BSU main gate</div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="lab">Anything the rider should know?</div>
+            <div class="field"><span class="ph2">Gate colour, floor, who to ask for…</span></div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="lab">Save as</div>
+            <div class="tagrow">
+              <div class="tg on">Home</div><div class="tg">Office</div><div class="tg">Other</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="k">Area detected</div>
+            <div class="v">High Level · we deliver here</div>
+          </div>
+          <div style="margin-top:auto;padding-bottom:9px"><div class="btn">Save address</div></div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 4 NOTIFICATIONS -->
+    <div class="item">
+      <div class="n">04</div><div class="t">Notifications</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Notifications</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your orders</div>
+          <div class="row"><div><div class="nm">Order updates</div><div class="ds">Cooking, picked up, arriving</div></div><div class="sw on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Rider is at your gate</div><div class="ds">Also rings your phone</div></div><div class="sw on"><i></i></div></div>
+
+          <div class="sec">From M-Kart</div>
+          <div class="row"><div><div class="nm">New kitchens in your area</div></div><div class="sw on"><i></i></div></div>
+          <div class="row"><div><div class="nm">Offers and promo codes</div></div><div class="sw"><i></i></div></div>
+          <div class="row"><div><div class="nm">A kitchen you saved has opened</div></div><div class="sw on"><i></i></div></div>
+
+          <div class="card" style="margin-top:16px">
+            <div class="k">Note</div>
+            <div class="v" style="font-weight:300;font-size:.68rem;line-height:1.55">Order updates also arrive by SMS if your data is off.</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 5 HELP -->
+    <div class="item">
+      <div class="n">05</div><div class="t">Help &amp; support</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Help</div></div>
+        </div>
+        <div class="body">
+          <div class="sec">Your last order</div>
+          <div class="row"><div class="ic">🧾</div><div><div class="nm">Terkimbi's Kitchen</div><div class="ds">Today 6:41pm · ₦6,890</div></div><div class="chev">›</div></div>
+
+          <div class="sec">Common problems</div>
+          <div class="row"><div><div class="nm">My order is late</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">Something was missing or wrong</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">The food arrived cold</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">I was charged twice</div></div><div class="chev">›</div></div>
+          <div class="row"><div><div class="nm">I want a refund</div></div><div class="chev">›</div></div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Chat on WhatsApp</div>
+            <div class="btn out">Call us · 8am–10pm</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 6 REPORT -->
+    <div class="item">
+      <div class="n">06</div><div class="t">Report a problem</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">What went wrong?</div></div>
+        </div>
+        <div class="body">
+          <div class="card" style="margin-top:2px">
+            <div class="k">Order 1042 · Terkimbi's Kitchen</div>
+            <div class="v">Today at 6:41pm · ₦6,890</div>
+          </div>
+
+          <div class="sec">Which items?</div>
+          <div class="opt"><div class="nm">Pounded yam &amp; egusi</div><div class="rd on"></div></div>
+          <div class="opt"><div class="nm">Catfish pepper soup</div><div class="rd"></div></div>
+          <div class="opt"><div class="nm">Chilled zobo ×2</div><div class="rd"></div></div>
+
+          <div class="sec">Tell us what happened</div>
+          <div class="field" style="min-height:56px"><span class="ph2">The more detail, the faster we fix it.</span></div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn out">Add a photo</div>
+            <div class="btn">Send report</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PROBLEM STATES ============ -->
+<div class="group">
+  <h2>When an order goes wrong</h2>
+  <p class="gp">These decide whether someone orders a second time. Each one names what happened, says what we're doing about it, and gives one clear next step.</p>
+  <div class="rail">
+
+    <!-- 7 PAYMENT FAILED -->
+    <div class="item">
+      <div class="n">07</div><div class="t">Payment failed</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Checkout</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic warn" style="margin-bottom:16px">✕</div>
+            <div class="h">Your card was declined</div>
+            <p class="p">Your bank turned down the payment. Nothing was taken and your order hasn't been placed.</p>
+          </div>
+          <div class="card">
+            <div class="k">Your cart is safe</div>
+            <div class="v">3 items from Terkimbi's · ₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Try another way to pay</div>
+            <div class="btn out">Try the same card again</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 8 RESTAURANT REJECTED -->
+    <div class="item">
+      <div class="n">08</div><div class="t">Kitchen can't take it</div>
+      <div class="phone"><div class="scr dk">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic warn" style="margin-bottom:16px">!</div>
+            <div class="h">Terkimbi's can't cook this right now</div>
+            <p class="p">They've run out of egusi for today. We're refunding you in full — it should be back within 3 working days.</p>
+          </div>
+          <div class="card dk">
+            <div class="k">Refunding to card ending 4417</div>
+            <div class="v">₦6,890</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Find something else</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar lt"></div>
+      </div></div>
+    </div>
+
+    <!-- 9 NO RIDERS -->
+    <div class="item">
+      <div class="n">09</div><div class="t">No riders free</div>
+      <div class="phone"><div class="scr dk">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic mut" style="margin-bottom:16px">🛵</div>
+            <div class="h">Looking for a rider</div>
+            <p class="p">Every rider near High Level is busy. We're still trying — this usually clears within 10 minutes.</p>
+          </div>
+          <div class="card dk">
+            <div class="k">Your food</div>
+            <div class="v">Terkimbi's has started cooking</div>
+          </div>
+          <div class="card dk">
+            <div class="k">If we can't find one</div>
+            <div class="v" style="font-weight:300;font-size:.7rem;line-height:1.55">We'll cancel and refund you in full. You won't be charged for a delivery that doesn't happen.</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn gh">Cancel and refund me</div>
+          </div>
+        </div>
+        <div class="hbar lt"></div>
+      </div></div>
+    </div>
+
+    <!-- 10 RUNNING LATE -->
+    <div class="item">
+      <div class="n">10</div><div class="t">Running late</div>
+      <div class="phone"><div class="scr dk">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd dk">‹</div><div class="ttl">Order 1042</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:14px">
+            <div class="bigic mut" style="margin-bottom:16px">⏱</div>
+            <div class="h">Running about<br>15 minutes late</div>
+            <p class="p">Doosuur is stuck in traffic near Wurukum roundabout. New estimate is 7:05pm.</p>
+          </div>
+          <div class="card dk">
+            <div class="k">Sorry about this</div>
+            <div class="v" style="font-weight:300;font-size:.7rem;line-height:1.55">We've put ₦500 credit on your account for the delay. It applies to your next order automatically.</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Call Doosuur</div>
+            <div class="btn gh">Talk to support</div>
+          </div>
+        </div>
+        <div class="hbar lt"></div>
+      </div></div>
+    </div>
+
+    <!-- 11 CANCELLED / REFUND -->
+    <div class="item">
+      <div class="n">11</div><div class="t">Refund status</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Order 1039</div></div>
+        </div>
+        <div class="body">
+          <div class="card" style="margin-top:2px;border-color:var(--red);background:var(--redbg)">
+            <div class="k" style="color:var(--reddk)">Cancelled</div>
+            <div class="v" style="color:var(--reddk)">Modern Market Suya · Thu 27 Aug</div>
+          </div>
+
+          <div class="sec">What happened</div>
+          <div style="font-size:.7rem;color:var(--muted);font-weight:300;line-height:1.65">
+            The kitchen closed before your order was picked up. You were refunded in full, including delivery.
+          </div>
+
+          <div class="sec">Refund</div>
+          <div class="row"><div class="ic acid">✓</div><div><div class="nm">₦2,000 refunded</div><div class="ds">To card ending 4417 · 28 Aug</div></div></div>
+          <div class="row"><div class="ic">🧾</div><div><div class="nm">See the receipt</div></div><div class="chev">›</div></div>
+
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn out">This still isn't resolved</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+    <!-- 12 OUTSIDE AREA -->
+    <div class="item">
+      <div class="n">12</div><div class="t">Outside our area</div>
+      <div class="phone"><div class="scr">
+        <div class="top">
+          <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+          <div class="bar"><div class="rnd">‹</div><div class="ttl">Delivery address</div></div>
+        </div>
+        <div class="body">
+          <div style="margin-top:22px">
+            <div class="bigic warn" style="margin-bottom:16px">📍</div>
+            <div class="h">We don't reach<br>Gboko yet</div>
+            <p class="p">M-Kart is only in Makurdi for now. We're adding areas as we sign up riders.</p>
+          </div>
+          <div class="card">
+            <div class="k">Tell us where you are</div>
+            <div class="v" style="font-weight:300;font-size:.7rem;line-height:1.55">We open new areas where people are asking. It genuinely decides where we go next.</div>
+          </div>
+          <div style="margin-top:auto;display:grid;gap:7px;padding-bottom:9px">
+            <div class="btn">Tell M-Kart to come to Gboko</div>
+            <div class="btn out">Use a different address</div>
+          </div>
+        </div>
+        <div class="hbar"></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

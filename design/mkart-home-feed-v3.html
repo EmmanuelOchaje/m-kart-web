@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M-Kart — home feed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+.t-light{
+  --bg:#FFFFFF; --surface:#F6F7F3; --raised:#EDEFE8;
+  --border:#E4E7DE; --border-strong:#D3D7CB;
+  --text:#0E0F0D; --text-2:#6B6F66; --text-3:#9A9E93;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#4E6B00;
+  --danger:#C0391C; --danger-bg:#FFEDE8;
+  --body-weight:400;
+}
+.t-dark{
+  --bg:#0E0F0D; --surface:#1A1C19; --raised:#242621;
+  --border:#2E312C; --border-strong:#3A3C38;
+  --text:#FFFFFF; --text-2:#8E9189; --text-3:#6E7169;
+  --accent:#C6F432; --on-accent:#12180A; --accent-text:#C6F432;
+  --danger:#FF6B4A; --danger-bg:rgba(255,107,74,.14);
+  --body-weight:300;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#D8D8D3;font-family:'DM Sans',system-ui,sans-serif;color:#0E0F0D;padding:42px 20px 66px}
+.head{max-width:1500px;margin:0 auto 28px}
+.head h1{font-size:1.55rem;font-weight:600;letter-spacing:-.04em}
+.head p{color:#5F6259;margin-top:7px;font-size:.94rem;max-width:76ch}
+.rail{max-width:1500px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap}
+.item{width:262px}
+.item .n{font-size:.68rem;font-weight:600;color:#8A8D85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
+.item .t{font-size:.9rem;font-weight:500;margin-bottom:4px;letter-spacing:-.02em}
+.item .w{font-size:.72rem;color:#6B6F66;line-height:1.5;margin-bottom:11px;min-height:32px}
+
+.phone{width:262px;height:567px;border-radius:33px;overflow:hidden;border:8px solid #0A0B09;
+  box-shadow:0 18px 40px rgba(10,11,9,.2);position:relative}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);color:var(--text);overflow:hidden}
+.hbar{width:78px;height:3.5px;border-radius:99px;background:var(--border-strong);margin:0 auto 6px;flex:none}
+
+.top{flex:none;padding:9px 15px 0}
+.st{display:flex;justify-content:space-between;font-size:.58rem;font-weight:600}
+
+/* location header — the anchor of the whole screen */
+.loc{display:flex;align-items:center;gap:6px;padding:3px 0 6px}
+.loc .pin{width:19px;height:19px;border-radius:6px;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center;font-size:.55rem;flex:none}
+.loc .k{display:none}
+.loc .v{font-size:.68rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:center;gap:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:168px}
+.loc .v i{font-style:normal;font-size:.53rem;color:var(--text-2)}
+.loc .av{margin-left:auto;width:23px;height:23px;border-radius:50%;background:var(--surface);
+  display:grid;place-items:center;font-size:.6rem;font-weight:600;color:var(--text-2);flex:none}
+
+.srch{background:var(--surface);border-radius:99px;padding:7px 13px;display:flex;align-items:center;gap:8px;
+  font-size:.7rem;color:var(--text-3);font-weight:var(--body-weight)}
+
+.body{flex:1;padding:0 15px;overflow:hidden;display:flex;flex-direction:column}
+
+
+.shead{display:flex;align-items:baseline;justify-content:space-between;margin:7px 0 1px;flex:none}
+.shead h4{font-size:.79rem;font-weight:600;letter-spacing:-.025em}
+.shead .ct{font-size:.62rem;color:var(--text-2);font-weight:var(--body-weight)}
+.ssub{font-size:.59rem;color:var(--text-2);font-weight:var(--body-weight);margin-bottom:4px;flex:none}
+
+/* the restaurant row — distance is the point */
+.rrow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:center;flex:none}
+.rrow:last-child{border-bottom:none}
+.rrow .th{width:46px;height:46px;border-radius:11px;background:var(--surface);flex:none;
+  display:grid;place-items:center;font-size:1rem;position:relative}
+.rrow .tx{flex:1;min-width:0}
+.rrow .nm{font-size:.74rem;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.rrow .cu{font-size:.59rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.facts{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:.6rem;color:var(--text-2);font-weight:var(--body-weight)}
+.facts b{color:var(--text);font-weight:600}
+.facts .sep{width:2.5px;height:2.5px;border-radius:50%;background:var(--border-strong)}
+.near{color:var(--accent-text);font-weight:600}
+.tags{display:flex;gap:4px;margin-top:4px}
+.tg{font-size:.53rem;font-weight:600;border-radius:5px;padding:1px 6px;background:var(--surface);color:var(--text-2)}
+.tg.free{background:var(--accent);color:var(--on-accent)}
+.tg.new{background:var(--surface);color:var(--accent-text)}
+.tg.busy{background:var(--danger-bg);color:var(--danger)}
+
+.rrow.shut .th,.rrow.shut .tx{opacity:.44}
+.shutlab{font-size:.58rem;color:var(--text-2);font-weight:600;margin-top:3px}
+
+/* sheets */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-radius:22px 22px 0 0;
+  padding:14px 15px 10px;box-shadow:0 -12px 40px rgba(10,11,9,.28);z-index:5}
+.grab{width:34px;height:4px;border-radius:99px;background:var(--border-strong);margin:0 auto 13px}
+.sh{font-size:.92rem;font-weight:600;letter-spacing:-.03em;margin-bottom:11px}
+.arow{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border)}
+.arow:last-of-type{border-bottom:none}
+.arow .ic{width:30px;height:30px;border-radius:10px;background:var(--surface);display:grid;place-items:center;font-size:.74rem;flex:none}
+.arow .ic.on{background:var(--accent);color:var(--on-accent)}
+.arow .nm2{font-size:.74rem;font-weight:500}
+.arow .ds2{font-size:.61rem;color:var(--text-2);font-weight:var(--body-weight);margin-top:1px}
+.arow .tick{margin-left:auto;color:var(--accent-text);font-size:.8rem}
+
+.btn{border-radius:99px;padding:12px;text-align:center;font-weight:600;font-size:.8rem;
+  background:var(--accent);color:var(--on-accent)}
+.btn.out{background:transparent;border:1.5px solid var(--border-strong);color:var(--text);font-weight:500}
+.btn.gh{background:transparent;color:var(--text-2);font-weight:400}
+
+/* empty */
+.eic{width:58px;height:58px;border-radius:19px;background:var(--surface);display:grid;place-items:center;
+  font-size:1.35rem;margin-bottom:14px}
+.eh{font-size:1.14rem;font-weight:600;letter-spacing:-.035em;line-height:1.16}
+.ep{font-size:.73rem;color:var(--text-2);font-weight:var(--body-weight);line-height:1.6;margin-top:9px}
+.card{background:var(--surface);border-radius:14px;padding:11px 12px;margin-top:14px}
+.card .k2{font-size:.61rem;color:var(--text-2);font-weight:var(--body-weight)}
+.card .v2{font-size:.73rem;font-weight:500;margin-top:2px;line-height:1.45}
+
+.tabs{display:flex;justify-content:space-around;align-items:center;border-top:1px solid var(--border);
+  padding:7px 6px 3px;flex:none;background:var(--bg)}
+.tabs i{font-style:normal;font-size:.6rem;color:var(--text-3);font-weight:400;text-align:center}
+.tabs i.on{color:var(--text);font-weight:600}
+
+@media (max-width:640px){.rail{justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <h1>M-Kart — home feed v3</h1>
+  <p>Location shrunk again and the category row removed. Search covers what the chips did, and with twelve kitchens total the filters were solving a problem you don't have yet.</p>
+</div>
+
+<div class="rail">
+
+<!-- 1 · HOME -->
+<div class="item">
+  <div class="n">01</div><div class="t">Home</div>
+  <div class="w">Seven kitchens visible without scrolling.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div>
+          <div class="k">DELIVERING TO</div>
+          <div class="v">Behind BSU main gate <i>▾</i></div>
+        </div>
+        <div class="av">TK</div>
+      </div>
+      <div class="srch"><span>⌕</span><span>Search kitchens or dishes</span></div>
+    </div>
+    <div class="body">
+
+      <div class="shead"><h4>Open now near you</h4><span class="ct">7 kitchens</span></div>
+      <div class="ssub">Closest first · High Level</div>
+
+      <div class="rrow">
+        <div class="th">🍲</div>
+        <div class="tx">
+          <div class="nm">Terkimbi's Kitchen</div>
+          <div class="cu">Swallow &amp; soups</div>
+          <div class="facts"><span class="near">0.8 km</span><span class="sep"></span><b>20–30 min</b><span class="sep"></span>₦500</div>
+          <div class="tags"><span class="tg free">Free delivery</span><span class="tg">★ 4.8</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍛</div>
+        <div class="tx">
+          <div class="nm">Sewuese Rice Spot</div>
+          <div class="cu">Jollof, fried rice &amp; chicken</div>
+          <div class="facts"><span class="near">1.4 km</span><span class="sep"></span><b>25–35 min</b><span class="sep"></span>₦500</div>
+          <div class="tags"><span class="tg">★ 4.6</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🐟</div>
+        <div class="tx">
+          <div class="nm">Benue Grills</div>
+          <div class="cu">Catfish &amp; pepper soup</div>
+          <div class="facts"><span class="near">2.6 km</span><span class="sep"></span><b>35–45 min</b><span class="sep"></span>₦800</div>
+          <div class="tags"><span class="tg busy">Busy</span><span class="tg">★ 4.5</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍢</div>
+        <div class="tx">
+          <div class="nm">Modern Market Suya</div>
+          <div class="cu">Suya &amp; grills</div>
+          <div class="facts"><span class="near">3.1 km</span><span class="sep"></span><b>30–40 min</b><span class="sep"></span>₦900</div>
+          <div class="tags"><span class="tg new">New</span><span class="tg">★ 4.9</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍗</div>
+        <div class="tx">
+          <div class="nm">Ankpa Bukka</div>
+          <div class="cu">Local dishes &amp; grills</div>
+          <div class="facts"><span class="near">3.6 km</span><span class="sep"></span><b>35–45 min</b><span class="sep"></span>₦900</div>
+          <div class="tags"><span class="tg">★ 4.4</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🍚</div>
+        <div class="tx">
+          <div class="nm">Judges Quarters Buka</div>
+          <div class="cu">Rice, beans &amp; stew</div>
+          <div class="facts"><span class="near">4.0 km</span><span class="sep"></span><b>35–45 min</b><span class="sep"></span>₦1,000</div>
+          <div class="tags"><span class="tg">★ 4.3</span></div>
+        </div>
+      </div>
+
+      <div class="rrow">
+        <div class="th">🥣</div>
+        <div class="tx">
+          <div class="nm">Wurukum Pepper Soup</div>
+          <div class="cu">Pepper soup &amp; grills</div>
+          <div class="facts"><span class="near">4.4 km</span><span class="sep"></span><b>40–50 min</b><span class="sep"></span>₦1,100</div>
+          <div class="tags"><span class="tg">★ 4.2</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 2 · SCROLLED -->
+<div class="item">
+  <div class="n">02</div><div class="t">Further down</div>
+  <div class="w">Closed kitchens sit below the open ones, never hidden and never mixed in.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Behind BSU main gate <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="rrow">
+        <div class="th">🍢</div>
+        <div class="tx">
+          <div class="nm">Modern Market Suya</div>
+          <div class="cu">Suya &amp; grills</div>
+          <div class="facts"><span class="near">3.1 km</span><span class="sep"></span><b>30–40 min</b><span class="sep"></span>₦900</div>
+          <div class="tags"><span class="tg new">New</span><span class="tg">★ 4.9</span></div>
+        </div>
+      </div>
+
+      <div class="shead"><h4>Opens later</h4><span class="ct">3 kitchens</span></div>
+      <div class="ssub">We'll tell you when they start taking orders</div>
+
+      <div class="rrow shut">
+        <div class="th">🥣</div>
+        <div class="tx">
+          <div class="nm">Aondona Breakfast</div>
+          <div class="cu">Akara, moi moi &amp; pap · 1.1 km</div>
+          <div class="shutlab">Opens 6:30am tomorrow</div>
+        </div>
+      </div>
+      <div class="rrow shut">
+        <div class="th">🍗</div>
+        <div class="tx">
+          <div class="nm">Ankpa Bukka</div>
+          <div class="cu">Local dishes · 2.2 km</div>
+          <div class="shutlab">Opens 11:00am tomorrow</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="k2">Not seeing your favourite kitchen?</div>
+        <div class="v2">Tell us who to sign up next — it decides where we go.</div>
+        <div class="btn out" style="margin-top:10px;padding:9px;font-size:.72rem">Suggest a kitchen</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 3 · CHANGE LOCATION -->
+<div class="item">
+  <div class="n">03</div><div class="t">Change location</div>
+  <div class="w">Tapping the address opens this. The feed rebuilds around whatever they pick.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Behind BSU main gate <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+      <div class="srch"><span>⌕</span><span>Search kitchens or dishes</span></div>
+    </div>
+    <div class="body" style="opacity:.3">
+      <div class="shead"><h4>Open now near you</h4><span class="ct">7 kitchens</span></div>
+      <div class="rrow"><div class="th">🍲</div><div class="tx"><div class="nm">Terkimbi's Kitchen</div><div class="cu">Swallow &amp; soups</div></div></div>
+      <div class="rrow"><div class="th">🍛</div><div class="tx"><div class="nm">Sewuese Rice Spot</div><div class="cu">Jollof &amp; chicken</div></div></div>
+    </div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="sh">Where are we delivering?</div>
+      <div class="arow">
+        <div class="ic on">⌂</div>
+        <div><div class="nm2">Home</div><div class="ds2">Behind BSU main gate, High Level</div></div>
+        <div class="tick">✓</div>
+      </div>
+      <div class="arow">
+        <div class="ic">💼</div>
+        <div><div class="nm2">Office</div><div class="ds2">Opposite Modern Market</div></div>
+      </div>
+      <div class="arow">
+        <div class="ic">⌖</div>
+        <div><div class="nm2">Use my current location</div><div class="ds2">Wurukum · 4 kitchens nearby</div></div>
+      </div>
+      <div class="btn" style="margin:12px 0 8px">Add a new address</div>
+    </div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 4 · NOTHING OPEN -->
+<div class="item">
+  <div class="n">04</div><div class="t">Nothing open</div>
+  <div class="w">Late at night. Names the next opening time instead of showing an empty list.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>11:47</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Behind BSU main gate <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+    </div>
+    <div class="body">
+      <div style="margin:auto 0">
+        <div class="eic">🌙</div>
+        <div class="eh">Everyone's closed<br>for the night</div>
+        <p class="ep">M-Kart delivers 8am to 10pm. Aondona Breakfast opens first, at 6:30am.</p>
+        <div class="card">
+          <div class="k2">Opening first tomorrow</div>
+          <div class="v2">Aondona Breakfast · 6:30am · 1.1 km</div>
+          <div class="btn out" style="margin-top:10px;padding:9px;font-size:.72rem">Remind me when they open</div>
+        </div>
+        <div class="btn" style="margin-top:9px">Browse tomorrow's menus</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 5 · THIN COVERAGE -->
+<div class="item">
+  <div class="n">05</div><div class="t">Thin coverage</div>
+  <div class="w">A newly opened area with two kitchens. Honest about it rather than padding the list.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Ankpa Ward <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+      <div class="srch"><span>⌕</span><span>Search kitchens or dishes</span></div>
+    </div>
+    <div class="body">
+      <div class="card" style="margin-top:11px">
+        <div class="k2">We just opened here</div>
+        <div class="v2">Two kitchens deliver to Ankpa Ward so far. More are coming as we sign up riders.</div>
+      </div>
+
+      <div class="shead"><h4>Open now near you</h4><span class="ct">2 kitchens</span></div>
+      <div class="ssub">Closest first · Ankpa Ward</div>
+
+      <div class="rrow">
+        <div class="th">🍗</div>
+        <div class="tx">
+          <div class="nm">Ankpa Bukka</div>
+          <div class="cu">Local dishes &amp; grills</div>
+          <div class="facts"><span class="near">0.4 km</span><span class="sep"></span><b>15–25 min</b><span class="sep"></span>₦500</div>
+          <div class="tags"><span class="tg free">Free delivery</span><span class="tg">★ 4.4</span></div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="th">🍲</div>
+        <div class="tx">
+          <div class="nm">Terkimbi's Kitchen</div>
+          <div class="cu">Swallow &amp; soups</div>
+          <div class="facts"><span class="near">4.2 km</span><span class="sep"></span><b>40–50 min</b><span class="sep"></span>₦1,100</div>
+          <div class="tags"><span class="tg">★ 4.8</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="k2">Who should we sign up?</div>
+        <div class="v2">Name a kitchen in Ankpa Ward and we'll go and talk to them.</div>
+        <div class="btn out" style="margin-top:10px;padding:9px;font-size:.72rem">Suggest a kitchen</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+<!-- 6 · NO COVERAGE -->
+<div class="item">
+  <div class="n">06</div><div class="t">Outside coverage</div>
+  <div class="w">The reason the address is captured at signup — this can be shown before they build a cart.</div>
+  <div class="phone"><div class="scr t-light">
+    <div class="top">
+      <div class="st"><span>9:41</span><span>▮▮▮ ▰</span></div>
+      <div class="loc">
+        <div class="pin" style="background:var(--danger-bg);color:var(--danger)">⌖</div>
+        <div><div class="k">DELIVERING TO</div><div class="v">Gboko <i>▾</i></div></div>
+        <div class="av">TK</div>
+      </div>
+    </div>
+    <div class="body">
+      <div style="margin:auto 0">
+        <div class="eic">📍</div>
+        <div class="eh">We're not in<br>Gboko yet</div>
+        <p class="ep">M-Kart only covers Makurdi for now. We open new areas where people are asking for us.</p>
+        <div class="card">
+          <div class="k2">Nearest area we cover</div>
+          <div class="v2">Wurukum, Makurdi · about 68 km away</div>
+        </div>
+        <div class="btn" style="margin-top:11px">Tell us to come to Gboko</div>
+        <div class="btn gh" style="margin-top:5px">Use a different address</div>
+      </div>
+    </div>
+    <div class="tabs"><i class="on">Home</i><i>Search</i><i>Orders</i><i>Account</i></div>
+    <div class="hbar"></div>
+  </div></div>
+</div>
+
+</div>
+</body>
+</html>
